@@ -1,0 +1,1037 @@
+@PROJECT_NAME           Version Information Editor.
+@PROJECT_DESC           Program that allows creation of resource source files
+                        containining version information resources.
+@ROOT                   ..\Source
+@OWNER                  DelphiDabbler
+@AUTHOR                 P.D.Johnson, Llanarth, Ceredigion, Wales, UK.
+@EMAIL                  peter.johnson@openlink.org
+@WEBSITE                http://www.delphidabbler.com/
+@COPYRIGHT              Copyright © Peter Johnson, 1998-2005
+@LEGAL_NOTICE           This program is released under the Mozilla Public
+                        License. See VIEd.dpr for details of the license.
+@DEPENDENCIES           None.
+@HISTORY(
+  @REVISION(
+    @VERSION            1.0
+    @DATE               25/05/1998
+    @COMMENTS           Original version for Windows 3.1
+    @COMPILERS          + Delphi 1
+                        + Microsoft HC31 Help Compiler
+    @FILES(
+      @NEW(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           Main.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           EdDropDn.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           EdID.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           EdNum.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           EdSet.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           EdString.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           EdVerNum.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           MsgDlgs.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           Setup.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           UsrSetup.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           Utils.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           VerTypes.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           VerUtils.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           ViewList.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           VInfo.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           Resource.vi
+        @DATE           25/06/1998
+        @COMMENTS       Original 16 bit version information file.
+      )
+      @NEW(
+        @FILE           Help\VInfoExp.hpj
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           Help\VInfoExp.inc
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           Help\VInfoExp.rtf
+        @DATE           25/05/1998
+        @COMMENTS       Rich text source file for program's help file. Created
+                        using MS Word 2.0.
+      )
+      @NEW(
+        @FILE           Icons\VInfoExp.ico
+        @DATE           25/05/1998
+        @COMMENTS       Program's main icon.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            1.1
+    @DATE               07/07/1998
+    @COMMENTS           Made Open and Save As dialog boxes use any directory
+                        passed as first parameter to program as their default
+                        directories the first time they are used. Also made them
+                        remember the last directory specified by user.
+    @COMPILERS          + Delphi 1
+                        + Microsoft HC31 Help Compiler
+    @FILES(
+      @UPDATED(
+        @FILE           Main.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           07/07/1998
+        @COMMENTS       Updated program and file version information to 1.1.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.0
+    @DATE               13/04/1999
+    @COMMENTS           + Converted program to allow compilation as 16 bit and
+                          32 bit programs, using Delphi 1 and Delphi 2
+                          respectively (using conditional compilation).
+                        + Moved code previously called from StrProcs.pas library
+                          unit into main project.
+                        + Added an include file to provide information from
+                          32bit Windows WinVer.h header that is not provided
+                          with Delphi 2.
+    @COMPILERS          + Delphi 1 (16 bit version)
+                        + Delphi 2 (32 bit version)
+                        + Borland Resource Workshop v4.5
+                        + Microsoft HC31 help compiler
+    @FILES(
+      @UPDATED(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           Main.pas
+        @VERSION        1.2
+      )
+      @UPDATED(
+        @FILE           EdDropDn.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           EdID.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           EdNum.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           EdSet.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           EdString.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           EdVerNum.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           UsrSetup.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           Utils.pas
+        @VERSION        2.0
+      )
+      @UPDATED(
+        @FILE           VerUtils.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           ViewList.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.1
+      )
+      @NEW(
+        @FILE           32bit\WinVer.inc
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           Rc\ResSrc16.vi
+        @VERSION        1.2.1
+        @COMMENTS       Development of original file forked into 16 bit and 32
+                        bit versions. This is the 16 bit version.
+        @RENAMED_FROM   Resource.vi
+        @DATE           13/04/1999
+      )
+      @NEW(
+        @FILE           Rc\ResSrc32.vi
+        @COMMENTS       Development of original Resource.rc forked into 16 bit
+                        and 32 bit versions. This is the 32 bit version.
+                        + Updated program version number to 2.0
+                        + Changed program file version number text to 2.0 (32
+                          bit).
+                        + Changed file version number to 2.0.32
+                        + Added third version number to all text containing file
+                          version numbers.
+                        + Changed OS flag to VOS_DOS_WINDOWS32.
+        @DATE           13/04/1999
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.1
+    @DATE               15/04/1999
+    @COMMENTS           Fixed bug where 32bit version of program was treating
+                        ProductVersion resource string as not being permitted
+                        whenever it was supplied and, quite rightly, treating it
+                        as a required string when not present!
+    @COMPILERS          + Delphi 1 (16 bit version)
+                        + Delphi 2 (32 bit version)
+                        + Borland Resource Workshop v4.5
+                        + Microsoft HC31 help compiler
+    @FILES(
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.2
+      )
+      @UPDATED(
+        @FILE           Rc\ResSrc16.vi
+        @DATE           15/04/1999
+      )
+      @UPDATED(
+        @FILE           Rc\ResSrc32.vi
+        @DATE           15/04/1999
+        @COMMENTS       Changed version file version number to 2.1.32 and
+                        product version to 2.1.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.2
+    @DATE               24/04/1999
+    @COMPILERS          + Delphi 1 (16 bit version)
+                        + Delphi 2 (32 bit version)
+                        + Borland Resource Workshop v4.5
+                        + Microsoft HC31 help compiler
+    @COMMENTS           + Comments for rc and vi files can now exceed 255 chars.
+                        + Indentation in comments is now preserved when
+                          re-loaded.
+    @FILES(
+      @UPDATED(
+        @FILE           Main.pas
+        @VERSION        1.3
+      )
+      @UPDATED(
+        @FILE           EdString.pas
+        @VERSION        1.2
+      )
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.3
+      )
+      @UPDATED(
+        @FILE           Rc\ResSrc16.vi
+        @DATE           24/04/1999
+      )
+      @UPDATED(
+        @FILE           Rc\ResSrc32.vi
+        @DATE           24/04/1999
+        @COMMENTS       Changed version file version number to 2.2.32 and
+                        product version to 2.2.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.3
+    @DATE               25/04/1999
+    @COMMENTS           Modified way string editor displays depending on what
+                        it's editing:
+                        + When editing file comments it now has a lrager editing
+                          area which displays comments in mono-spaced font to
+                          allow editor to align comment indentation.
+                        + When editing string resources the editing area is now
+                          just large enough to take maximum number of characters
+                          (in same font used by main window) and it therefore no
+                          longer displays a scroll bar. \
+                        Also removed bug which was indenting all VI file
+                        comments by one additional space.
+    @COMPILERS          + Delphi 1 (16 bit version)
+                        + Delphi 2 (32 bit version)
+                        + Borland Resource Workshop v4.5
+                        + Microsoft HC31 help compiler
+    @FILES(
+      @UPDATED(
+        @FILE           Main.pas
+        @VERSION        1.4
+      )
+      @UPDATED(
+        @FILE           EdString.pas
+        @VERSION        1.3
+      )
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.4
+      )
+      @UPDATED(
+        @FILE           Rc\ResSrc16.vi
+        @DATE           25/04/1999
+      )
+      @UPDATED(
+        @FILE           Rc\ResSrc32.vi
+        @DATE           25/04/1999
+        @COMMENTS       Changed version file version number to 2.3.32 and
+                        product version to 2.3.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.4
+    @DATE               17/03/2002
+    @COMMENTS           + Revised to compile with Delphi 4 and current component
+                          library which includes updated version information and
+                          about box component but does not include tabbed list
+                          box.
+                        + Program is now 32 bit only - all 16 bit specific
+                          conditionally compiled code has been removed.
+                        + WinVer.inc was removed since relevant constants are in
+                          Windows unit.
+                        + 16 bit version information resource has been removed.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Microsoft HC31 help compiler
+    @FILES(
+      @REMOVED          Rc\ResSrc16.vi
+      @REMOVED          32bit\WinVer.inc
+      @UPDATED(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.2
+      )
+      @UPDATED(
+        @FILE           Main.pas
+        @VERSION        1.5
+      )
+      @UPDATED(
+        @FILE           Utils.pas
+        @VERSION        2.1
+      )
+      @UPDATED(
+        @FILE           VerUtils.pas
+        @VERSION        1.2
+      )
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.5
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @COMMENTS       32 bit version info resource moved to main source
+                        + path now 16 bit version has been deleted.
+                        + Changed version file and product version number to
+                          2.4.
+                        + Changed OS to VOS__WINDOWS32 and modified some of
+                          text.
+        @RENAMED_FROM   Rc\ResSrc32.vi
+        @DATE           17/03/2002
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.5
+    @DATE               17/03/2002
+    @COMMENTS           Added facility to drag and drop vi files from explorer
+                        to open them.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Microsoft HC31 help compiler
+    @FILES(
+      @UPDATED(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.3
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.6
+        @RENAMED_FROM   Main.pas
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           17/03/2002
+        @COMMENTS       Changed version file and product version number to 2.5.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.6
+    @DATE               18/03/2002
+    @COMMENTS           Updated appearnce of main window and dialog boxes to
+                        have standard 32 bit windows look and feel. Dialog boxes
+                        were re-written to descend from common classes that
+                        handle positioning and help file handling.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Microsoft HC31 help compiler
+    @FILES(
+      @NEW(
+        @FILE           FmGenericDlg.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           FmGenericOKDlg.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           FmGenericViewDlg.pas
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.4
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.7
+      )
+      @UPDATED(
+        @FILE           FmDropDownList.pas
+        @VERSION        2.0
+        @RENAMED_FROM   EdDropDn.pas
+      )
+      @UPDATED(
+        @FILE           FmIdEd.pas
+        @VERSION        2.0
+        @RENAMED_FROM   EdId.pas
+      )
+      @UPDATED(
+        @FILE           FmNumberEd.pas
+        @VERSION        2.0
+        @RENAMED_FROM   EdNum.pas
+      )
+      @UPDATED(
+        @FILE           FmSetEd.pas
+        @VERSION        2.0
+        @RENAMED_FROM   EdSet.pas
+      )
+      @UPDATED(
+        @FILE           FmStringEd.pas
+        @VERSION        2.0
+        @RENAMED_FROM   EdString.pas
+      )
+      @UPDATED(
+        @FILE           FmUserSetup.pas
+        @VERSION        2.0
+        @RENAMED_FROM   UsrSetup.pas
+      )
+      @UPDATED(
+        @FILE           FmVerNumEd.pas
+        @VERSION        2.0
+        @RENAMED_FROM   EdVerNum.pas
+      )
+      @UPDATED(
+        @FILE           FmViewList.pas
+        @VERSION        2.0
+        @RENAMED_FROM   ViewList.pas
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           18/03/2002
+        @COMMENTS       Changed version file and product version number to 2.6.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.7
+    @DATE               18/03/2002
+    @COMMENTS           + Main window is now animated on minimisation.
+                        + Position, size and state of main window is now saved
+                          in registry between executions.
+                        + User defined settings are now stored in registry.
+                        + About box is now displayed relative to main window.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Microsoft HC31 help compiler
+    @FILES(
+      @UPDATED(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.5
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.8
+      )
+      @UPDATED(
+        @FILE           USettings.pas
+        @VERSION        2.0
+        @RENAMED_FROM   Setup.pas
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           18/03/2002
+        @COMMENTS       Changed version file and product version number to 2.7.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.8
+    @DATE               05/05/2002
+    @COMMENTS           Added ability to export binary resource files by using
+                        an external resource compiler.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 2.8
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.6
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.9
+      )
+      @NEW(
+        @FILE           FmResCompiler.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           FmResCompilerCheck.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           UResCompiler.pas
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           USettings.pas
+        @VERSION        2.1
+      )
+      @UPDATED(
+        @FILE           Utils.pas
+        @VERSION        2.2
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           05/05/2002
+        @COMMENTS       Changed version file and product version number to 2.8.
+      )
+      @UPDATED(
+        @FILE           Help\VInfoExp.hpj
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           Help\VInfoExp.inc
+        @VERSION        2.0
+      )
+      @NEW(
+        @FILE           Help\VInfoExp.map
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           Help\VInfoExp.rtf
+        @DATE           05/05/2002
+        @COMMENTS       Updated existing topics and added new ones re change in
+                        supported export file formats. Also added help topic for
+                        each main menu. Created with Word 97.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.8.1
+    @DATE               06/05/2002
+    @COMMENTS           Made some code improvements:
+                        + Replaced TVersionNumber type with one from
+                          PJVersionInfo unit
+                        + Deleted some redundant code
+                        + Deleted redundant VerTypes unit
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 1.8.1
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @REMOVED          VerTypes.pas
+      @UPDATED(
+        @FILE           VInfoExp.dpr
+        @VERSION        1.7
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.10
+      )
+      @UPDATED(
+        @FILE           FmVerNumEd.pas
+        @VERSION        2.1
+      )
+      @UPDATED(
+        @FILE           VerUtils.pas
+        @VERSION        1.3
+      )
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.6
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           06/05/2002
+        @COMMENTS       + Changed version file and product version number to
+                          2.8.1.
+                        + Added 3rd level version numbers to file and product
+                          version numbers
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.8.2
+    @DATE               06/05/2002
+    @COMMENTS           Revised dialog box that is used to edit file flags. It
+                        now uses a checked list box rather than twin
+                        include/exclude lists.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 2.8.2
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           FmSetEd.pas
+        @VERSION        3.0
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           06/05/2002
+        @COMMENTS       Changed version file and product version number to 2.8.2
+      )
+      @UPDATED(
+        @FILE           Help\VInfoExp.rtf
+        @DATE           06/05/2002
+        @COMMENTS       Updated topic for revised set editor dialog box. Also
+                        noted that files can be opened by dragging from
+                        Explorer.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.9
+    @DATE               17/03/2003
+    @COMMENTS           + Renamed from "Version Info Expert" to "Version
+                          Information Editor" and VInfoExp.* files renamed to
+                          VIEd.* files.
+                        + Added new Help menu option to access delphiDabbler
+                          website.
+                        + Changed to use registry key under
+                          HKLM\Software\DelphiDabbler\VIEd rather than
+                          HKLM\Software\PJSoft\VInfoExp for persistent settings.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 2.9
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           VIEd.dpr
+        @VERSION        1.8
+        @RENAMED_FROM   VInfoExp.dpr
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.11
+      )
+      @UPDATED(
+        @FILE           USettings.pas
+        @VERSION        2.2
+      )
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.7
+      )
+      @UPDATED(
+        @FILE           UHelp.pas
+        @VERSION        3.0
+        @RENAMED_FROM   Help\VInfoExp.inc
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           17/03/2003
+        @COMMENTS       + Updated product and file version numbers to 2.9.
+                        + Modified company name entries to DelphiDabbler.
+                        + Changed original and internal file names from VInfoExp
+                          to VIEd.
+                        + Changed program name from "Version Info Expert" to
+                          "Version Information Editor".
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.map
+        @VERSION        1.1
+        @RENAMED_FROM   Help\VInfoExp.map
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.rtf
+        @DATE           17/03/2003
+        @COMMENTS       + Renamed from VInfoExp.rtf
+                        + Added topic for new Help | Visit DelphiDabbler.com
+                          menu option.
+                        + Changed all references to "expert" to "editor".
+        @RENAMED_FROM   Help\VInfoExp.rtf
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.hpj
+        @VERSION        1.2
+        @RENAMED_FROM   Help\VInfoExp.hpj
+      )
+      @UPDATED(
+        @FILE           FmIdEd.pas
+        @VERSION        2.1
+      )
+      @UPDATED(
+        @FILE           FmNumberEd.pas
+        @VERSION        2.1
+      )
+      @UPDATED(
+        @FILE           FmResCompiler.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           FmResCompilerCheck.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           FmStringEd.pas
+        @VERSION        2.1
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.9.1
+    @DATE               25/08/2003
+    @COMMENTS           Bug fix. Program was ignoring user's request not to be
+                        prompted to enter details of a resource compiler when
+                        the program starts up.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 2.9
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           FmResCompiler.pas
+        @VERSION        1.2
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           25/08/2003
+        @COMMENTS       Updated file and product numbers in version information.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.10
+    @DATE               18/11/2003
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 2.10
+                        + Microsoft Help Workshop 4
+    @COMMENTS           Added new facility to directly compile a .vi file to a
+                        predetermined output folder, details of which are stored
+                        in the .vi file, providing that an external compiler is
+                        configured. This was done by:
+                        + Added a new File|Compile menu option with hot key F9
+                        + Added a new Edit|Compile Output Folder menu option to
+                          enable compiler output folder to be edited.
+                        + Updated help file with details of new features.
+    @FILES(
+      @UPDATED(
+        @FILE           VIEd.dpr
+        @VERSION        1.9
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.12
+      )
+      @NEW(
+        @FILE           FmResOutputDir.pas
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           VInfo.pas
+        @VERSION        1.8
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.map
+        @VERSION        1.2
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.rtf
+        @DATE           18/11/2003
+        @COMMENTS       Added new topics re the new direct compilation
+                        facilities.
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           18/11/2003
+        @COMMENTS       Updated file and product numbers in version information
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.10.1
+    @DATE               04/12/2003
+    @COMMENTS           + Save dialog box now appends default file extension
+                          when none is specified by the user.
+                        + Made default command line for BRCC32 compiler enclose
+                          file parameters in quotes.
+                        + Revised help file to advise users to enclose compiler
+                          file parameters in quotes when specifying resource
+                          compiler.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 2.10
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.13
+      )
+      @UPDATED(
+        @FILE           FmResCompiler.pas
+        @VERSION        1.3
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.rtf
+        @DATE           04/12/2003
+        @COMMENTS       Updated sections re specifying resource compiler details
+                        to advise to enclose file parameters in quotes.
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           04/12/2003
+        @COMMENTS       Updated file and product numbers in version information.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.11
+    @DATE               20/03/2005
+    @COMMENTS           Added facility to call program with -makerc switch and a
+                        .vi file on command line. Program creates .rc file from
+                        it and then terminates without displaying a window. This
+                        was added to enable the program to be used in an
+                        automated build process.
+                        + Added new topic to help file covering command line
+                          options.
+                        + Changed to Mozilla Public License.
+    @COMPILERS          + Borland Delphi 4
+                        + Borland Resource Compiler 5.3
+                        + Version Information Expert 2.10.1
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.14
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.rtf
+        @DATE           20/03/2005
+        @COMMENTS       Added new topic for command line options.
+      )
+      @UPDATED(
+        @FILE           Help\VIEd.hpj
+        @VERSION        1.3
+      )
+      @UPDATED(
+        @FILE           Resource.vi
+        @DATE           20/03/2005
+        @COMMENTS       Updated file and product numbers in version information.
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.11.1
+    @DATE               30/04/2008
+    @COMMENTS           + Added manifest that enables XP and Vista themes and
+                          informs Vista that program can be run with user
+                          privileges.
+                        + Changed to use user's application data folder for
+                          preferences instead of program installation folder.
+                        + Changed text of some dialog boxes.
+                        + Prevented program from writing test files to check if
+                          a drive is available. This code fails in protected
+                          folders on Vista.
+                        + Added one-time message that informs Vista users if
+                          WinHelp is not available.
+                        + Made some string literals localisable.
+                        + Some refactoring and unit renaming.
+                        + Changed installer to display license and to permit
+                          installation on Vista.
+    @COMPILERS          + Borland Delphi 7
+                        + Borland Resource Compiler 5.4
+                        + Version Information Editor 2.11.1
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           VIEd.dpr
+        @VERSION        1.10
+      )
+      @UPDATED(
+        @FILE           FmIdEd.pas
+        @VERSION        2.2
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.15
+      )
+      @UPDATED(
+        @FILE           FmNumberEd.pas
+        @VERSION        2.2
+      )
+      @UPDATED(
+        @FILE           FmStringEd.pas
+        @VERSION        2.2
+      )
+      @NEW(
+        @FILE           Resources.rc
+        @COMMENTS       New resource file containing program icon and manifest.
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           UMsgDlgs.pas
+        @VERSION        1.1
+        @RENAMED_FROM   MsgDlgs.pas
+      )
+      @UPDATED(
+        @FILE           UResCompiler.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           USettings.pas
+        @VERSION        2.3
+      )
+      @UPDATED(
+        @FILE           UUtils.pas
+        @VERSION        2.3
+        @RENAMED_FROM   Utils.pas
+      )
+      @UPDATED(
+        @FILE           UVerUtils.pas
+        @VERSION        1.4
+        @RENAMED_FROM   VerUtils.pas
+      )
+      @UPDATED(
+        @FILE           UVInfo.pas
+        @VERSION        1.9
+        @RENAMED_FROM   VInfo.pas
+      )
+      @UPDATED(
+        @FILE           Version.vi
+        @DATE           20/04/2008
+        @COMMENTS       + Updated file and product number to v2.11.1.
+                        + Updated comment string to refer to new license.
+                        + Deleted web address from company name.
+                        + Deleted path to binary file.
+                        + Added MPL to file.
+        @RENAMED_FROM   Resource.vi
+      )
+      @UPDATED(
+        @FILE           Assets\VIEd.ico
+        @DATE           25/05/1998
+        @COMMENTS       Moved and renamed unchanged.
+        @RENAMED_FROM   Icons\VInfoExp.ico
+      )
+      @NEW(
+        @FILE           Assets\VIEd.manifest
+        @VERSION        1.0
+      )
+    )
+  )
+  @REVISION(
+    @VERSION            2.11.2
+    @DATE               16/06/2008
+    @COMMENTS           + Changed to make application minimisation, task bar
+                          preview window, and appearance in "Flip 3D" task
+                          switching display correctly on Windows Vista. This
+                          required an update to DelphiDabbler About Box
+                          Component v3.4.
+                        + Provided work-around for Delphi's Alt key bug on XP
+                          and Vista (CodeGear Quality Central bug report
+                          #374030).
+    @COMPILERS          + Borland Delphi 7
+                        + Borland Resource Compiler 5.4
+                        + Version Information Editor 2.11.1
+                        + Microsoft Help Workshop 4
+    @FILES(
+      @UPDATED(
+        @FILE           VIEd.dpr
+        @VERSION        1.11
+      )
+      @UPDATED(
+        @FILE           FmGenericDlg.pas
+        @VERSION        1.1
+      )
+      @UPDATED(
+        @FILE           FmMain.pas
+        @VERSION        1.16
+      )
+      @NEW(
+        @FILE           UAltBugFix.pas
+        @VERSION        1.0
+      )
+      @NEW(
+        @FILE           UDlgParent.pas
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           UMsgDlgs.pas
+        @VERSION        1.2
+      )
+      @NEW(
+        @FILE           UOSInfo.pas
+        @VERSION        1.0
+      )
+      @UPDATED(
+        @FILE           Version.vi
+        @DATE           16/06/2008
+        @COMMENTS       Updated file and product number to v2.11.2.
+      )
+    )
+  )
+)

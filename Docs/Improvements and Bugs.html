@@ -1,0 +1,274 @@
+<html>
+<head>
+<title>Version Information Expert - Improvements and Bugs</title>
+<style type="text/css">
+<!--
+body {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt; background-color: #FFFFFF}
+h1 {  font-size: 14pt; font-weight: bold; color: #000099}
+h2 {  font-size: 12pt; font-weight: bold; color: #000099}
+h3 {  font-size: 10pt; font-weight: bold; color: #000099}
+-->
+</style></head>
+
+<body bgcolor="#FFFFFF">
+<h1>Version Information Expert</h1>
+<h2>Bugs and Improvements</h2>
+<hr noshade>
+<p>This documents list all reported bugs for Version Information Expert, along 
+  suggestions for future improvements and updates. All implemented improvements 
+  and bugs fixed are also listed. </p>
+<p>The main sections are:</p>
+<ul>
+  <li><a href="#Bugs">Bug Reports</a></li>
+  <li><a href="#Updates">Update Suggestions</a></li>
+</ul>
+<hr noshade>
+<h1><a name="Bugs"></a>Bug Reports</h1>
+<ul>
+  <li><em>None outstanding.</em></li>
+</ul>
+<h2>Bug Fixes </h2>
+<ul>
+  <li>32bit version of program is treating ProductVersion resource string as not 
+    being permitted whenever supplied and, quite rightly, treating it as a required 
+    string when not present! 
+    <ul>
+      <li>Fixed v2.1<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Indentation in comments is being lost when a VI file is re-loaded. 
+    <ul>
+      <li>Fixed v2.2 <br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Indentation of comments is being increased by one additional space.
+    <ul>
+      <li>Fixed v2.3<br>
+	    <br>
+      </li>
+    </ul>
+  </li>
+  <li>When no resource compiler has been specified the program always prompts
+    the user to enter details at start-up, regardless of whether user has
+	checked the box requesting that the prompt not be shown 
+    <ul>
+      <li>Fixed v2.9.1<br><br>
+	  </li>
+	</ul>
+  </li>
+  <li>If no file extension is specified when saving .vi files the program does
+    not append one -- this is non-standard behaviour.
+    <ul>
+      <li>Fixed v2.10.1<br><br></li>
+    </ul>
+  </li>
+  <li>The BRCC32 compiler was failing when passed file names containing spaces.
+    <ul>
+      <li>Fixed v2.10.1 by (a) making the default parameter string for BRCC32 
+        wrap the command line parameters in quotes and (b) adding a note to the
+        help file noting that users should do the same when manually adding
+        command lines</li>
+    </ul>
+  </li> 
+</ul>
+<hr noshade>
+<h1><a name="Updates"></a>Update Suggestions</h1>
+<ul>
+  <li>Allow program to read in resource info from an existing executable - use 
+    TPJVersionInfo component - this provides nice way to update info when writing 
+    a new version of program.<br>
+    <br>
+  </li>
+  <li>Allow version information to come from existing resource binary (*.res) 
+    file.<br>
+    <br>
+  </li>
+  <li>Allow version information to come from existing resource source (*.rc) file 
+    or from version information resource statement pasted into application -- 
+    difficult.<br>
+    <br>
+  </li>
+  <li>Give option for more than one preferred default settings for new vi file.<br>
+    <br>
+  </li>
+  <li>Allow user to delete the preferences (restore defaults).<br>
+    <br>
+  </li>
+  <li>Allow an item to be "deleted" when it is highlighted and Del key is pressed 
+    (and add Edit | Delete menu option to do same. What "delete" means must depend 
+    on context - fixed file info items could be zeroed, strings cleared, language 
+    and char-set reset to defaults (preferences?). <br>
+    <br>
+  </li>
+  <li>Allow user to configure how file version and product version numbers are 
+    displayed. (eg: Number, Upper Case Letter, Lower Case Letter).<br>
+    <br>
+  </li>
+  <li>Provide menu option to allow file and product version number to be incremented 
+    (need dialogue to say whether file and/or product info should be updated, 
+    need to specify which of 4 major/minor version numbers to update, need to 
+    say whether to increment by 1 or to some given value. Need to be able to record 
+    prefered options.<br>
+    <br>
+  </li>
+  <li>Make the comments editor dialog box resizeable (with persistent size).<br>
+    <br>
+  </li>
+  <li>Make comments editor dialog box display a grey vertical line at 80 char 
+    margin so user knows when to wrap round comments so they display in Delphi 
+    editor OK.<br>
+    <br>
+  </li>
+  <li>Descend the two sorts of string editor dialogs from a common root class 
+    rather than switching states using properties of single class.<br>
+    <br>
+  </li>
+  <li>Move some of dlg box &quot;construct, use, destruct&quot; code that is in 
+    main form into class procedures and functions of the dialog box classes.<br>
+    <br>
+  </li>
+  <li>Add Contents dialog to help system.</li>
+</ul>
+<h2>Implemented</h2>
+<ul>
+  <li>Make Open and Save As dialog boxes use any directory passed as first parameter 
+    to program as their default directories the first time they are used. Also 
+    make them remember the last directory specified by user. 
+    <ul>
+      <li>Implemented v1.1<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Make program compile on 16 and 32 bit Delphi. 
+    <ul>
+      <li>Implemented v2.0<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Make so that comments for rc and vi files can exceed 255 chars and resource 
+    string editor has 128 character limit. 
+    <ul>
+      <li>Implemented v2.2<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Change edit dialog for comments to have a larger editing areas and to display 
+    text in a mono-spaced font. 
+    <ul>
+      <li>Implemented v2.3<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Make 32 bit program default to VOS__WINDOWS32 for new resources by default. 
+    <ul>
+      <li>Implemented v2.4<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Make program compile using Delphi 4 ready for release 
+    <ul>
+      <li>Implemented v2.4</li>
+      <li>Removed 16 bit compatibility</li>
+      <li>Replaced tabbed list box with standard list box<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Provide a method to drag vi (and exe, dll, rc) files from explorer and drop 
+    on main window to open. 
+    <ul>
+      <li>Implemented v2.5<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Make user interface have &quot;look and feel&quot; of a 32 bit program - 
+    this is mainly down to button sizes and dialog box font. 
+    <ul>
+      <li>Implemented v2.6<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Allow window to save its state, size and position and restore it when reloaded. 
+    <ul>
+      <li>Implemented v2.7<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Make user setup information get stored in registry rather than ini file 
+    -- the ini file will then be used only to store preferred default settings. 
+    <ul>
+      <li>Implemented v2.7<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Add option to detect (or be told about) a resource compiler and to provide 
+    option to compile the auto-generated resource file (with further option of 
+    deleting the intermediate .rc file). [ultimately we need to add ability to 
+    output a .res file without needing a resource compiler]. 
+    <ul>
+      <li>Implemented v2.8<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Add copyright message to help file. 
+    <ul>
+      <li>Implemented v2.8<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Provide a 32 bit version of the help file. 
+    <ul>
+      <li>Implemented v2.8 (compiled help file with Help Workshop 4).<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Remove TVersionNumber type from VerTypes unit - and replace usage with TPJVersionNumber 
+    from version info component unit. Then need to check where exception class 
+    defined in VerTypes is used and see if can be eliminated. Then VerTypes unit 
+    can be removed. 
+    <ul>
+      <li>Implemented v2.8.1<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li>Implement drag and drop in set editor dialog or replace it with a check 
+    list box control. </li>
+  <ul>
+    <li>Implemented v2.8.2 (using check list control).<br>
+      <br>
+    </li>
+  </ul>
+  <li>Add topic to help file to deal with fact that files can now be opened by 
+    dragging and dropping. 
+    <ul>
+      <li>Implemented v2.8.2<br /><br /></li>
+    </ul>
+  </li>
+  <li>Add topic to help file to refer to fact that start-up directory can be over-ridden 
+    by command line parameter (see project 1.1 above where new facility was added 
+    but not documented in help).
+    <ul>
+      <li>Implemented v2.11</li>
+    </ul>
+  </li>
+</ul>
+<hr noshade>
+</body>
+</html>

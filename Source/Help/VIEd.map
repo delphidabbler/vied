@@ -1,0 +1,155 @@
+//## @FILE                        VInfoExp.map
+//## @COMMENTS                    Maps help topic IDs to constants.
+//## @PROJECT_NAME                Version Information Expert
+//## @PROJECT_DESC                Program that allows creation of resource
+//##                              source files containining version information
+//##                              resources.
+//## @DEPENDENCIES                None.
+//## @OTHER_NAMES                 Renamed from VInfoExp.map to VIEd.map as of
+//##                              v1.1.
+//## @HISTORY(
+//##   @REVISION(
+//##     @VERSION                 1.0
+//##     @DATE                    05/05/2002
+//##     @COMMENTS                Original version.
+//##   )
+//##   @REVISION(
+//##     @VERSION                 1.1
+//##     @DATE                    17/03/2003
+//##     @COMMENTS                + Renamed from VInfoExp.map to VIEd.map.
+//##                              + Added new HELP_MENU_WEBSITE topic id.
+//##   )
+//##   @REVISION(
+//##     @VERSION                 1.2
+//##     @DATE                    18/11/2003
+//##     @COMMENTS                Added new topics relating to new File|Compile
+//##                              menu option and related changes.
+//##   )
+//## )
+
+
+//** ***** BEGIN LICENSE BLOCK *****
+//** 
+//** Version: MPL 1.1
+//** 
+//** The contents of this file are subject to the Mozilla Public License Version
+//** 1.1 (the "License"); you may not use this file except in compliance with
+//** the License. You may obtain a copy of the License at
+//** http://www.mozilla.org/MPL/
+//** 
+//** Software distributed under the License is distributed on an "AS IS" basis,
+//** WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+//** for the specific language governing rights and limitations under the
+//** License.
+//** 
+//** The Original Code is VIEd.map.
+//** 
+//** The Initial Developer of the Original Code is Peter Johnson
+//** (http://www.delphidabbler.com/).
+//** 
+//** Portions created by the Initial Developer are Copyright (C) 1998-2005 Peter
+//** Johnson. All Rights Reserved.
+//** 
+//** Contributor(s):
+//** 
+//** ***** END LICENSE BLOCK *****
+
+// Used in Version Info Expert to release v1.6
+HELP_START                     = 1;
+HELP_WHATITDOES                = 2;
+HELP_HOWTOUSEIT                = 3;
+HELP_HOWDOI                    = 4;
+HELP_HOWTO_EDITIDENTIFIER      = 5;
+HELP_HOWTO_EDITCOMMENTS        = 6;
+HELP_HOWTO_EDITFILE            = 7;
+HELP_HOWTO_VALIDATE            = 8;
+HELP_HOWTO_ANALYSE             = 9;
+HELP_HOWTO_PREVIEW             = 10;
+HELP_HOWTO_CUSTOMISEDISPLAY    = 11;
+HELP_HOWTO_CREATEFILE          = 12;
+HELP_HOWTO_SAVEFILE            = 13;
+HELP_HOWTO_EXPORTFILE          = 14;
+HELP_HOWTO_SAVEPREFERENCES     = 15;
+HELP_HOWTO_OPENFILE            = 16;
+HELP_HOWTO_COPYTOCLIPBOARD     = 17;
+HELP_HOWTO_SELECTITEM          = 18;
+HELP_HOWTO_EDITITEM            = 19;
+HELP_DEF_ITEMS                 = 20;
+HELP_DEF_TITLES                = 21;
+HELP_DEF_PREFERENCES           = 22;
+HELP_DEF_VALIDATION            = 23;
+HELP_DEF_RESOURCEFILES         = 24;
+HELP_DEF_VERSIONINFOSTATEMENT  = 25;
+HELP_DEF_VERSIONINFOFILE       = 26;
+HELP_DEF_COMMENTS              = 27;
+HELP_DEF_IDENTIFIER            = 28;
+HELP_DEF_FIELDS                = 29;
+HELP_DEF_FIELDSLIST            = 30;
+HELP_MENU                      = 31;
+HELP_MENU_FILENEW              = 32;
+HELP_MENU_FILEOPEN             = 33;
+HELP_MENU_FILESAVE             = 34;
+HELP_MENU_FILESAVEAS           = 35;
+HELP_MENU_FILEPREFERENCES      = 36;
+HELP_MENU_FILEVIEWRC           = 37;
+HELP_MENU_FILEEXIT             = 38;
+HELP_MENU_EDITCURRENT          = 39;
+HELP_MENU_EDITIDENTIFIER       = 40;
+HELP_MENU_EDITRCCOMMENTS       = 41;
+HELP_MENU_EDITVICOMMENTS       = 42;
+HELP_MENU_EDITANALYSE          = 43;
+HELP_MENU_EDITCOPY             = 44;
+HELP_MENU_OPTIONSVALIDATION    = 45;
+HELP_MENU_OPTIONSDESCRIBE      = 46;
+HELP_MENU_OPTIONSSETUP         = 47;
+HELP_MENU_HELPCONTENTS         = 48;
+HELP_MENU_HELPOVERVIEW         = 49;
+HELP_MENU_HELPABOUT            = 50;
+HELP_DLG_SAVEAS                = 51;
+HELP_DLG_OPEN                  = 52;
+HELP_DLG_VIEWRC                = 53;
+HELP_DLG_EDITVNUMBER           = 54;
+HELP_DLG_EDITNUMBER            = 55;
+HELP_DLG_EDITCONSTANT          = 56;
+HELP_DLG_EDITBITSET            = 57;
+HELP_DLG_EDITSTRING            = 58;
+HELP_DLG_EDITIDENTIFIER        = 59;
+HELP_DLG_EDITCOMMENTS          = 60;
+HELP_DLG_ANALYSIS              = 61;
+HELP_DLG_SETUP                 = 62;
+HELP_DLG_ABOUT                 = 63;
+HELP_MSGDLG_FILECHANGED        = 64;
+HELP_MSGDLG_STRINGREQUIRED     = 65;
+HELP_MSGDLG_NOTEXTALLOWED      = 66;
+HELP_MSGDLG_OVERWRITEFILE      = 67;
+HELP_MSGDLG_BADEXTENSION       = 68;
+HELP_MSGDLG_NOITEMTOEDIT       = 69;
+HELP_MSGDLG_CANTEDITTITLE      = 70;
+HELP_MSGDLG_CANTEDITSUBTYPE    = 71;
+HELP_MSGDLG_BADNUMBER          = 72;
+HELP_MSGDLG_FILEFLAGREQUIRED   = 73;
+HELP_MSGDLG_BADFIELD           = 74;
+HELP_MSGDLG_BADIDENTIFIER      = 75;
+HELP_MSGDLG_FILEACCESSERROR    = 76;
+HELP_MSGDLG_NOANALYSISERRORS   = 77;
+HELP_OVERVIEW                  = 78;
+// Added in Version Info Expert 2.7
+HELP_HOWTO_REGCOMPILER        = 101;
+HELP_MENU_FILEEXPORT          = 102;
+HELP_MENU_OPTIONSRESCOMP      = 103;
+HELP_DLG_EXPORT               = 104;
+HELP_DLG_RESCOMP              = 105;
+HELP_DLG_CHECKRESCOMP         = 106;
+HELP_DLG_BROWSERESCOMP        = 107;
+HELP_MENU_FILE                = 108;
+HELP_MENU_EDIT                = 109;
+HELP_MENU_OPTIONS             = 110;
+HELP_MENU_HELP                = 111;
+// Added in Version Info Editor 2.9
+HELP_MENU_WEBSITE             = 112;
+// Added in Version Info Editor 2.10
+HELP_DLG_COMPILERFOLDER       = 113;
+HELP_DLG_COMPILEFILE          = 114;
+HELP_MENU_FILECOMPILE         = 115;
+HELP_MENU_EDITCOMPILEFOLDER   = 116;
+HELP_HOWTO_COMPILEFILE        = 117;
