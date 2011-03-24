@@ -9,7 +9,8 @@
  * Based on a sample manifest in "Windows Vista User Account Control (UAC) and
  * Delphi" by Fredrik Haglund, CodeGear and content of Delphi 7's WindowsXP.res.
  *
- * v1.0 of 16 Apr 2008  - Original version.
+ * $Rev$
+ * $Date$
 -->
 
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
