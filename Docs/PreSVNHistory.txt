@@ -1,0 +1,946 @@
+================================================================================
+
+VIEd: Historical update information from v1.0 to Release 2.11.2
+
+================================================================================
+
+This file records known changes to files in VIEd from v1.0 to v2.11.2 before the project was placed under version control with Subversion.
+
+There are two sections:
+
+  1: Releases: Lists all the releases of VIEd and notes which files were added,
+     updated or deleted in each release.
+
+  2: Files: Lists all source code and development tools for which history is
+     available and provides details of changes to these files.
+
+================================================================================
+2: RELEASES
+================================================================================
+
+For details of changes made at each release see the change log.
+
+v1.0 of 25 May 1998
+--------------------------------------------------------------------------------
+New    : VInfoExp.dpr v1.0
+New    : Main.pas v1.0
+New    : EdDropDn.pas v1.0
+New    : EdID.pas v1.0
+New    : EdNum.pas v1.0
+New    : EdSet.pas v1.0
+New    : EdString.pas v1.0
+New    : EdVerNum.pas v1.0
+New    : MsgDlgs.pas v1.0
+New    : Setup.pas v1.0
+New    : UsrSetup.pas v1.0
+New    : Utils.pas v1.0
+New    : VerTypes.pas v1.0
+New    : VerUtils.pas v1.0
+New    : ViewList.pas v1.0
+New    : VInfo.pas v1.0
+New    : Resource.vi of 25 Jun 1998
+New    : Help\VInfoExp.hpj v1.0
+New    : Help\VInfoExp.inc v1.0
+New    : Help\VInfoExp.rtf of 25 May 1998
+New    : Icons\VInfoExp.ico of 25 May 1998
+
+v1.1 of 07 Jul 1998
+--------------------------------------------------------------------------------
+Updated: Main.pas v1.1
+Updated: Resource.vi of 07 Jul 1998
+
+v2.0 of 13 Apr 1999
+--------------------------------------------------------------------------------
+Updated: VInfoExp.dpr v1.1
+Updated: Main.pas v1.2
+Updated: EdDropDn.pas v1.1
+Updated: EdID.pas v1.1
+Updated: EdNum.pas v1.1
+Updated: EdSet.pas v1.1
+Updated: EdString.pas v1.1
+Updated: EdVerNum.pas v1.1
+Updated: UsrSetup.pas v1.1
+Updated: Utils.pas v2.0
+Updated: VerUtils.pas v1.1
+Updated: ViewList.pas v1.1
+Updated: VInfo.pas v1.1
+New    : 32bit\WinVer.inc v1.0
+Updated: Rc\ResSrc16.vi of 13 Apr 1999 renamed from Resource.vi
+New    : Rc\ResSrc32.vi of 13 Apr 1999
+
+v2.1 of 15 Apr 1999
+--------------------------------------------------------------------------------
+Updated: VInfo.pas v1.2
+Updated: Rc\ResSrc16.vi of 15 Apr 1999
+Updated: Rc\ResSrc32.vi of 15 Apr 1999
+
+v2.2 of 24 Apr 1999
+--------------------------------------------------------------------------------
+Updated: Main.pas v1.3
+Updated: EdString.pas v1.2
+Updated: VInfo.pas v1.3
+Updated: Rc\ResSrc16.vi of 24 Apr 1999
+Updated: Rc\ResSrc32.vi of 24 Apr 1999
+
+v2.3 of 24 Apr 1999
+--------------------------------------------------------------------------------
+Updated: Main.pas v1.4
+Updated: EdString.pas v1.3
+Updated: VInfo.pas v1.4
+Updated: Rc\ResSrc16.vi of 25 Apr 1999
+Updated: Rc\ResSrc32.vi of 25 Apr 1999
+
+v2.4 of 17 Mar 2002
+--------------------------------------------------------------------------------
+Removed: Rc\ResSrc16.vi
+Removed: 32bit\WinVer.inc
+Updated: VInfoExp.dpr v1.2
+Updated: Main.pas v1.5
+Updated: Utils.pas v2.1
+Updated: VerUtils.pas v1.2
+Updated: VInfo.pas v1.5
+Updated: Resource.vi of 17 Mar 2002 renamed from Rc\ResSrc32.vi
+
+v2.5 of 17 Mar 2002
+--------------------------------------------------------------------------------
+Updated: VInfoExp.dpr v1.3
+Updated: FmMain.pas v1.6 renamed from Main.pas
+Updated: Resource.vi of 17 Mar 2002
+
+v2.6 of 18 Mar 2002
+--------------------------------------------------------------------------------
+New    : FmGenericDlg.pas v1.0
+New    : FmGenericOKDlg.pas v1.0
+New    : FmGenericViewDlg.pas v1.0
+Updated: VInfoExp.dpr v1.4
+Updated: FmMain.pas v1.7
+Updated: FmDropDownList.pas v2.0 renamed from EdDropDn.pas
+Updated: FmIdEd.pas v2.0 renamed from EdId.pas
+Updated: FmNumberEd.pas v2.0 renamed from EdNum.pas
+Updated: FmSetEd.pas v2.0 renamed from EdSet.pas
+Updated: FmStringEd.pas v2.0 renamed from EdString.pas
+Updated: FmUserSetup.pas v2.0 renamed from UsrSetup.pas
+Updated: FmVerNumEd.pas v2.0 renamed from EdVerNum.pas
+Updated: FmViewList.pas v2.0 renamed from ViewList.pas
+Updated: Resource.vi of 18 Mar 2002
+
+v2.7 of 18 Mar 2002
+--------------------------------------------------------------------------------
+Updated: VInfoExp.dpr v1.5
+Updated: FmMain.pas v1.8
+Updated: USettings.pas v2.0 renamed from Setup.pas
+Updated: Resource.vi of 18 Mar 2002
+
+v2.8 of 05 May 2002
+--------------------------------------------------------------------------------
+Updated: VInfoExp.dpr v1.6
+Updated: FmMain.pas v1.9
+New    : FmResCompiler.pas v1.0
+New    : FmResCompilerCheck.pas v1.0
+New    : UResCompiler.pas v1.0
+Updated: USettings.pas v2.1
+Updated: Utils.pas v2.2
+Updated: Resource.vi of 05 May 2002
+Updated: Help\VInfoExp.hpj v1.1
+Updated: Help\VInfoExp.inc v2.0
+New    : Help\VInfoExp.map v1.0
+Updated: Help\VInfoExp.rtf of 05 May 2002
+
+v2.8.1 of 06 May 2002
+--------------------------------------------------------------------------------
+Removed: VerTypes.pas
+Updated: VInfoExp.dpr v1.7
+Updated: FmMain.pas v1.10
+Updated: FmVerNumEd.pas v2.1
+Updated: VerUtils.pas v1.3
+Updated: VInfo.pas v1.6
+Updated: Resource.vi of 06 May 2002
+
+v2.8.2 of 06 May 2002
+--------------------------------------------------------------------------------
+Updated: FmSetEd.pas v3.0
+Updated: Resource.vi of 06 May 2002
+Updated: Help\VInfoExp.rtf of 06 May 2002
+
+v2.9 of 17 Mar 2003
+--------------------------------------------------------------------------------
+Updated: VIEd.dpr v1.8 renamed from VInfoExp.dpr
+Updated: FmMain.pas v1.11
+Updated: USettings.pas v2.2
+Updated: VInfo.pas v1.7
+Updated: UHelp.pas v3.0 renamed from Help\VInfoExp.inc
+Updated: Resource.vi of 17 Mar 2003
+Updated: Help\VIEd.map v1.1 renamed from Help\VInfoExp.map
+Updated: Help\VIEd.rtf of 17 Mar 2003 renamed from Help\VInfoExp.rtf
+Updated: Help\VIEd.hpj v1.2 renamed from Help\VInfoExp.hpj
+Updated: FmIdEd.pas v2.1
+Updated: FmNumberEd.pas v2.1
+Updated: FmResCompiler.pas v1.1
+Updated: FmResCompilerCheck.pas v1.1
+Updated: FmStringEd.pas v2.1
+
+v2.9.1 of 25 Aug 2003
+--------------------------------------------------------------------------------
+Updated: FmResCompiler.pas v1.2
+Updated: Resource.vi of 25 Aug 2003
+
+v2.10 of 18 Nov 2003
+--------------------------------------------------------------------------------
+Updated: VIEd.dpr v1.9
+Updated: FmMain.pas v1.12
+Nwe    : FmResOutputDir.pas v1.0
+Updated: VInfo.pas v1.8
+Updated: Help\VIEd.map v1.2
+Updated: Help\VIEd.rtf of 18 Nov 2003
+Updated: Resource.vi of 18 Nov 2003
+
+v2.10.1 of 04 Dec 2003
+--------------------------------------------------------------------------------
+Updated: FmMain.pas v1.13
+Updated: FmResCompiler.pas v1.3
+Updated: Help\VIEd.rtf of 04 Dec 2003
+Updated: Resource.vi of 04 Dec 2003
+
+v2.11 of 20 Mar 2005
+--------------------------------------------------------------------------------
+Updated: FmMain.pas v1.14
+Updated: Help\VIEd.rtf of 20 Mar 2005
+Updated: Help\VIEd.hpj v1.3
+Updated: Resource.vi of 20 Mar 2005
+
+v2.11.1 of 30 Apr 2008
+--------------------------------------------------------------------------------
+Updated: VIEd.dpr v1.10
+Updated: FmIdEd.pas v2.2
+Updated: FmMain.pas v1.15
+Updated: FmNumberEd.pas v2.2
+Updated: FmStringEd.pas v2.2
+New    : Resources.rc v1.0
+Updated: UMsgDlgs.pas v1.1 renamed from MsgDlgs.pas
+Updated: UResCompiler.pas v1.1
+Updated: USettings.pas v2.3
+Updated: UUtils.pas v2.3 renamed from Utils.pas
+Updated: UVerUtils.pas v1.4 renamed from VerUtils.pas
+Updated: UVInfo.pas v1.9 renamed from VInfo.pas
+Updated: Version.vi of 20 Apr 2008 renamed from Resource.vi
+Renamed: Assets\VIEd.ico of 25 May 1998 from Icons\VInfoExp.ico
+New    : Assets\VIEd.manifest v1.0
+
+v2.11.2 of 16 Jun 2008
+--------------------------------------------------------------------------------
+Updated: VIEd.dpr v1.11
+Updated: FmGenericDlg.pas v1.1
+Updated: FmMain.pas v1.16
+New    : UAltBugFix.pas v1.0
+New    : UDlgParent.pas v1.0
+Updated: UMsgDlgs.pas v1.2
+New    : UOSInfo.pas v1.0
+Updated: Version.vi of 16 Jun 2008
+
+
+================================================================================
+2: FILES
+================================================================================
+
+--------------------------------------------------------------------------------
+DevTools\BuildResources.bat
+--------------------------------------------------------------------------------
+v1.0 of 29 Apr 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+DevTools\ReleaseExe.bat
+--------------------------------------------------------------------------------
+v1.0 of 30 Apr 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+DevTools\ReleaseSrc.bat
+--------------------------------------------------------------------------------
+v1.0 of 30 Apr 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+DevTools\Tidy.bat
+--------------------------------------------------------------------------------
+v1.0 of 16 Apr 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmDropDownListEd.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named EdDropDn.pas
+v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form.
+                     - Removed code from form creation event that turns glyphs
+                       off because this was incompatible with Delphi 2.
+v2.0 of 18 Mar 2002  - Renamed as FmDropDownListEd.pas
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided
+                       in base class. This change also meant that button style
+                       and font face now conformed to Window 95+ standards.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmGenericDlg.pas
+--------------------------------------------------------------------------------
+v1.0 of 18 Mar 2002  - Original version.
+v1.1 of 16 Jun 2008  - Added code to set dialog box's parent. This change
+                       needed for app to work correctly with Vista task bar.
+                     - Registered form with object that fixes Delphi's Alt
+                       key bug.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmGenericOKDlg.pas
+--------------------------------------------------------------------------------
+v1.0 of 18 Mar 2002  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmGenericViewDlg.pas
+--------------------------------------------------------------------------------
+v1.0 of 18 Mar 2002  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmIdEd.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named EdID.pas.
+v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
+                        form creation event that turns glyphs off. This was
+                        incompatible with Delphi 2.
+v2.0 of 18 Mar 2002  - Renamed as FmIdEd.pas
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided 
+                       in base class. This change also meant that button style
+                       and font face now conformed to Window 95+ standards.
+v2.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
+                       file with reference to UHelp unit.
+v2.2 of 20 Apr 2008  - Changed to use renamed UMsgDlgs unit.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmMain.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version, named Main.pas.
+v1.1 of 07 Jul 1998  - The Open and Save As dialogs now select the path used
+                       when the dialog box was last opened. If the program is
+                       started with a command line parameter the path of the
+                       parameter is used when the dialogs are first displayed.
+v1.2 of 13 Apr 1999  - Made inclusion of Delphi 1's Ver unit conditional on
+                       Windows version.
+v1.3 of 24 Apr 1999  - Made changes to work with revised string editor dialog
+                       box that is used both for editing comments and resource
+                       strings:
+                       - Sets up comments editor so it has no maximum string
+                         length and performs no word-wrapping.
+                       - Sets up resource string editor it continues to wrap
+                         text and has a new 128 character limit on string
+                         lengths.
+v1.4 of 25 Apr 1999  - Made changes to work with further new features in
+                       string editor dialog box that is used both for editing
+                       comments and resource strings:
+                       - Comments editor now gets a larger editing area and
+                         displays comments in mono-spaced font.
+                       - Resource string editor continues to use main window
+                         font and a smaller editing area.
+v1.5 of 17 Mar 2002  - Updated to enable compilation with Delphi 4 as 32 bit
+                       only program.
+                       - Removed tabbed list box - component no longer
+                         available. Replaced with conventional list box with
+                         TabWidth property used to store single tab stop
+                         required.
+                       - Replaced version info component with newer (v3.0)
+                         version and changed unit name from VerInfo to
+                         PJVersionInfo.
+                       - Replaced about box component with newer (v3.2) version
+                         and changed unit name from AboutBox to PJAbout.
+                       - Removed all conditional compilation directives and 16 
+                         bit-only code.
+v1.6 of 17 Mar 2002  - Renamed as FmMain.pas
+                     - Added facility to open files by dropping them onto main
+                       window.
+                     - Renamed unit from Main.pas to FmMain.pas.
+v1.7 of 18 Mar 2002  - Changed uses clause to use renamed dialog box units.
+                     - Modified header height and font to conform to 32 bit
+                       Windows standards.
+                     - Added extra try..finally blocks to some methods that
+                       create and free objects.
+v1.8 of 18 Mar 2002  - Added component to animate window minimising.
+                     - Added component to store / restore window state using
+                       registry.
+                     - Revised code that stores user options to use new settings 
+                       object that uses registry instead of old ini file based
+                       object.
+                     - Made about box appear offset over main not at screen
+                       centre.
+v1.9 of 05 May 2002  - Added support for exporting binary resource files in
+                       addition to source files. In particular:
+                       - Added new File | Export menu option for export to
+                         either rc or res files.
+                       - Removed export facility from File | Save As menu
+                         option.
+                       - Added new menu option to enable user to configure
+                         external resource compiler used to actually create
+                         the binary .res files.
+                       - Added start-up check for a configured external compiler
+                         which trigeers prompt to provide details if no compiler
+                         is registered.
+                     - Also added new help constants for revised help file
+                       (including help topics for each main menu item).
+v1.10 of 06 May 2002 - Now uses TPJVersionNumber type in place of TVersionNumber
+                       from old VerTypes unit.
+                     - Removed usage of VerTypes unit.
+v1.11 of 17 Mar 2003 - Added new Help menu option and code to visit
+                       DelphiDabbler.com website.
+                     - Replaced reference to VInfoExp.inc help topic include
+                       file with reference to UHelp unit.
+v1.12 of 18 Nov 2003 - Added new File|Compile menu option to directly compile
+                       the current document file using the external compiler.
+                     - Added Ctrl+E shortcut to File|Export menu option.
+                     - Added Edit|Compile Output Folder menu option to dispay a
+                       dialog that lets user enter default folder to be used by
+                       the File |Compile menu option
+                     - Moved local resource string declarations from methods
+                       into global resource string list.
+v1.13 of 04 Dec 2003 - Altered File | Save As code so that a .vi extension is 
+                       appended to any file name where the user has provided no
+                       extension.
+v1.14 of 20 Mar 2005 - Added facility to call program with -makerc switch and a 
+                       .vi file on command line. Program creates .rc file from
+                       it and then terminates without displaying a window.
+v1.15 of 30 Apr 2008 - About box now aligns itself over main form rather than
+                       being explictly aligned. This uses a feature of about 
+                       box component v3.3.1.
+                     - Changed to write preferences to Preferences.ini in user 
+                       application data folder rather to VIEd.ini in program's
+                       folder.
+                     - Removed code that checks a drive by writing test file:
+                       can't write test file to C:\ on Vista.
+                     - Changed some file error messages to display dialog when
+                       no file name is provided.
+                     - Changed to use renamed UMsgDlgs, UUtils, UVerUtils and
+                       UVInfo units.
+                     - Capitalised various menu options.
+                     - Added code to detect Vista and WinHelp, putting up a
+                       one-time message if WinHelp not available.
+v1.16 of 16 Jun 2008 - Modified to change task bar handling. Main form window is
+                       now used by task bar instead of Application object's 
+                       hidden window. This change was required for compatibility
+                       with Vista.
+                     - Now uses v3.4 of About Box Component to enable about
+                       box to work correctly with main form and task bar.
+                     - Removed code that checks for Vista OS to new UOSInfo
+                       unit.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmNumberEd.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named EdNum.pas.
+v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
+                       form creation event that turns glyphs off. This was
+                       incompatible with Delphi 2.
+v2.0 of 18 May 2000  - Renamed as FmNumberEd.pas.
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided 
+                       in base class. This change also meant that button style 
+                       and font face now conformed to Windows 95+ standards.
+                     - Removed call to utility function HexToInt since SysUtils 
+                       StrToInt function handles hex.
+v2.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
+                       file with reference to UHelp unit.
+v2.2 of 20 Apr 2008  - Changed to use renamed UMsgDlgs unit.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmResCompiler.pas
+--------------------------------------------------------------------------------
+v1.0 of 05 May 2002  - Original version.
+v1.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
+                       file with reference to UHelp unit.
+v1.2 of 25 Aug 2003  - Fixed bug that was always switching on start-up complier
+                       check even when user specified otherwise. (While the
+                       option to switch off the check is in a descendant dialog
+                       box, some of code in this unit was reversing that choice.
+                       We now only restore the start up checking if the user has 
+                       deleted an existing resource compiler reference.)
+v1.3 of 04 Dec 2003  - The default command line suggested when the user
+                       specifies BRCC32 as the resource compiler now wraps the
+                       <BIN> and <SRC> placeholders in quotes in case there are
+                       spaces in the file names used.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmResCompilerCheck.pas
+--------------------------------------------------------------------------------
+v1.0 of 05 May 2002  - Original version.
+v1.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
+                       file with reference to UHelp unit.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmResOutputDir.pas
+--------------------------------------------------------------------------------
+v1.0 of 18 Nov 2003  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmSetEd.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named EdSet.pas
+v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
+                       form creation event that turns glyphs off. This was 
+                       incompatible with Delphi 2.
+v2.0 of 18 Mar 2002  - Renamed as FmSetEd.pas
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided
+                       in base class. This change also meant that button style
+                       and font face now conformed to Window 95+ standards.
+v3.0 of 06 May 2002  - Re-wrote dialog box. Instead of displaying two list
+                       boxes, one for included and one for excluded items,
+                       dialog box now uses a checked list box where items are
+                       checked to represent set membership.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmStringEd.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named EdString.pas.
+v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
+                       form creation event that turns glyphs off. This was
+                       incompatible with Delphi 2.
+v1.2 of 24 Apr 1999  - Adapted string editor dialog box to allow controlling
+                       units to set limit (or have no limit) on length of
+                       strings edited via new MaxLength property.
+                     - Introduced new WrapLines property to determine whether
+                       the dialog box wraps lines of text at edge of control or 
+                       continues a line until return is keyed. In the latter
+                       case a horizontal scroll bar is displayed.
+v1.3 of 25 Apr 1999  - Added new FixedWidthFont property that sets font in memo 
+                       area to be mono-spaced when true and to font used by rest 
+                       of dialog box when false.
+                     - Added new MemoWidth and MemoHeight properties to allow
+                       width and height of memo component to be varied.
+                     - Altered the Arrange method to arrange the dialog box
+                       components to take account of variable size of memo
+                       component.
+v2.0 of 18 Mar 2002  - Renamed as FmStringEd.pas
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided
+                       in base class. This change also meant that button style
+                       and font face now conformed to Windows 95+ standards.
+                     - Modified code that arranges and sizes window to work
+                       with the built in arangement mechanism inherited from
+                       TGenericOKDlg.
+v2.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
+                       file with reference to UHelp unit.
+v2.2 of 20 Apr 2008  - Changed to use renamed UMsgDlgs unit.
+                     - Removed redundant fields.
+                     - Moved string literals to resourcestrings.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmUserSetup.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named UsrSetup.pas.
+v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
+                       form creation event that turns glyphs off. This was
+                       incompatible with Delphi 2.
+v2.0 of 18 Mar 2002  - Renamed as FmUserSetup.pas.
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided
+                       in base class. This change also meant that button style
+                       and font face now conformed to Window 95+ standards.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmVerNumEd.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named EdVerNum.pas.
+v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
+                       form creation event that turns glyphs off. This was
+                       incompatible with Delphi 2.
+v2.0 of 18 Mar 2002  - Renamed as FmVerNumEd.pas.
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided 
+                       in base class. This change also meant that button style 
+                       and font face now conformed to Window 95+ standards.
+v2.1 of 06 May 2002  - Now use TPJVersionNumber type in place of TVersionNumber
+                       from old VerTypes unit.
+                     - Removed usage of VerTypes unit
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\FmViewList.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named ViewList.pas.
+v1.1 of 14 Apr 1999  - Removed glyphs from buttons in form. Removed code from
+                       form creation event that turns glyphs off. This was
+                       incompatible with Delphi 2.
+v2.0 of 18 Mar 2002  - Renamed as FmViewList.pas.
+                     - Re-wrote dialog box to descend from TGenericOKDlg.
+                       Removed all code for functionality that is now provided
+                       in base class. This change also meant that button style
+                       and font face now conformed to Window 95+ standards.
+                     - Removed code that prevented user from highlighting and 
+                       copying text in read only memo.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\Resources.rc
+--------------------------------------------------------------------------------
+v1.0 of 20 Apr 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UAltBugFix.pas
+--------------------------------------------------------------------------------
+v1.0 of 16 Jun 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UDlgParent.pas
+--------------------------------------------------------------------------------
+v1.0 of 16 Jun 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UHelp.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version as an include file. Named
+                       Help\VInfoExp.inc.
+v2.0 of 05 May 2002  - Complete rewrite. Constants are now declared in a map
+                       file and simply included here.
+v3.0 of 17 Mar 2003  - Renamed as UHelp.pas.
+                     - Converted from include file to unit that provides help
+                       topic ids.
+                     - Now includes the renamed VIEd.map (instead of
+                       VInfoExp.map) for topic number maps.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UMsgDlgs.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named MsgDlgs.pas.
+v1.1 of 20 Apr 2008  - Renamed as UMsgDlgs.pas.
+                     - Changed string constants to resource strings.
+                     - Added new MsgNoFileName procedure.
+v1.2 of 16 Jun 2008  - Changed to use a custom private Display function to
+                       display dialog box instead of calls to MessageDlg library
+                       function.
+                     - Hooked in code to new Display function to enable Delphi's
+                       Alt key bug to be fixed.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UOSInfo.pas
+--------------------------------------------------------------------------------
+v1.0 of 16 Jun 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UResCompiler.pas
+--------------------------------------------------------------------------------
+v1.0 of 05 May 2002  - Original version.
+v1.1 of 20 Apr 2008  - Changed to use renamed UVInfo unit.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\USettings.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named Setup.pas.
+v2.0 of 18 Mar 2002  - Renamed as USettings.pas.
+                     - Totally rewrote method of storing and retrieving
+                       persistent settings: now uses registry instead of ini
+                       files.
+v2.1 of 05 May 2002  - Added new persistent entries and subkey for external
+                       compiler settings.
+v2.2 of 17 Mar 2003  - Changed registry key for program's persistent settings to
+                       '\Software\DelphiDabbler\VIEd\2.0'.
+v2.3 of 29 Apr 2008  - Added new persistent entry to record if program has run
+                       before.
+                     - Changed so that read methods open registry as read only
+                       and write methods check a key is open before writing.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UUtils.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named Utils.pas.
+v2.0 of 13 Apr 1999  - Added procedures and functions from StrProc library unit
+                       to this unit (i.e. NextField and TrimSpaces routines and
+                       their private supporting routines).
+                     - Modified the CheckDrive function since it calls Windows
+                       API GetTempFileName function which has a different
+                       definition in Win32 than it has in Win16. Used
+                       conditional code to allow for different ways of handling
+                       this function.
+v2.1 of 17 Mar 2002  - Changed to 32 bit only code. Removed all conditional
+                       compilation directives and 16 bit specific code.
+                     - Replaced WinTypes and WinProcs units with Windows unit.
+v2.2 of 05 May 2002  - Added EnsureExtension function.
+                     - Replaced relevant string constants with resource strings.
+                     - Deleted redundant HexToIntDef routine.
+v2.3 of 20 Apr 2008  - Renamed as UUtils.pas.
+                     - Added UserAppDataFolder routine and supporting private
+                       routines.
+                     - Removed redundant CheckDrive and HexToInt routines.
+                     - Changed to use private variable instead of typed constant
+                       to store hex symbol type.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UVerUtils.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named VerUtils.pas.
+v1.1 of 13 Apr 1999  - Removed reference to StrUtils library unit since the
+                       required routines are now all in this unit.
+                     - Made inclusion of Ver unit conditional since it only
+                       exists under Delphi 1.
+v1.2 of 17 Mar 2002  - Removed all conditional compilation directives and 16
+                       bit-only code. Program is now 32 bit only.
+v1.3 of 06 May 2002  - Added definition of EVersionError exception (formerly
+                       in Vertypes).
+                     - Now use TPJVersionNumber type in place of TVersionNumber
+                       from old VerTypes unit.
+                     - Removed usage of VerTypes unit.
+                     - Removed unused routines.
+                     - Replaced direct calls to raise exception with error
+                       routine call.
+                     - Now uses resource strings for error messages.
+v1.4 of 20 Apr 2008  - Renamed as UVerUtils.pas.
+                     - Changed to use renamed UUtils unit (was Utils).
+                     - Removed unused description fields from constant maps.
+                     - Replaced call to HexToInt with call to StrToInt.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\UVInfo.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named VInfo.pas.
+v1.1 of 13 Apr 1999  - Removed reference to library unit StrProc: required
+                       functions are now in the project's own Utils unit.
+                     - Made usage of Delphi 1's Ver unit conditional: unit
+                       doesn't exist in Delphi 2.
+                     - Conditionally included 32bit\winver.inc in compilations 
+                       using Delphi 2 to provide required constants that come
+                       from Ver unit under Delphi 1.
+v1.2 of 15 Apr 1999  - Fixed bug in TVInfo.GetStrPermitted method of TVInfo
+                       class. This wasn't testing for ProductVersion string
+                       properly and returning a random result in this case.
+                       This was causing 32bit version of the program to believe 
+                       that the ProductVersion was not permitted if present, but 
+                       required when not present!
+v1.3 of 24 Apr 1999  - Changed file load and save routines to preserve
+                       indentation in comments in .rc and .vi files.
+v1.4 of 25 Apr 1999  - Removed space that was being written to file in front of
+                       comments in VI file, so as not to further indent comments 
+                       in .vi and .rc files.
+v1.5 of 17 Mar 2002  - Removed all conditional compilation directives and 16
+                       bit-only code. Program is now 32 bit only.
+                     - Removed reference to WinVer.inc: values it defines are
+                       defined by Windows unit.
+                     - Changed default OS type from VOS_DOS_WINDOWS16 to
+                       VOS__WINDOWS32.
+                     - Deleted unused constant.
+v1.6 of 06 May 2002  - Now use TPJVersionNumber type in place of TVersionNumber
+                       from old VerTypes unit.
+                     - Removed usage of VerTypes unit.
+v1.7 of 17 Mar 2003  - Changed default VI and RC comments to use new program
+                       name and to credit DelphiDabbler.
+v1.8 of 18 Nov 2003  - Added ResOutputDir property to store default file output 
+                       folder used when compiling .res files and added facility 
+                       to read and write the property in .vi files.
+v1.9 of 20 Apr 2008  - Renamed as UVInfo.pas.
+                     - Changed to use renamed UUtils and UVerUtils units.
+                     - Renamed as UVInfo.pas.
+                     - Localised string literals as resource strings.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\Version.vi
+--------------------------------------------------------------------------------
+        13 Apr 1999  - Original 32 bit version information file. Named
+                       Rc\ResSrc32.vi.
+                     - File version number is 2.0.32 and product version is 2.0.
+        15 Apr 1999  - Changed version file version number to 2.1.32 and product 
+                       version to 2.1.
+        24 Apr 1999  - Changed version file version number to 2.2.32 and product
+                       version to 2.2.
+        25 Apr 1999  - Changed version file version number to 2.3.32 and product 
+                       version to 2.3.
+        17 Mar 2002  - Renamed as Resource.vi (moved to main source path now
+                       that 16 bit version deleted).
+                     - Changed version file and product version numbers to 2.4.
+                     - Changed OS to VOS__WINDOWS32 and modified some of text.
+        17 Mar 2002  - Changed version file and product version numbers to 2.5.
+        18 Mar 2002  - Changed version file and product version numbers to 2.6.
+        18 Mar 2002  - Changed version file and product version numbers to 2.7.
+        05 May 2002  - Changed version file and product version numbers to 2.8.
+        06 May 2002  - Changed version file and product version numbers to
+                       2.8.1.
+                     - Added 3rd level version numbers to file and product
+                       version number strings.
+        06 May 2002  - Changed version file and product version numbers to
+                       2.8.2.
+        17 Mar 2003  - Updated product and file version numbers to 2.9.
+                     - Modified company name entries to DelphiDabbler.
+                     - Changed original and internal file names from VInfoExp to
+                       VIEd.
+                     - Changed program name from "Version Info Expert" to
+                       "Version Information Editor".
+        25 Aug 2003  - Updated file and product version numbers to 2.9.1.
+        18 Nov 2003  - Updated file and product version numbers to 2.10.
+        04 Dec 2003  - Updated file and product version numbers to 2.10.1.
+        20 Mar 2005  - Updated file and product version numbers to 2.11.
+        20 Apr 2008  - Renamed as Version.vi.
+                     - Updated file and product version numbers to v2.11.1.
+                     - Updated comment string to refer to new license.
+                     - Deleted web address from company name.
+                     - Deleted path to binary file.
+                     - Added MPL to file.
+        16 Jun 2008  - Updated file and product version numbers to 2.11.2.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\VerTypes.pas
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Type definitions relating to version 
+                       information.
+        06 May 2002  - DELETED.
+
+--------------------------------------------------------------------------------
+Src\VIEd.dpr
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version. Named VInfoExp.dpr.
+v1.1 of 13 Apr 1999  - Amended copyright notice to prevent modification of
+                       source and to update copyright date to 1998-1999.
+                      - Made declaration of MsgDlgGlyphs "constant" only occur
+                        in 16 bit compilations - "constant" not defined or used 
+                        in Delphi 2.
+                     - Ensured appropriate resource file was included depending 
+                       on whether compiling for 16 bit or 32 bit Windows. 
+                       Referenced new resource files in new locations.
+v1.2 of 17 Mar 2002  - Removed all conditional compilation directives and 16
+                       bit-only code. Program is now 32 bit only.
+                     - Removed path from included resource file.
+v1.3 of 17 Mar 2002  - Name of Main unit changed to FmMain.
+v1.4 of 18 Mar 2002  - Added new units: FmGenericDlg, FmGenericOKDlg and
+                       FmGenericViewDlg.
+                     - Renamed the following units: EdDropDn as
+                       FmDropDownListEd, EdId as FmIdEd, EdNum as FmNumberEd,
+                       EdSet as FmSetEd, EdString as FmStringEd, EdVerNum as
+                       FmVerNumEd, UsrSetup as FmUserSetup and ViewList as
+                       FmViewList.
+v1.5 of 18 Mar 2002  - Renamed Setup unit as USettings.
+v1.6 of 05 May 2002  - Added UResCompiler, FmResCompiler and FmResCompilerCheck
+                       units.
+v1.7 of 06 May 2002  - Removed VerTypes unit.
+v1.8 of 17 Mar 2003  - Renamed as VIEd.dpr.
+                     - Added UHelp unit.
+                     - Changed program title from "Version Info Expert" to
+                       "Version Information Editor".
+                     - Changed help file name from VInfoExp.hlp to VIEd.hlp.
+v1.9 of 18 Nov 2003  - Added new FmResOutputDlg form and unit.
+                     - Renamed from VInfoExp.dpr to VIEd.dpr.
+v1.10 of 20 Apr 2008 - Removed inclusion on VIEd.res, changed Resource.res to
+                       Version.res and added Resources.res.
+v1.11 of 16 Jun 2008 - Added new UAltBugFix, UDlgParent and UOSInfo units.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\32bit\WinVer.inc
+--------------------------------------------------------------------------------
+v1.0 of 13 Apr 1999  - Original version. Contained resource information related 
+                       constants defined in Win32's "winver.h" header.
+        17 Mar 2002  - DELETED since relevant constants in Windows unit of
+                       Delphi 4.
+
+--------------------------------------------------------------------------------
+Src\Assets\VIEd.ico
+--------------------------------------------------------------------------------
+        25 May 1998  - New program icon. Named Icons\VInfoExp.ico.
+        30 Apr 2008  - Renamed as Assets\VIEd.ico.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\Assets\VIEd.manifest
+--------------------------------------------------------------------------------
+v1.0 of 16 Apr 2008  - Original version.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\Help\VIEd.hpj
+--------------------------------------------------------------------------------
+v1.0 of 25 May 1998  - Original version of help project file. Named
+                       Help\VInfoExp.hpj.
+v1.1 of 05 May 2002  - Map section now gets values from an included .map file
+                       rather than declaring values here.
+                     - Added copyright message to help about dialog.
+v1.2 of 17 Mar 2003  - Renamed as Help\VIEd.hpj.
+                     - Changed "PJSoft" in copyright message to "delpiDabbler".
+                     - Updated copyright date range to include 2003.
+                     - Corrected program name in copyright message from "Version 
+                       Information Spy" to "Version Information Editor".
+                     - Changed title from "Version Info Expert Help" to "Version
+                       Information Editor Help".
+                     - Changed help source file name from VInfoExp.rtf to
+                       VIEd.rtf.
+                     - Changed map file name from VInfoExp.map to VIEd.map.
+v1.3 of 20 Mar 2005  - Updated copyright date range to include 2005.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\Help\VIEd.map
+--------------------------------------------------------------------------------
+v1.0 of 05 May 2002  - Original version. Named Help\VInfoExp.map.
+v1.1 of 17 Mar 2003  - Renamed as Help\VIEd.map.
+                     - Added new HELP_MENU_WEBSITE topic id.
+v1.2 of 18 Nov 2003  - Added new topic ids relating to new File|Compile menu
+                       option and related changes.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\Help\VIEd.rtf
+--------------------------------------------------------------------------------
+        25 May 1998  - Original version of help topic file. Named
+                       Help\VInfoExp.rtf.
+        05 May 2002  - Updated existing topics and added new ones re change in
+                       supported export file formats. 
+                     - Added help topic for each main menu.
+        06 May 2002  - Updated topic for revised set editor dialog box. 
+                     - Noted that files can be opened by dragging from Explorer.
+        17 Mar 2003  - Renamed as VIEd.rtf.
+                     - Added topic for new Help | Visit DelphiDabbler.com menu
+                       option.
+                     - Changed all references to "expert" to "editor".
+        18 Nov 2003  - Added new topics re the new direct compilation
+                       facilities.
+        04 Dec 2003  - Updated sections re specifying resource compiler details
+                       to advise to enclose file parameters in quotes.
+        20 Mar 2005  - Added new topic for command line options.
+        16 Nov 2009  - Moved to SVN.
+
+--------------------------------------------------------------------------------
+Src\Rc\ResSrc16.rc
+--------------------------------------------------------------------------------
+        25 Jun 1998  - Original 16 bit version information file. Named
+                       Resource.vi.
+        07 Jul 1998  - Updated program and file version information to 1.1.
+        13 Apr 1999  - Renamed as Rc\ResSrc16.vi.
+                     - Development of original file forked into 16 bit and 32
+                       bit versions. This is the 16 bit version.
+                     - File version number is 2.0.32 and product version is 2.0.
+        15 Apr 1999  - Changed version file version number to 2.1.16 and product 
+                       version to 2.1.
+        24 Apr 1999  - Changed version file version number to 2.2.16 and product
+                       version to 2.2.
+        25 Apr 1999  - Changed version file version number to 2.3.16 and product 
+                       version to 2.3.
+        17 Mar 2002  - DELETED. 16 bit support dropped from program.
+
+--------------------------------------------------------------------------------
+$Rev$
+$Date$
+--------------------------------------------------------------------------------
