@@ -4,15 +4,18 @@ VIEd: Historical update information from v1.0 to Release 2.11.2
 
 ================================================================================
 
-This file records known changes to files in VIEd from v1.0 to v2.11.2 before the project was placed under version control with Subversion.
+This file records known changes to files in VIEd from v1.0 to v2.11.2 before the project was placed under version control with Subversion. Bugs fixed before
+moving the project to SVN / Google Code Issue Tracker are also noted.
 
-There are two sections:
+There are three sections:
 
   1: Releases: Lists all the releases of VIEd and notes which files were added,
      updated or deleted in each release.
 
   2: Files: Lists all source code and development tools for which history is
      available and provides details of changes to these files.
+
+  3: Bug fixes: Lists all recorded bug fixes up to and including v2.11.2.
 
 ================================================================================
 2: RELEASES
@@ -311,7 +314,7 @@ v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
                         incompatible with Delphi 2.
 v2.0 of 18 Mar 2002  - Renamed as FmIdEd.pas
                      - Re-wrote dialog box to descend from TGenericOKDlg.
-                       Removed all code for functionality that is now provided 
+                       Removed all code for functionality that is now provided
                        in base class. This change also meant that button style
                        and font face now conformed to Window 95+ standards.
 v2.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
@@ -355,7 +358,7 @@ v1.5 of 17 Mar 2002  - Updated to enable compilation with Delphi 4 as 32 bit
                          PJVersionInfo.
                        - Replaced about box component with newer (v3.2) version
                          and changed unit name from AboutBox to PJAbout.
-                       - Removed all conditional compilation directives and 16 
+                       - Removed all conditional compilation directives and 16
                          bit-only code.
 v1.6 of 17 Mar 2002  - Renamed as FmMain.pas
                      - Added facility to open files by dropping them onto main
@@ -369,7 +372,7 @@ v1.7 of 18 Mar 2002  - Changed uses clause to use renamed dialog box units.
 v1.8 of 18 Mar 2002  - Added component to animate window minimising.
                      - Added component to store / restore window state using
                        registry.
-                     - Revised code that stores user options to use new settings 
+                     - Revised code that stores user options to use new settings
                        object that uses registry instead of old ini file based
                        object.
                      - Made about box appear offset over main not at screen
@@ -403,16 +406,16 @@ v1.12 of 18 Nov 2003 - Added new File|Compile menu option to directly compile
                        the File |Compile menu option
                      - Moved local resource string declarations from methods
                        into global resource string list.
-v1.13 of 04 Dec 2003 - Altered File | Save As code so that a .vi extension is 
+v1.13 of 04 Dec 2003 - Altered File | Save As code so that a .vi extension is
                        appended to any file name where the user has provided no
                        extension.
-v1.14 of 20 Mar 2005 - Added facility to call program with -makerc switch and a 
+v1.14 of 20 Mar 2005 - Added facility to call program with -makerc switch and a
                        .vi file on command line. Program creates .rc file from
                        it and then terminates without displaying a window.
 v1.15 of 30 Apr 2008 - About box now aligns itself over main form rather than
-                       being explictly aligned. This uses a feature of about 
+                       being explictly aligned. This uses a feature of about
                        box component v3.3.1.
-                     - Changed to write preferences to Preferences.ini in user 
+                     - Changed to write preferences to Preferences.ini in user
                        application data folder rather to VIEd.ini in program's
                        folder.
                      - Removed code that checks a drive by writing test file:
@@ -425,7 +428,7 @@ v1.15 of 30 Apr 2008 - About box now aligns itself over main form rather than
                      - Added code to detect Vista and WinHelp, putting up a
                        one-time message if WinHelp not available.
 v1.16 of 16 Jun 2008 - Modified to change task bar handling. Main form window is
-                       now used by task bar instead of Application object's 
+                       now used by task bar instead of Application object's
                        hidden window. This change was required for compatibility
                        with Vista.
                      - Now uses v3.4 of About Box Component to enable about
@@ -443,10 +446,10 @@ v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
                        incompatible with Delphi 2.
 v2.0 of 18 May 2000  - Renamed as FmNumberEd.pas.
                      - Re-wrote dialog box to descend from TGenericOKDlg.
-                       Removed all code for functionality that is now provided 
-                       in base class. This change also meant that button style 
+                       Removed all code for functionality that is now provided
+                       in base class. This change also meant that button style
                        and font face now conformed to Windows 95+ standards.
-                     - Removed call to utility function HexToInt since SysUtils 
+                     - Removed call to utility function HexToInt since SysUtils
                        StrToInt function handles hex.
 v2.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
                        file with reference to UHelp unit.
@@ -463,7 +466,7 @@ v1.2 of 25 Aug 2003  - Fixed bug that was always switching on start-up complier
                        check even when user specified otherwise. (While the
                        option to switch off the check is in a descendant dialog
                        box, some of code in this unit was reversing that choice.
-                       We now only restore the start up checking if the user has 
+                       We now only restore the start up checking if the user has
                        deleted an existing resource compiler reference.)
 v1.3 of 04 Dec 2003  - The default command line suggested when the user
                        specifies BRCC32 as the resource compiler now wraps the
@@ -490,7 +493,7 @@ Src\FmSetEd.pas
 --------------------------------------------------------------------------------
 v1.0 of 25 May 1998  - Original version. Named EdSet.pas
 v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
-                       form creation event that turns glyphs off. This was 
+                       form creation event that turns glyphs off. This was
                        incompatible with Delphi 2.
 v2.0 of 18 Mar 2002  - Renamed as FmSetEd.pas
                      - Re-wrote dialog box to descend from TGenericOKDlg.
@@ -514,11 +517,11 @@ v1.2 of 24 Apr 1999  - Adapted string editor dialog box to allow controlling
                        units to set limit (or have no limit) on length of
                        strings edited via new MaxLength property.
                      - Introduced new WrapLines property to determine whether
-                       the dialog box wraps lines of text at edge of control or 
+                       the dialog box wraps lines of text at edge of control or
                        continues a line until return is keyed. In the latter
                        case a horizontal scroll bar is displayed.
-v1.3 of 25 Apr 1999  - Added new FixedWidthFont property that sets font in memo 
-                       area to be mono-spaced when true and to font used by rest 
+v1.3 of 25 Apr 1999  - Added new FixedWidthFont property that sets font in memo
+                       area to be mono-spaced when true and to font used by rest
                        of dialog box when false.
                      - Added new MemoWidth and MemoHeight properties to allow
                        width and height of memo component to be varied.
@@ -563,8 +566,8 @@ v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
                        incompatible with Delphi 2.
 v2.0 of 18 Mar 2002  - Renamed as FmVerNumEd.pas.
                      - Re-wrote dialog box to descend from TGenericOKDlg.
-                       Removed all code for functionality that is now provided 
-                       in base class. This change also meant that button style 
+                       Removed all code for functionality that is now provided
+                       in base class. This change also meant that button style
                        and font face now conformed to Window 95+ standards.
 v2.1 of 06 May 2002  - Now use TPJVersionNumber type in place of TVersionNumber
                        from old VerTypes unit.
@@ -583,7 +586,7 @@ v2.0 of 18 Mar 2002  - Renamed as FmViewList.pas.
                        Removed all code for functionality that is now provided
                        in base class. This change also meant that button style
                        and font face now conformed to Window 95+ standards.
-                     - Removed code that prevented user from highlighting and 
+                     - Removed code that prevented user from highlighting and
                        copying text in read only memo.
         16 Nov 2009  - Moved to SVN.
 
@@ -723,19 +726,19 @@ v1.1 of 13 Apr 1999  - Removed reference to library unit StrProc: required
                        functions are now in the project's own Utils unit.
                      - Made usage of Delphi 1's Ver unit conditional: unit
                        doesn't exist in Delphi 2.
-                     - Conditionally included 32bit\winver.inc in compilations 
+                     - Conditionally included 32bit\winver.inc in compilations
                        using Delphi 2 to provide required constants that come
                        from Ver unit under Delphi 1.
 v1.2 of 15 Apr 1999  - Fixed bug in TVInfo.GetStrPermitted method of TVInfo
                        class. This wasn't testing for ProductVersion string
                        properly and returning a random result in this case.
-                       This was causing 32bit version of the program to believe 
-                       that the ProductVersion was not permitted if present, but 
+                       This was causing 32bit version of the program to believe
+                       that the ProductVersion was not permitted if present, but
                        required when not present!
 v1.3 of 24 Apr 1999  - Changed file load and save routines to preserve
                        indentation in comments in .rc and .vi files.
 v1.4 of 25 Apr 1999  - Removed space that was being written to file in front of
-                       comments in VI file, so as not to further indent comments 
+                       comments in VI file, so as not to further indent comments
                        in .vi and .rc files.
 v1.5 of 17 Mar 2002  - Removed all conditional compilation directives and 16
                        bit-only code. Program is now 32 bit only.
@@ -749,8 +752,8 @@ v1.6 of 06 May 2002  - Now use TPJVersionNumber type in place of TVersionNumber
                      - Removed usage of VerTypes unit.
 v1.7 of 17 Mar 2003  - Changed default VI and RC comments to use new program
                        name and to credit DelphiDabbler.
-v1.8 of 18 Nov 2003  - Added ResOutputDir property to store default file output 
-                       folder used when compiling .res files and added facility 
+v1.8 of 18 Nov 2003  - Added ResOutputDir property to store default file output
+                       folder used when compiling .res files and added facility
                        to read and write the property in .vi files.
 v1.9 of 20 Apr 2008  - Renamed as UVInfo.pas.
                      - Changed to use renamed UUtils and UVerUtils units.
@@ -764,11 +767,11 @@ Src\Version.vi
         13 Apr 1999  - Original 32 bit version information file. Named
                        Rc\ResSrc32.vi.
                      - File version number is 2.0.32 and product version is 2.0.
-        15 Apr 1999  - Changed version file version number to 2.1.32 and product 
+        15 Apr 1999  - Changed version file version number to 2.1.32 and product
                        version to 2.1.
         24 Apr 1999  - Changed version file version number to 2.2.32 and product
                        version to 2.2.
-        25 Apr 1999  - Changed version file version number to 2.3.32 and product 
+        25 Apr 1999  - Changed version file version number to 2.3.32 and product
                        version to 2.3.
         17 Mar 2002  - Renamed as Resource.vi (moved to main source path now
                        that 16 bit version deleted).
@@ -806,7 +809,7 @@ Src\Version.vi
 --------------------------------------------------------------------------------
 Src\VerTypes.pas
 --------------------------------------------------------------------------------
-v1.0 of 25 May 1998  - Original version. Type definitions relating to version 
+v1.0 of 25 May 1998  - Original version. Type definitions relating to version
                        information.
         06 May 2002  - DELETED.
 
@@ -817,10 +820,10 @@ v1.0 of 25 May 1998  - Original version. Named VInfoExp.dpr.
 v1.1 of 13 Apr 1999  - Amended copyright notice to prevent modification of
                        source and to update copyright date to 1998-1999.
                       - Made declaration of MsgDlgGlyphs "constant" only occur
-                        in 16 bit compilations - "constant" not defined or used 
+                        in 16 bit compilations - "constant" not defined or used
                         in Delphi 2.
-                     - Ensured appropriate resource file was included depending 
-                       on whether compiling for 16 bit or 32 bit Windows. 
+                     - Ensured appropriate resource file was included depending
+                       on whether compiling for 16 bit or 32 bit Windows.
                        Referenced new resource files in new locations.
 v1.2 of 17 Mar 2002  - Removed all conditional compilation directives and 16
                        bit-only code. Program is now 32 bit only.
@@ -852,7 +855,7 @@ v1.11 of 16 Jun 2008 - Added new UAltBugFix, UDlgParent and UOSInfo units.
 --------------------------------------------------------------------------------
 Src\32bit\WinVer.inc
 --------------------------------------------------------------------------------
-v1.0 of 13 Apr 1999  - Original version. Contained resource information related 
+v1.0 of 13 Apr 1999  - Original version. Contained resource information related
                        constants defined in Win32's "winver.h" header.
         17 Mar 2002  - DELETED since relevant constants in Windows unit of
                        Delphi 4.
@@ -881,7 +884,7 @@ v1.1 of 05 May 2002  - Map section now gets values from an included .map file
 v1.2 of 17 Mar 2003  - Renamed as Help\VIEd.hpj.
                      - Changed "PJSoft" in copyright message to "delpiDabbler".
                      - Updated copyright date range to include 2003.
-                     - Corrected program name in copyright message from "Version 
+                     - Corrected program name in copyright message from "Version
                        Information Spy" to "Version Information Editor".
                      - Changed title from "Version Info Expert Help" to "Version
                        Information Editor Help".
@@ -907,9 +910,9 @@ Src\Help\VIEd.rtf
         25 May 1998  - Original version of help topic file. Named
                        Help\VInfoExp.rtf.
         05 May 2002  - Updated existing topics and added new ones re change in
-                       supported export file formats. 
+                       supported export file formats.
                      - Added help topic for each main menu.
-        06 May 2002  - Updated topic for revised set editor dialog box. 
+        06 May 2002  - Updated topic for revised set editor dialog box.
                      - Noted that files can be opened by dragging from Explorer.
         17 Mar 2003  - Renamed as VIEd.rtf.
                      - Added topic for new Help | Visit DelphiDabbler.com menu
@@ -932,13 +935,44 @@ Src\Rc\ResSrc16.rc
                      - Development of original file forked into 16 bit and 32
                        bit versions. This is the 16 bit version.
                      - File version number is 2.0.32 and product version is 2.0.
-        15 Apr 1999  - Changed version file version number to 2.1.16 and product 
+        15 Apr 1999  - Changed version file version number to 2.1.16 and product
                        version to 2.1.
         24 Apr 1999  - Changed version file version number to 2.2.16 and product
                        version to 2.2.
-        25 Apr 1999  - Changed version file version number to 2.3.16 and product 
+        25 Apr 1999  - Changed version file version number to 2.3.16 and product
                        version to 2.3.
         17 Mar 2002  - DELETED. 16 bit support dropped from program.
+
+
+================================================================================
+3: BUG FIXES
+================================================================================
+32bit version of program is treating ProductVersion resource string as not being
+permitted whenever supplied and, quite rightly, treating it as a required string
+when not present!
+  o Fixed v2.1
+
+Indentation in comments is being lost when a VI file is re-loaded.
+  o Fixed v2.2
+
+Indentation of comments is being increased by one additional space.
+  o Fixed v2.3
+
+When no resource compiler has been specified the program always prompts the user
+to enter details at start-up, regardless of whether user has checked the box
+requesting that the prompt not be shown.
+  o Fixed v2.9.1
+
+If no file extension is specified when saving .vi files the program does not
+append one -- this is non-standard behaviour.
+  o Fixed v2.10.1
+
+The BRCC32 compiler was failing when passed file names containing spaces.
+  o Fixed v2.10.1 by
+    (a) making the default parameter string for BRCC32 wrap the command line
+        parameters in quotes and
+    (b) adding a note to the help file noting that users should do the same when
+        manually adding command lines
 
 --------------------------------------------------------------------------------
 $Rev$
