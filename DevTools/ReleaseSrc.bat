@@ -2,9 +2,10 @@
 @rem Script used to create zip file containing source code of Version
 @rem Information Editor.
 @rem
-@rem Copyright (C) Peter Johnson (www.delphidabbler.com), 2008
+@rem Copyright (C) Peter Johnson (www.delphidabbler.com), 2008-2011
 @rem
-@rem v1.0 of 30 Apr 2008 - Original version.
+@rem $Rev$
+@rem $Date$
 @rem ---------------------------------------------------------------------------
 
 @echo off

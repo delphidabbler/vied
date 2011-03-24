@@ -2,9 +2,10 @@
 @rem Script used to delete Version Information Editor's temp and backup source
 @rem files.
 @rem
-@rem Copyright (C) Peter Johnson (www.delphidabbler.com), 2008
+@rem Copyright (C) Peter Johnson (www.delphidabbler.com), 2008-2011
 @rem
-@rem v1.0 of 16 Apr 2008 - Original version.
+@rem $Rev$
+@rem $Date$
 @rem ---------------------------------------------------------------------------
 
 @echo off
