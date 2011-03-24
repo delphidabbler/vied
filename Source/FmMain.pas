@@ -1497,7 +1497,7 @@ procedure TMainForm.MHWebsiteClick(Sender: TObject);
 begin
   if ShellAPI.ShellExecute(Handle, nil, 'http://www.delphidabbler.com', nil,
     nil, SW_NORMAL) <= 32 then
-    RaiseLastWin32Error();
+    RaiseLastOSError();
 end;
 
 procedure TMainForm.MOAutoValidateClick(Sender: TObject);
