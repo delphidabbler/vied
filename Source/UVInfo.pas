@@ -4,48 +4,8 @@
  * Engine of Version Information Editor program. Encapsulates version
  * information functionality in a class.
  *
- * Original unit name was VInfo.pas. Changed to UVinfo.pas at v1.9.
- *
- * Requires DelphiDabbler PJVersionInfo unit v3.1.1.
- *
- * v1.0 of 25 May 1998  - Original version. Named VInfo.pas.
- * v1.1 of 13 Apr 1999  - Removed reference to library unit StrProc: required
- *                        functions are now in the project's own Utils unit.
- *                      - Made usage of Delphi 1's Ver unit conditional: unit
- *                        doesn't exist in Delphi 2.
- *                      - Conditionally included 32bit\winver.inc in
- *                        compilations using Delphi 2 to provide required
- *                        constants that come from Ver unit under Delphi 1.
- * v1.2 of 15 Apr 1999  - Fixed bug in TVInfo.GetStrPermitted method of TVInfo
- *                        class. This wasn't testing for ProductVersion string
- *                        properly and returning a random result in this case.
- *                        This was causing 32bit version of the program to
- *                        believe that the ProductVersion was not permitted if
- *                        present, but required when not present!
- * v1.3 of 24 Apr 1999  - Changed file load and save routines to preserve
- *                        indentation in comments in .rc and .vi files.
- * v1.4 of 25 Apr 1999  - Removed space that was being written to file in front
- *                        of comments in VI file, so as not to further indent
- *                        comments in .vi and .rc files.
- * v1.5 of 17 Mar 2002  - Removed all conditional compilation directives and 16
- *                        bit-only code. Program is now 32 bit only.
- *                      - Removed reference to WinVer.inc: values it defines are
- *                        defined by Windows unit.
- *                      - Changed default OS type from VOS_DOS_WINDOWS16 to
- *                        VOS__WINDOWS32.
- *                      - Deleted unused constant.
- * v1.6 of 06 May 2002  - Now use TPJVersionNumber type in place of
- *                        TVersionNumber from old VerTypes unit.
- *                      - Removed usage of VerTypes unit.
- * v1.7 of 17 Mar 2003  - Changed default VI and RC comments to use new program
- *                        name and to credit DelphiDabbler.
- * v1.8 of 18 Nov 2003  - Added ResOutputDir property to store default file
- *                        output folder used when compiling .res files and added
- *                        facility to read and write the property in .vi files.
- * v1.9 of 20 Apr 2008  - Changed to use renamed UUtils and UVerUtils units.
- *                      - Renamed as UVInfo.pas.
- *                      - Localised string literals as resource strings.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  * 
@@ -64,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

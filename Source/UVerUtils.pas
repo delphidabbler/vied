@@ -4,31 +4,8 @@
  * Version information utility routines and look-up tables. Provides conversions
  * between version information codes and text descriptions etc.
  *
- * Original unit name was VerUtils.pas. Changed to UVerUtils.pas at v1.4.
- *
- * Requires DelphiDabbler PJVersionInfo unit v3.1.1.
- *
- * v1.0 of 25 May 1998  - Original version. Named VerUtils.pas.
- * v1.1 of 13 Apr 1999  - Removed reference to StrUtils library unit since the
- *                        required routines are now all in this unit.
- *                      - Made inclusion of Ver unit conditional since it only
- *                        exists under Delphi 1.
- * v1.2 of 17 Mar 2002  - Removed all conditional compilation directives and 16
- *                        bit-only code. Program is now 32 bit only.
- * v1.3 of 06 May 2002  - Added definition of EVersionError exception (formerly
- *                        in Vertypes).
- *                      - Now use TPJVersionNumber type in place of
- *                        TVersionNumber from old VerTypes unit.
- *                      - Removed usage of VerTypes unit.
- *                      - Removed unused routines.
- *                      - Replaced direct calls to raise exception with error
- *                        routine call.
- *                      - Now uses resource strings for error messages.
- * v1.4 of 20 Apr 2008  - Changed to use renamed UUtils unit (was Utils).
- *                      - Renamed from VerUtils.pas as UVerUtils.pas.
- *                      - Removed unused description fields from constant maps.
- *                      - Replaced call to HexToInt with call to StrToInt.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -47,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

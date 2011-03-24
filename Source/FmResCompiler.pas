@@ -1,52 +1,16 @@
-{ ##
-  @FILE                     FmResCompilerCheck.pas
-  @COMMENTS                 Implements a dialog box where user can enter details
-                            of the resource compiler to be used to create binary
-                            resource files.          
-  @PROJECT_NAME             Version Information Editor.
-  @PROJECT_DESC             Program that allows creation of resource source
-                            files containining version information resources.
-  @DEPENDENCIES             None.
-  @HISTORY(
-    @REVISION(
-      @VERSION              1.0
-      @DATE                 05/05/2002
-      @COMMENTS             Original version.
-    )
-    @REVISION(
-      @VERSION              1.1
-      @DATE                 17/03/2003
-      @COMMENTS             Replaced reference to VInfoExp.inc help topic
-                            include file with reference to UHelp unit.
-    )
-    @REVISION(
-      @VERSION              1.2
-      @DATE                 25/08/2003
-      @COMMENTS             Fixed bug that was always switching on start-up
-                            complier check even when user specified otherwise.
-                            (While the option to switch off the check is in a
-                            descendant dialog box, some of code in this unit was
-                            reversing that choice. We now only restore the start
-                            up checking if the user has deleted an existing
-                            resource compiler reference.)
-    )
-    @REVISION(
-      @VERSION              1.3
-      @DATE                 04/12/2003
-      @COMMENTS             The default command line suggested when the user
-                            specifies BRCC32 as the resource compiler now wraps
-                            the <BIN> and <SRC> placeholders in quotes case
-                            there are spaces in the file names used.
-    )
-  )
-}
-
-
 {
+ * FmResCompilerCheck.pas
+ *
+ * Implements a dialog box where user can enter details of the resource compiler
+ * to be used to create binary resource files.
+ *
+ * $Rev$
+ * $Date$
+ *
  * ***** BEGIN LICENSE BLOCK *****
- * 
+ *
  * Version: MPL 1.1
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
@@ -60,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  * 
- * Portions created by the Initial Developer are Copyright (C) 1998-2005 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  * 
  * Contributor(s):
+ *   NONE
  * 
  * ***** END LICENSE BLOCK *****
 }

@@ -1,32 +1,16 @@
-{ ##
-  @PROJECT_NAME             Version Information Editor.
-  @PROJECT_DESC             Program that allows creation of resource source
-                            files containining version information resources.
-  @FILE                     FmGenericOKDlg.pas
-  @COMMENTS                 This is a generic OK dialogue box, descended from
-                            TGenericDlg, that can be used as a base class for
-                            dialog boxes that permit editing - adds "OK" and
-                            "Cancel" buttons to the form that close the dialog
-                            box with the appropriate modal result. All
-                            descendant dlg boxes should place their additional
-                            components within the body panel and size it
-                            accordingly. The dialog and the basic components
-                            will then be sized and positioned using the body
-                            panel's size.
-  @HISTORY(
-    @REVISION(
-      @VERSION              1.0
-      @DATE                 18/03/2002
-      @COMMENTS             Original version. Based on v1.0 of similar code in
-                            delphiDabbler's Help Topic Author.
-    )
-  )
-}
-
-
 {
+ * FmGenericOKDlg.pas
+ *
+ * This is a generic OK dialogue box, descended from TGenericDlg, that can be
+ * used as a base class for dialog boxes that permit editing - adds "OK" and
+ * "Cancel" buttons to the form that close the dialog box with the appropriate
+ * modal result.
+ *
+ * $Rev$
+ * $Date$
+ *
  * ***** BEGIN LICENSE BLOCK *****
- * 
+ *
  * Version: MPL 1.1
  * 
  * The contents of this file are subject to the Mozilla Public License Version
@@ -42,10 +26,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  * 
- * Portions created by the Initial Developer are Copyright (C) 1998-2005 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  * 
  * Contributor(s):
+ *   NONE
  * 
  * ***** END LICENSE BLOCK *****
 }

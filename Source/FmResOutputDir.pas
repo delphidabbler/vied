@@ -1,22 +1,11 @@
-{ ##
-  @FILE                     FmResOutputDir.pas
-  @COMMENTS                 Dialog box used to set the default folder used when
-                            compiling .res files.
-  @PROJECT_NAME             Version Information Editor.
-  @PROJECT_DESC             Program that allows creation of resource source
-                            files containining version information resources.
-  @DEPENDENCIES             + PJShellFolders unit v2.1
-  @HISTORY(
-    @REVISION(
-      @VERSION              1.0
-      @DATE                 18/11/2003
-      @COMMENTS             Original version.
-    )
-  )
-}
-
-
 {
+ * FmResOutputDir.pas
+ *
+ * Dialog box used to set the default folder used when compiling .res files.
+ *
+ * $Rev$
+ * $Date$
+ *
  * ***** BEGIN LICENSE BLOCK *****
  * 
  * Version: MPL 1.1
@@ -34,11 +23,12 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  * 
- * Portions created by the Initial Developer are Copyright (C) 1998-2005 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  * 
  * Contributor(s):
- * 
+ *   NONE
+ *
  * ***** END LICENSE BLOCK *****
 }
 

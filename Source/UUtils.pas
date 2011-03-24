@@ -3,32 +3,8 @@
  *
  * Miscellaneous support routines for Version Information Editor.
  *
- * Original unit name was Utils.pas. Changed to UUtils.pas at v2.3.
- *
- * v1.0 of 25 May 1998  - Original version. Named Utils.pas.
- * v2.0 of 13 Apr 1999  - Added procedures and functions from StrProc library
- *                        unit to this unit (i.e. NextField and TrimSpaces
- *                        routines and their private supporting routines).
- *                      - Modified the CheckDrive function since it calls
- *                        Windows API GetTempFileName function which has a
- *                        different definition in Win32 than it has in Win16.
- *                        Used conditional code to allow for different ways of
- *                        handling this function.
- * v2.1 of 17 Mar 2002  - Changed to 32 bit only code. Removed all conditional
- *                        compilation directives and 16 bit specific code.
- *                        Replaced WinTypes and WinProcs units with Windows
- *                        unit.
- * v2.2 of 05 May 2002  - Added EnsureExtension function.
- *                        Replaced relevant string constants with resource
- *                        strings.
- *                      - Deleted redundant HexToIntDef routine.
- * v2.3 of 20 Apr 2008  - Added UserAppDataFolder routine and supporting private
- *                        routines.
- *                      - Removed redundant CheckDrive and HexToInt routines.
- *                      - Renamed from Utils.pas to UUtils.pas.
- *                      - Changed to use private variable instead of types
- *                        constant to store hex symbol type.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -47,10 +23,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

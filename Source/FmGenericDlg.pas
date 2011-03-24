@@ -4,13 +4,8 @@
  * Implements a generic base class from which other program dialog boxes can be
  * descended. Provides layout and functionality common to all dlg boxes.
  *
- * v1.0 of 18 Mar 2002  - Original version.
- * v1.1 of 16 Jun 2008  - Added code to set dialog box's parent. This change
- *                        needed for app to work correctly with Vista task bar.
- *                      - Registered form with object that fixes Delphi's Alt
- *                        key bug.
- *
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -29,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 2002-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 2002-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

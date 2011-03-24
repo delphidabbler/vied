@@ -4,23 +4,8 @@
  * Number editor dialog box. Allows user to enter or edit a whole number in
  * decimal or in hex.
  *
- * Original unit name was EdNum.pas. Changed to FmNumberEd.pas at v2.0.
- *
- * v1.0 of 25 May 1998  - Original version. Named EdNum.pas.
- * v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
- *                        form creation event that turns glyphs off. This was
- *                        incompatible with Delphi 2.
- * v2.0 of 18 May 2000  - Re-wrote dialog box to descend from TGenericOKDlg.
- *                        Removed all code for functionality that is now
- *                        provided in base class. This change also means that
- *                        button style and font face conforms to Windows 95+
- *                        standards.
- *                      - Removed call to utility function HexToInt since
- *                        SysUtils StrToInt function handles hex.
- * v2.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
- *                        file with reference to UHelp unit.
- * v2.2 of 20 Apr 2008  - Changed to use renamed UMsgDlgs unit.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -39,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

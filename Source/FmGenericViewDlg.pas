@@ -1,29 +1,13 @@
-{ ##
-  @PROJECT_NAME             Version Information Editor.
-  @PROJECT_DESC             Program that allows creation of resource source
-                            files containining version information resources.
-  @FILE                     FmGenericViewDlg.pas
-  @COMMENTS                 This is a generic base class for dialog boxes that
-                            simply display information and have a "done" button
-                            rather than "OK" and "Cancel". It descends from
-                            TGenericDlg and simple adds a "Done" button that
-                            closes the dialogue box. All descendant dlg boxes
-                            should place their additional components within the
-                            body panel and size it accordingly. The dialog and
-                            the basic components will then be sized and
-                            positioned using the body panel's size.
-  @HISTORY(
-    @REVISION(
-      @VERSION              1.0
-      @DATE                 18/03/2002
-      @COMMENTS             Original version. Based on v1.0 of similar code in
-                            delphiDabbler's Help Topic Author.
-    )
-  )
-}
-
-
 {
+ * FmGenericViewDlg.pas
+ *
+ * This is a generic base class for dialog boxes that simply display information
+ * and have a single "Done" button. It descends from TGenericDlg and simply adds
+ * a "Done" button that closes the dialogue box.
+ *
+ * $Rev$
+ * $Date$
+ *
  * ***** BEGIN LICENSE BLOCK *****
  * 
  * Version: MPL 1.1
@@ -41,10 +25,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  * 
- * Portions created by the Initial Developer are Copyright (C) 1998-2005 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  * 
  * Contributor(s):
+ *   NONE
  * 
  * ***** END LICENSE BLOCK *****
 }

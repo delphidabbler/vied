@@ -1,48 +1,11 @@
-{ ##
-  @FILE                     FmSetEd.pas
-  @COMMENTS                 Set editor dialog box. Allows user to include and
-                            exclude items in a set.
-  @PROJECT_NAME             Version Information Editor.
-  @PROJECT_DESC             Program that allows creation of resource source
-                            files containining version information resources.
-  @OTHER_NAMES              + Original unit name was EdSet.pas
-                            + Changed to FmSetEd.pas at v2.0
-  @DEPENDENCIES             None.
-  @HISTORY(
-    @REVISION(
-      @VERSION              1.0
-      @DATE                 25/05/1998
-      @COMMENTS             Original version.
-    )
-    @REVISION(
-      @VERSION              1.1
-      @DATE                 13/04/1999
-      @COMMENTS             Removed glyphs from buttons in form. Removed code
-                            from form creation event that turns glyphs off. This
-                            was incompatible with Delphi 2.
-    )
-    @REVISION(
-      @VERSION              2.0
-      @DATE                 18/03/2002
-      @COMMENTS             Re-wrote dialog box to descend from TGenericOKDlg.
-                            Removed all code for functionality that is now
-                            provided in base class. This change also means that
-                            button style and font face conforms to Window 95+
-                            standards.
-    )
-    @REVISION(
-      @VERSION              3.0
-      @DATE                 06/05/2002
-      @COMMENTS             Re-wrote dialog box. Instead of displaying two list
-                            boxes, one for included and one for excluded items,
-                            dialog box now uses a checked list box where items
-                            are checked to represent set membership.
-    )
-  )
-}
-
-
 {
+ * FmSetEd.pas
+ *
+ * Set editor dialog box. Allows user to include and exclude items in a set.
+ *
+ * $Rev$
+ * $Date$
+ *
  * ***** BEGIN LICENSE BLOCK *****
  * 
  * Version: MPL 1.1
@@ -60,10 +23,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  * 
- * Portions created by the Initial Developer are Copyright (C) 1998-2005 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
- * 
+ *
  * Contributor(s):
+ *   NONE
  * 
  * ***** END LICENSE BLOCK *****
 }

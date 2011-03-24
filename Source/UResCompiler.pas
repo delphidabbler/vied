@@ -4,9 +4,8 @@
  * Unit exposing a function that executes an external resource compiler to
  * compile a resource file.
  *
- * v1.0 of 05 May 2002  - Original version.
- * v1.1 of 20 Apr 2008  - Changed to use renamed UVInfo unit.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -25,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 2002-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 2002-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

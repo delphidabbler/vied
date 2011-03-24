@@ -3,22 +3,8 @@
  *
  * Handles configuration information for Version Information Editor.
  *
- * Original unit name was Setup.pas. Changed to USettings.pas at v2.0.
- *
- * v1.0 of 25 May 1998  - Original version.
- * v2.0 of 18 Mar 2002  - Totally rewrote method of storing and retrieving
- *                        persistent settings: now uses registry instead of ini
- *                        files.
- * v2.1 of 05 May 2002  - Added new persistent entries and subkey for external
- *                        compiler settings.
- * v2.2 of 17 Mar 2003  - Changed registry key for program's persistent settings
- *                        to '\Software\DelphiDabbler\VIEd\2.0'.
- * v2.3 of 29 Apr 2008  - Added new persistent entry to record if program has
- *                        run before.
- *                      - Changed so that read methods open registry as read
- *                        only and write methods check a key is open before
- *                        writing.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -37,10 +23,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

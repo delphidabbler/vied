@@ -3,20 +3,9 @@
  *
  * Simple message dialog boxes used by Version Information Editor program.
  *
- * Original unit name was MsgDlgs.pas. Changed to UMsgDlgs.pas at v1.1.
+ * $Rev$
+ * $Date$
  *
- * v1.0 of 25 May 1998  - Original version. Named MsgDlgs.
- * v1.1 of 20 Apr 2008  - Changed string constants to resource strings.
- *                      - Added new MsgNoFileName procedure.
- *                      - Renamed to UMsgDlgs.pas.
- * v1.2 of 16 Jun 2008  - Changed to use a custom private Display function to
- *                        display dialog box instead of calls to MessageDlg
- *                        library function.
- *                      - Hooked in code to new Display function to enable
- *                        Delphi's Alt key bug to be fixed.
- *
- *
-{
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Version: MPL 1.1
@@ -34,10 +23,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

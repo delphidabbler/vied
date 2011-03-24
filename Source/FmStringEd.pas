@@ -4,41 +4,8 @@
  * String editor dialog box. Allows user to enter multi or single line strings
  * and (optionally) to select required fields from a drop down list.
  *
- * Original unit name was EdStrings.pas. Changed to FmStringEd.pas at v2.0.
- *
- * v1.0 of 25 May 1998  - Original version. Named EdStrings.pas.
- * v1.1 of 13 Apr 1999  - Removed glyphs from buttons in form. Removed code from
- *                        form creation event that turns glyphs off. This was
- *                        incompatible with Delphi 2.
- * v1.2 of 24 Apr 1999  - Adapted string editor dialog box to allow controlling
- *                        units to set limit (or have no limit) on length of
- *                        strings edited via new MaxLength property.
- *                      - Introduced new WrapLines property to determine whether
- *                        the dialog box wraps lines of text at edge of control
- *                        or continues a line until return is keyed. In the
- *                        latter case horizontal a scroll bar is displayed.
- * v1.3 of 25 Apr 1999  - Added new FixedWidthFont property that sets font in
- *                        memo area to be mono-spaced when true and to font used
- *                        by rest of dialog box when false.
- *                      - Added new MemoWidth and MemoHeight properties to allow
- *                        width and height of memo component to be varied.
- *                      - Altered the Arrange method to arrange the dialog box
- *                        components to take account of variable size of memo
- *                        component.
- * v2.0 of 18 Mar 2002  - Re-wrote dialog box to descend from TGenericOKDlg.
- *                        Removed all code for functionality that is now
- *                        provided in base class. This change also means that
- *                        button style and font face conforms to Windows 95+
- *                        standards.
- *                      - Modified code that arranges and sizes window to work
- *                        with the built in arangement mechanism inherited from
- *                        TGenericOKDlg.
- * v2.1 of 17 Mar 2003  - Replaced reference to VInfoExp.inc help topic include
- *                        file with reference to UHelp unit.
- * v2.2 of 20 Apr 2008  - Changed to use renamed UMsgDlgs unit.
- *                      - Removed redundant fields.
- *                      - Moved string literals to resourcestrings.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -57,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

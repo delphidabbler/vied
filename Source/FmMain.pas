@@ -3,127 +3,8 @@
  *
  * Main user interface and program logic for Version Information Editor.
  *
- * Original unit name was Main.pas. Changed to FmMain.pas at v1.6.
- *
- * Required the following DelphiDabbler components:
- *   - TPJAboutBox (PJAbout unit v3.4 or later)
- *   - TPJVersionInfo (PJVersionInfo unit v3.1.1 or later)
- *   - TPJFormDropFiles (PJDropFiles unit v5.0.1 or later)
- *   - TPJRegWdwState (PJWdwState unit v5.3 or later)
- *
- * v1.0 of 25 May 1998  - Original version, named Main.pas.
- * v1.1 of 07 Jul 1998  - The Open and Save As dialogs now select the path used
- *                        when the dialog box was last opened. If the program is
- *                        started with a command line parameter the path of the
- *                        parameter is used when the dialogs are first
- *                        displayed.
- * v1.2 of 13 Apr 1999  - Made inclusion of Delphi 1's Ver unit conditional on
- *                        Windows version.
- * v1.3 of 24 Apr 1999  - Made changes to work with revised string editor dialog
- *                        box that is used both for editing comments and
- *                        resource strings:
- *                        - Sets up comments editor so it has no maximum string
- *                          length and performs no word-wrapping.
- *                        - Sets up resource string editor it continues to wrap
- *                          text and has a new 128 character limit on string
- *                          lengths.
- * v1.4 of 25 Apr 1999  - Made changes to work with further new features in
- *                        string editor dialog box that is used both for editing
- *                        comments and resource strings:
- *                        - Comments editor now gets a larger editing area and
- *                          displays comments in mono-spaced font.
- *                        - Resource string editor continues to use main window
- *                          font and a smaller editing area.
- * v1.5 of 17 Mar 2002  - Updated to enable compilation with Delphi 4 as 32 bit
- *                        only program.
- *                        - Removed tabbed list box - component no longer
- *                          available. Replaced with conventional list box with
- *                          TabWidth property used to store single tab stop
- *                          required.
- *                        - Replaced version info component with newer (v3.0)
- *                          version and changed unit name from VerInfo to
- *                          PJVersionInfo.
- *                        - Replaced about box component with newer (v3.2)
- *                          version and changed unit name from AboutBox to
- *                          PJAbout.
- *                        - Removed all conditional compilation directives and
- *                          16 bit-only code.
- * v1.6 of 17 Mar 2002  - Added facility to open files by dropping them onto
- *                        main window.
- *                      - Renamed unit from Main.pas to FmMain.pas.
- * v1.7 of 18 Mar 2002  - Changed uses clause to use renamed dialog box units.
- *                      - Modified header height and font to conform to 32 bit
- *                        Windows standards.
- *                      - Added extra try..finally blocks to some methods that
- *                        create and free objects.
- * v1.8 of 18 Mar 2002  - Added component to animate window minimising.
- *                      - Added component to store / restore window state using
- *                        registry.
- *                      - Revised code that stores user options to use new
- *                        settings object that uses registry instead of old ini
- *                        file based object.
- *                      - Made about box appear offset over main not at screen
- *                        centre.
- * v1.9 of 05 May 2002  - Added support for exporting binary resource files in
- *                        addition to source files. In particular:
- *                        - Added new File | Export menu option for export to
- *                          either rc or res files.
- *                        - Removed export facility from File | Save As menu
- *                          option.
- *                        - Added new menu option to enable user to configure
- *                          external resource compiler used to actually create
- *                          the binary .res files.
- *                        - Added start-up check for a configured external
- *                          compiler which trigeers prompt to provide details
- *                          if no compiler is registered.
- *                      - Also added new help constants for revised help file
- *                        (including help topics for each main menu item).
- * v1.10 of 06 May 2002 - Now uses TPJVersionNumber type in place of
- *                        TVersionNumber from old VerTypes unit.
- *                      - Removed usage of VerTypes unit.
- * v1.11 of 17 Mar 2003 - Added new Help menu option and code to visit
- *                        DelphiDabbler.com website.
- *                      - Replaced reference to VInfoExp.inc help topic include
- *                        file with reference to UHelp unit.
- * v1.12 of 18 Nov 2003 - Added new File|Compile menu option to directly compile
- *                        the current document file using the external compiler.
- *                      - Added Ctrl+E shortcut to File|Export menu option.
- *                      - Added Edit|Compile Output Folder menu option to dispay
- *                        a dialog that Lets user enter default folder to be
- *                        used by the File |Compile menu option.
- *                      - Moved local resource string declarations from methods
- *                        into global resource string list.
- * v1.13 of 04 Dec 2003 - Altered File | Save As code so that a .vi extension
- *                        is appended to any file name where the user has
- *                        provided no extension.
- * v1.14 of 20 Mar 2005 - Added facility to call program with -makerc switch and
- *                        a .vi file on command line. Program creates .rc file
- *                        from it and then terminates without displaying a
- *                        window.
- * v1.15 of 30 Apr 2008 - About box now aligns itself over main form rather
- *                        than being explictly aligned. This uses a feature of
- *                        about box component v3.3.1.
- *                      - Changed to write preferences to Preferences.ini in
- *                        user application data folder rather to VIEd.ini in
- *                        program's folder.
- *                      - Removed code that checks a drive by writing test file:
- *                        can't write test file to C:\ on Vista.
- *                      - Changed some file error messages to display dialog
- *                        when no file name is provided.
- *                      - Changed to use renamed UMsgDlgs, UUtils, UVerUtils and
- *                        UVInfo units.
- *                      - Capitalised various menu options.
- *                      - Added code to detect Vista and WinHelp, putting up a
- *                        one-time message if WinHelp not available.
- * v1.16 of 16 Jun 2008 - Modified to change task bar handling. Main form window
- *                        is now used by task bar instead of Application
- *                        object's hidden window. This change was required for
- *                        compatibility with Vista.
- *                      - Now uses v3.4 of About Box Component to enable about
- *                        box to work correctly with main form and task bar.
- *                      - Removed code that checks for Vista OS to new UOSInfo
- *                        unit.
- *
+ * $Rev$
+ * $Date$
  *
  * ***** BEGIN LICENSE BLOCK *****
  *
@@ -142,10 +23,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2008 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
+ *   NONE
  *
  * ***** END LICENSE BLOCK *****
 }

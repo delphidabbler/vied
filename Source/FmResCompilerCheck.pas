@@ -1,29 +1,12 @@
-{ ##
-  @FILE                     FmResCompilerCheck.pas
-  @COMMENTS                 Implements a dialog box that gets compiler settings
-                            from user at program start-up when absence of a
-                            compiler is detected.
-  @PROJECT_NAME             Version Information Editor.
-  @PROJECT_DESC             Program that allows creation of resource source
-                            files containining version information resources.
-  @DEPENDENCIES             None.
-  @HISTORY(
-    @REVISION(
-      @VERSION              1.0
-      @DATE                 05/05/2002
-      @COMMENTS             Original version.
-    )
-    @REVISION(
-      @VERSION              1.1
-      @DATE                 17/03/2003
-      @COMMENTS             Replaced reference to VInfoExp.inc help topic
-                            include file with reference to UHelp unit.
-    )
-  )
-}
-
-
 {
+ * FmResCompilerCheck.pas
+ *
+ * Implements a dialog box that gets compiler settings from user at program
+ * start-up when absence of a compiler is detected.
+ *
+ * $Rev$
+ * $Date$
+ *
  * ***** BEGIN LICENSE BLOCK *****
  * 
  * Version: MPL 1.1
@@ -41,10 +24,11 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  * 
- * Portions created by the Initial Developer are Copyright (C) 1998-2005 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
  * Johnson. All Rights Reserved.
- * 
+ *
  * Contributor(s):
+ *   NONE
  * 
  * ***** END LICENSE BLOCK *****
 }
