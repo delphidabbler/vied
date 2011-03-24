@@ -1655,6 +1655,10 @@ begin
       mrCancel:
         // user cancelled - don't throw away changes
         Result := False;
+      else
+        raise Exception.Create(
+          'TMainForm.QueryFileSave: Unknown result from MsgQuerySaveFile()'
+        );
     end
   else
     // File wasn't changed so can be thrown away safely

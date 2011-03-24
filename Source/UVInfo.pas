@@ -651,6 +651,8 @@ begin
     siSpecialBuild:
       // This string is permiited only if appropriate flag in FileFlags is set
       Result := (VS_FF_SPECIALBUILD and FileFlags) = VS_FF_SPECIALBUILD;
+    else
+      raise Exception.Create('TVInfo.GetStrPermitted: Unknown TStrInfo value');
   end;
 end;
 
@@ -675,6 +677,8 @@ begin
     siSpecialBuild :
       // This string is required if appropriate flag in FileFlags is set
       Result := (VS_FF_SPECIALBUILD and FileFlags) = VS_FF_SPECIALBUILD;
+    else
+      raise Exception.Create('TVInfo.GetStrRequired: Unknown TStrInfo value');
   end;
 end;
 

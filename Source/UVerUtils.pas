@@ -434,6 +434,7 @@ var
 begin
   // Set default "not found" result
   Found := False;
+  Result := -1;
   // Scan array looking for given symbolic constant string (case sensitive)
   for I := 0 to 6 do
     if cFileOS[I].CodeStr = Str then
@@ -526,6 +527,7 @@ var
 begin
   // Set default "not found" result
   Found := False;
+  Result := -1;
   // Scan through FileType table doing case sensitve search
   for I := 0 to 6 do
     if cFileType[I].CodeStr = Str then
@@ -723,6 +725,7 @@ var
 begin
   // Set default "not found" result
   Found := False;
+  Result := -1;
   // Iterate over table of driver codes doing case sensitive search
   for I := 0 to 10 do
     if cDrvSubType[I].CodeStr = Str then
@@ -803,6 +806,7 @@ var
 begin
   // Set default "not found" result
   Found := False;
+  Result := -1;
   // Iterate across table doing case-sensitive search for symbolic constant
   for I := 0 to 3 do
     if cFontSubType[I].CodeStr = Str then
@@ -893,6 +897,7 @@ var
 begin
   // Set default "not found" result
   Found := False;
+  Result := -1;
   // Iterate across all table doing case sensitive search for symbolic constant
   for I := 0 to 5 do
     if cFileFlags[I].CodeStr = Str then
@@ -1060,6 +1065,7 @@ var
 begin
   // Set default "not found" result
   Found := False;
+  Result := $FFFF;
   // Iterate across table looking for description in non-case sensitive search
   for I := 0 to 44 do
     if CompareText(cLanguages[I].Desc, Str) = 0 then
@@ -1157,6 +1163,7 @@ var
 begin
   // Set default "not found" flag
   Found := False;
+  Result := $FFFF;
   // Itereate across table doing non-case sensitive serch for description
   for I := 0 to 11 do
     if CompareText(cCharSets[I].Desc, Str) = 0 then
