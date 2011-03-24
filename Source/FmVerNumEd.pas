@@ -113,7 +113,7 @@ procedure TVerNumEditor.VerEditKeyPress(Sender: TObject; var Key: Char);
   digits and backspace}
 begin
   inherited;
-  if not (Key in [#8, '0'..'9']) then
+  if not CharInSet(Key, [#8, '0'..'9']) then
     Key := #0;
 end;
 

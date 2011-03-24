@@ -120,7 +120,7 @@ procedure TNumEditor.edNumKeyPress(Sender: TObject; var Key: Char);
   }
 begin
   inherited;
-  if not (Key in [#8, '$', '0'..'9', 'A'..'F', 'a'..'f']) then
+  if not CharInSet(Key, [#8, '$', '0'..'9', 'A'..'F', 'a'..'f']) then
     Key := #0;
 end;
 

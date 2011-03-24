@@ -73,6 +73,8 @@ implementation
 
 
 uses
+  // Delphi
+  SysUtils,
   // Project
   UHelp, UMsgDlgs;
 
@@ -89,7 +91,7 @@ procedure TIdEditor.btnOKClick(Sender: TObject);
 begin
   inherited;
   {Check that entered text doesn't start with digit}
-  if (edId.Text <> '') and (edId.Text[1] in ['0'..'9']) then
+  if (edId.Text <> '') and CharInSet(edId.Text[1], ['0'..'9']) then
   begin
      // Identifier did start with digit - error
     MsgInvalidIdentifier(HELP_MSGDLG_BADIDENTIFIER);
@@ -108,7 +110,7 @@ procedure TIdEditor.edIdKeyPress(Sender: TObject; var Key: Char);
   }
 begin
   inherited;
-  if not (Key in ['a'..'z', 'A'..'Z', '_', '0'..'9', #8]) then
+  if not CharInSet(Key, ['a'..'z', 'A'..'Z', '_', '0'..'9', #8]) then
     Key := #0
 end;
 
