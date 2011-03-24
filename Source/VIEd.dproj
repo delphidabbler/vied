@@ -1,0 +1,133 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{CCDC3255-D8FE-404E-AC84-B7C215C29E69}</ProjectGuid>
+			<MainSource>VIEd.dpr</MainSource>
+			<Config Condition="'$(Config)'==''">Base</Config>
+			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+			<ProjectVersion>12.0</ProjectVersion>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_UnitSearchPath>..\Bin;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_EXPLICIT_STRING_CAST>true</DCC_EXPLICIT_STRING_CAST>
+			<DCC_DependencyCheckOutputName>..\Exe\VIEd.exe</DCC_DependencyCheckOutputName>
+			<DCC_ExeOutput>..\Exe</DCC_ExeOutput>
+			<DCC_ImageBase>00400000</DCC_ImageBase>
+			<DCC_CVT_WIDENING_STRING_LOST>true</DCC_CVT_WIDENING_STRING_LOST>
+			<DCC_CVT_ACHAR_TO_WCHAR>true</DCC_CVT_ACHAR_TO_WCHAR>
+			<DCC_EXPLICIT_STRING_CAST_LOSS>true</DCC_EXPLICIT_STRING_CAST_LOSS>
+			<DCC_Platform>x86</DCC_Platform>
+			<DCC_DcuOutput>..\Bin</DCC_DcuOutput>
+			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="VIEd.dpr">
+				<MainSource>MainSource</MainSource>
+			</DelphiCompile>
+			<DCCReference Include="FmMain.pas">
+				<Form>MainForm</Form>
+			</DCCReference>
+			<DCCReference Include="FmGenericDlg.pas">
+				<Form>GenericDlg</Form>
+			</DCCReference>
+			<DCCReference Include="FmGenericOKDlg.pas">
+				<Form>GenericOKDlg</Form>
+			</DCCReference>
+			<DCCReference Include="FmGenericViewDlg.pas">
+				<Form>GenericViewDlg</Form>
+			</DCCReference>
+			<DCCReference Include="FmDropDownListEd.pas">
+				<Form>DropDownListEditor</Form>
+			</DCCReference>
+			<DCCReference Include="FmIdEd.pas">
+				<Form>IdEditor</Form>
+			</DCCReference>
+			<DCCReference Include="FmNumberEd.pas">
+				<Form>NumEditor</Form>
+			</DCCReference>
+			<DCCReference Include="FmResCompiler.pas">
+				<Form>ResCompilerDlg</Form>
+			</DCCReference>
+			<DCCReference Include="FmResCompilerCheck.pas">
+				<Form>ResCompilerCheckDlg</Form>
+			</DCCReference>
+			<DCCReference Include="FmSetEd.pas">
+				<Form>SetEditor</Form>
+			</DCCReference>
+			<DCCReference Include="FmStringEd.pas">
+				<Form>StringEditor</Form>
+			</DCCReference>
+			<DCCReference Include="FmUserSetup.pas">
+				<Form>UserSetupDlg</Form>
+			</DCCReference>
+			<DCCReference Include="FmViewList.pas">
+				<Form>ViewListDlg</Form>
+			</DCCReference>
+			<DCCReference Include="FmVerNumEd.pas">
+				<Form>VerNumEditor</Form>
+			</DCCReference>
+			<DCCReference Include="FmResOutputDir.pas">
+				<Form>ResOutputDirDlg</Form>
+			</DCCReference>
+			<DCCReference Include="UAltBugFix.pas"/>
+			<DCCReference Include="UDlgParent.pas"/>
+			<DCCReference Include="UHelp.pas"/>
+			<DCCReference Include="UMsgDlgs.pas"/>
+			<DCCReference Include="UOSInfo.pas"/>
+			<DCCReference Include="UResCompiler.pas"/>
+			<DCCReference Include="USettings.pas"/>
+			<DCCReference Include="UUtils.pas"/>
+			<DCCReference Include="UVerUtils.pas"/>
+			<DCCReference Include="UVInfo.pas"/>
+			<BuildConfiguration Include="Base">
+				<Key>Base</Key>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+		<ProjectExtensions>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
+			<Borland.ProjectType>VCLApplication</Borland.ProjectType>
+			<BorlandProject>
+				<Delphi.Personality>
+					<Source>
+						<Source Name="MainSource">VIEd.dpr</Source>
+					</Source>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">1</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">2057</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName"/>
+						<VersionInfoKeys Name="FileDescription"/>
+						<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName"/>
+						<VersionInfoKeys Name="LegalCopyright"/>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename"/>
+						<VersionInfoKeys Name="ProductName"/>
+						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+				</Delphi.Personality>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>
