@@ -584,8 +584,6 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
   // ---------------------------------------------------------------------------
 
-var
-  I: Integer; // loop control
 begin
   // Remove hidden application window from task bar: this form is now use on
   // task bar. This required so task bar button conforms to Vista requirements.

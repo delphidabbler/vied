@@ -91,7 +91,6 @@ var
 begin
   Assert(Assigned(Dlg),                                    // ** do not localise
     'TDlgParent.SetParent: Dlg is nil');
-  ParentWnd := 0;
   if Assigned(Parent) then
     ParentWnd := Parent.Handle
   else if Assigned(Screen.ActiveCustomForm) then
