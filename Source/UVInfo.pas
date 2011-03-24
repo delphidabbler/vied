@@ -305,14 +305,14 @@ uses
 
 const
 
-  cStrNames: array[TStrInfo] of string[20] = (
+  cStrNames: array[TStrInfo] of string = (
     // Names of all string file info strings   ** do not localise
     'Comments', 'CompanyName', 'FileDescription', 'FileVersion',
     'InternalName', 'LegalCopyright', 'LegalTrademarks', 'OriginalFileName',
     'PrivateBuild', 'ProductName', 'ProductVersion', 'SpecialBuild'
   );
 
-  cStrDesc: array[TStrInfo] of string[40] = (
+  cStrDesc: array[TStrInfo] of string = (
     // Description of all string info strings  ** do not localise
     'Comments', 'Company Name', 'File Description', 'File Version',
     'Internal Name','Legal Copyright', 'Legal Trademark', 'Original File Name',
@@ -335,7 +335,7 @@ const
     [tkSPECIALBUILD]  // SpecialBuild
   );
 
-  cFields: array[TTokens] of string[15] = (
+  cFields: array[TTokens] of string = (
     // List of field names
     '<#F1>', '<#F2>', '<#F3>', '<#F4>', '<#P1>', '<#P2>', '<#P3>', '<#P4>',
     '<YEAR>', '<SHORTFNAME>', '<PRODUCTNAME>', '<SPECIALBUILD>', '<<>'

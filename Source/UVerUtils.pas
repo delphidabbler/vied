@@ -279,7 +279,7 @@ uses
 
 
 const
-  cHexSymbols: array[Boolean] of string[2] = ('0x', '$');
+  cHexSymbols: array[Boolean] of string = ('0x', '$');
     {Possible symbols to use to indicate hex strings - 'C' and 'Pascal' styles}
 var
   pvtUsePasHexSymbol: Boolean = True;
@@ -389,8 +389,8 @@ end;
 const
   // Array of OS codes to symbolic constants
   cFileOS: array[0..6] of record
-    Code: LongInt;        // the FileOS code number
-    CodeStr: string[20];  // the symbolic constant as a string
+    Code: LongInt;    // the FileOS code number
+    CodeStr: string;  // the symbolic constant as a string
   end =
   (
     (Code: VOS_DOS;           CodeStr: 'VOS_DOS';           ),
@@ -481,8 +481,8 @@ end;
 const
   // Map of file type code to symbolic constants and descriptions.
   cFileType: array[0..6] of record
-    Code: LongInt;        // FileType code
-    CodeStr: string[15];  // symbolic constant as a string
+    Code: LongInt;    // FileType code
+    CodeStr: string;  // symbolic constant as a string
   end =
   (
     (Code: VFT_UNKNOWN;     CodeStr: 'VFT_UNKNOWN';     ),
@@ -674,8 +674,8 @@ end;
 const
   // Maps driver sub-type code to symbolic constants.
   cDrvSubType: array[0..10] of record
-    Code: LongInt;        // driver sub-type code
-    CodeStr: string[22];  // symbolic constant for code
+    Code: LongInt;    // driver sub-type code
+    CodeStr: string;  // symbolic constant for code
   end =
   (
     (Code: VFT2_UNKNOWN;          CodeStr: 'VFT2_UNKNOWN';          ),
@@ -760,9 +760,9 @@ end;
 const
   // Map of Font Sub-Type codes to their symbolic constants
   cFontSubType: array[0..3] of record
-    Code: LongInt;        // the font sub-type code
-    CodeStr: string[20];  // symbolic constants for the sub-type code
-    Desc: string[20];     // (UNUSED v1.0) description of the sub-type code
+    Code: LongInt;    // the font sub-type code
+    CodeStr: string;  // symbolic constants for the sub-type code
+    Desc: string;     // (UNUSED v1.0) description of the sub-type code
   end =
   (
     (Code: VFT2_UNKNOWN;        CodeStr: 'VFT2_UNKNOWN';        ),
@@ -840,8 +840,8 @@ end;
 const
   // Map of file flag codes to the equivalent symbolic constants
   cFileFlags: array[0..5] of record
-    Code: LongInt;        // File Flags codes
-    CodeStr: string[20];  // Symbolic constants for File Flags codes
+    Code: LongInt;    // File Flags codes
+    CodeStr: string;  // Symbolic constants for File Flags codes
   end =
   (
     (Code: vs_FF_Debug;         CodeStr: 'VS_FF_DEBUG'        ),
@@ -978,8 +978,8 @@ end;
 const
   // Map of language codes and their descriptions
   cLanguages: array[0..44] of record
-    Code: Word;       // the language code
-    Desc: string[26]; // the description
+    Code: Word;   // the language code
+    Desc: string; // the description
   end = (
     (Code: $0401; Desc: 'Arabic'                    ),
     (Code: $0402; Desc: 'Bulgarian'                 ),
@@ -1108,8 +1108,8 @@ end;
 const
   // Map of character set codes to the descriptions of the codes
   cCharSets: array[0..11] of record
-    Code: Word;       // the character set code
-    Desc: string[40]; // the description of the code
+    Code: Word;   // the character set code
+    Desc: string; // the description of the code
   end = (
     (Code: 0;     Desc: '7-bit ASCII'                         ),
     (Code: 932;   Desc: 'Windows, Japan (Shift - JIS X-0208)' ),
