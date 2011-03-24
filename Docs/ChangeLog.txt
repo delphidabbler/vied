@@ -1,0 +1,94 @@
+; ------------------------------------------------------------------------------
+; Change Log for Version Information Editor
+; $Rev$
+; $Date$
+; ------------------------------------------------------------------------------
+
+Release v2.11.2 of 16 June 2008
++ Changed to make application minimisation, task bar preview window, and appearance in "Flip 3D" task switching display correctly on Windows Vista. This required an update to DelphiDabbler About Box Component v3.4.
++ Provided work-around for Delphi's Alt key bug on XP and Vista (CodeGear Quality Central bug report #374030).
+
+Release v2.11.1 of 30 April 2008
++ Added manifest that enables XP and Vista themes and informs Vista that program can be run with user privileges.
++ Changed to use user's application data folder for preferences instead of program installation folder.
++ Changed text of some dialog boxes.
++ Prevented program from writing test files to check if a drive is available. This code fails in protected folders on Vista.
++ Added one-time message that informs Vista users if WinHelp is not available.
++ Made some string literals localisable.
++ Some refactoring and unit renaming.
++ Changed installer to display license and to permit installation on Vista.
+
+Release v2.11 of 20 March 2005
++ Added facility to call program with -makerc switch and a .vi file on command line. Program creates .rc file from it and then terminates without displaying a window. This was added to enable the program to be used in an automated build process.
++ Added new topic to help file covering command line options.
++ Changed to Mozilla Public License.
+
+Release v2.10.1 of 4 December 2003
++ Save dialog box now appends default file extension when none is specified by the user.
++ Made default command line for BRCC32 compiler enclose file parameters in quotes to prevent compiler from failing when file names contain spaces.
++ Revised help file to advise users to enclose compiler file parameters in quotes when specifying resource compiler.
+
+Release v2.10 of 18 November 2003
++ Added new facility to directly compile a .vi file to a predetermined output folder, details of which are stored in the .vi file, providing that an external compiler is configured. This was done by:
+  - adding a new File | Compile menu option with hot key F9;
+  - adding a new Edit | Compile Output Folder menu option to enable compiler output folder to be edited.
++ The help file was updated to cover the new features.
+
+Release v2.9.1 of 25 August 2003
++ Fixed bug that was causing prompt for details of a resource compiler to be displayed at start-up when user had requested the prompt should not appear.
+
+Release v2.9 of 17 March 2003
++ Renamed from "Version Info Expert" to "Version Information Editor".
++ Added new Help menu option to access delphiDabbler website.
++ Changed to use registry key under HKLM\Software\DelphiDabbler\VIEd rather than HKLM\Software\PJSoft\VInfoExp for persistent settings.
+
+Unreleased v2.8.2 of 06 May 2002
++ Revised dialog box that is used to edit file flags. It now uses a checked list box rather than twin include/exclude lists.
+
+Unreleased v2.8.1 of 06 May 2002
++ Replaced TVersionNumber type with one from PJVersionInfo unit.
++ Deleted some redundant code.
++ Deleted redundant VerTypes unit.
+
+Unreleased v2.8 of 05 May 2002
++ Added ability to export binary resource files by using an external resource compiler.
+
+Unreleased v2.7 of 18 March 2002
++ Main window is now animated on minimisation.
++ Position, size and state of main window is now saved in registry between executions.
++ User defined settings are now stored in registry.
++ About box is now displayed relative to main window.
+
+Unreleased v2.6 of 18 March 2002
++ Updated appearance of main window and dialog boxes to have standard 32 bit windows look and feel. Dialog boxes now descend from common classes that handle positioning and manage help file access.
+
+Unreleased v2.5 of 17 March 2002
++ Added facility to open .vi files by dragging and dropping from Explorer.
+
+Unreleased v2.4 of 17 March 2002
++ Revised to compile with Delphi 4 and current component library.
++ Program is now 32 bit only - all 16 bit specific conditionally compiled code has been removed.
++ WinVer.inc was removed since relevant constants are in Delphi 4 Windows unit.
++ 16 bit version information resource has been removed.
+
+Unreleased v2.3 of 25 April 1999
++ Modified way string editor displays depending on what it's editing.
++ Removed bug which was indenting all VI file comments by one additional space.
+
+Unreleased v2.2 of 24 April 1999
++ Comments for .rc and .vi files can now exceed 255 characters.
++ Indentation in comments is now preserved when re-loaded.
+
+Unreleased v2.1 of 15 April 1999
++ Fixed bug where 32bit version of program was treating ProductVersion resource string as not being permitted whenever it was supplied.
+
+Unreleased v2.0 of 13 April 1999
++ Converted program to allow compilation as 16 bit and 32 bit programs, using Delphi 1 and Delphi 2 respectively.
++ Moved code previously called from StrProcs.pas library unit into main project.
++ Added an include file to provide information from 32bit Windows WinVer.h header that is not provided with Delphi 2.
+
+Unreleased v1.1 of 07 July 1998
++ Made Open and Save As dialog boxes remember last used directory and to use any directory passed as first parameter on command line as the current default directory on startup.
+
+Unreleased v1.0 of 25 May 1998
++ Original version for Windows 3.1 compiled using Delphi 1.
