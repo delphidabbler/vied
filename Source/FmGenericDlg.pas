@@ -60,7 +60,6 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure FormDestroy(Sender: TObject);
   protected
     procedure AlignToOwner; virtual;
       {Aligns this dialog box relative to its owner form. Called automatically
@@ -77,7 +76,7 @@ uses
   // Delphi
   Math, Windows,
   // Project
-  UAltBugFix, UDlgParent;
+  UDlgParent;
 
 
 {$R *.DFM}
@@ -149,22 +148,10 @@ procedure TGenericDlg.FormCreate(Sender: TObject);
 begin
   // Set dialog box parent window to its owner
   TDlgParent.SetParentToOwner(Self);
-  // Register this (and descendant forms) with object that fixes Delphi's Alt
-  // bug fix
-  AltBugFix.RegisterCtrl(Self);
   // Position components
   ArrangeControls;
   // Align form to owner
   AlignToOwner;
-end;
-
-procedure TGenericDlg.FormDestroy(Sender: TObject);
-  {Form destruction event handler - unregisters form from Delphi Alt bug fix.
-  }
-begin
-  // Unregister this (and descendant forms) to prevent Delphi Alt bug fix from
-  // being applied
-  AltBugFix.UnRegisterCtrl(Self);
 end;
 
 procedure TGenericDlg.FormKeyDown(Sender: TObject; var Key: Word;

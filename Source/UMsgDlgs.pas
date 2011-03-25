@@ -131,7 +131,7 @@ uses
   // Delphi
   SysUtils, Controls, Dialogs, Forms,
   // Project
-  UAltBugFix, UHelp;
+  UHelp;
 
 
 resourcestring
@@ -177,12 +177,8 @@ begin
   // Create a dialog box of required type
   Dlg := CreateMessageDialog(Msg, MsgType, Buttons);
   try
-    // Register dialog box to fix Delphi's Alt bug
-    AltBugFix.RegisterCtrl(Dlg);
     // Display the dialog and return result
     Result := Dlg.ShowModal;
-    // Unregister bug fixer
-    AltBugFix.UnRegisterCtrl(Dlg);
   finally
     Dlg.Free;
   end;

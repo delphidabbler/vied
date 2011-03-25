@@ -148,13 +148,6 @@ type
       {Name of current file}
     fChanged: Boolean;
       {Flag true if current file has been altered since last load, save etc}
-    procedure WMSyscommand(var Msg: TWMSysCommand); message WM_SYSCOMMAND;
-      {Handles system command messages. Overrides default processing of
-      minimizing and restoration of main window. This is required now we have
-      inhibited application object's default processing of these messages.
-        @param Msg [in/out] Details of system command. Result field set to 0 if
-          we handle message to prevent default processing.
-      }
     procedure MsgSilent(var Msg: TMessage); message MSG_SILENT;
       {Message handler for custom "silent" mesasge sent when user provides a
       -makerc switch as first item on command line. We generate a .rc file from
@@ -269,7 +262,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
       {Updates style of window to ensure this main window appears on task bar.
         @params Params [in/out] In: current parameters. Out: adjusted
-          parameters: we update ExStyle field with new window styles.
+          parameters.
       }
   end;
 
@@ -383,12 +376,10 @@ end;
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
   {Updates style of window to ensure this main window appears on task bar.
-    @params Params [in/out] In: current parameters. Out: adjusted parameters:
-      we update ExStyle field with new window styles.
+    @params Params [in/out] In: current parameters. Out: adjusted parameters.
   }
 begin
   inherited;
-  Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or WS_EX_APPWINDOW;
 end;
 
 procedure TMainForm.DoExportRC(const FName: string);
@@ -577,16 +568,6 @@ procedure TMainForm.FormCreate(Sender: TObject);
   // ---------------------------------------------------------------------------
 
 begin
-  // Remove hidden application window from task bar: this form is now use on
-  // task bar. This required so task bar button conforms to Vista requirements.
-  ShowWindow(Application.Handle, SW_HIDE);
-  SetWindowLong(
-    Application.Handle,
-    GWL_EXSTYLE,
-    GetWindowLong(Application.Handle, GWL_EXSTYLE)
-      and not WS_EX_APPWINDOW or WS_EX_TOOLWINDOW
-  );
-  ShowWindow(Application.Handle, SW_SHOW);
   // Set size of header sections and set list box tab stop
   DisplayHeader.SectionWidth[0] := 140;
   DisplayListBox.TabWidth :=
@@ -1659,32 +1640,6 @@ procedure TMainForm.WdwStateGetRegData(var RootKey: HKEY;
   }
 begin
   SubKey := Settings.MainWindowKey;
-end;
-
-procedure TMainForm.WMSyscommand(var Msg: TWMSysCommand);
-  {Handles system command messages. Overrides default processing of minimizing
-  and restoration of main window. This is required now we have inhibited
-  application object's default processing of these messages.
-    @param Msg [in/out] Details of system command. Result field set to 0 if we
-      handle message to prevent default processing.
-  }
-begin
-  // Note: according to Win API low order four bits of Msg.CmdType are reserved
-  // for use by windows. We therefore mask out those bytes before processing.
-  case (Msg.CmdType and $FFF0) of
-    SC_MINIMIZE:
-    begin
-      ShowWindow(Handle, SW_MINIMIZE);
-      Msg.Result := 0;
-    end;
-    SC_RESTORE:
-    begin
-      ShowWindow(Handle, SW_RESTORE);
-      Msg.Result := 0;
-    end;
-    else
-      inherited;
-  end;
 end;
 
 end.
