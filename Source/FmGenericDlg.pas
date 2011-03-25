@@ -61,9 +61,6 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   protected
-    procedure AlignToOwner; virtual;
-      {Aligns this dialog box relative to its owner form. Called automatically
-      when form is created}
     procedure ArrangeControls; virtual;
       {Arranges controls within window}
   end;
@@ -88,37 +85,6 @@ resourcestring
 
 
 { TGenericDlg }
-
-procedure TGenericDlg.AlignToOwner;
-  {Aligns this dialog box relative to its owner form. Called automatically when
-  form is created}
-var
-  OwnerForm: TForm;     // Form that owns this dialog box
-begin
-  // Check that we have a owner that is a form, if not do nothing
-  if not (Owner is TForm) then
-    Exit;
-  OwnerForm := Owner as TForm;
-  // Now display according to who owns us
-  if OwnerForm.BorderStyle = bsDialog then
-  begin
-    // We're centering over another dlg box - just offset down and left a bit
-    Self.Left := Max(0, Min(OwnerForm.Left + 40, Screen.Width - Self.Width));
-    Self.Top := Max(0, Min(OwnerForm.Top + 40, Screen.Height - Self.Height));
-  end
-  else
-  begin
-    // We're probably centering over a main window -
-    // centre horizontally over form, while keeping on screen
-    Self.Left :=
-      Max(0, Min(OwnerForm.Left + (OwnerForm.Width - Self.Width) div 2,
-        Screen.Width - Self.Width));
-    // "centre" 1/3rd way down main window if possible}
-    Self.Top :=
-      Max(0, Min(OwnerForm.Top + (OwnerForm.Height - Self.Height) div 3,
-        Screen.Height - Self.Height));
-  end;
-end;
 
 procedure TGenericDlg.ArrangeControls;
   {Arranges controls within window}
@@ -150,8 +116,6 @@ begin
   TDlgParent.SetParentToOwner(Self);
   // Position components
   ArrangeControls;
-  // Align form to owner
-  AlignToOwner;
 end;
 
 procedure TGenericDlg.FormKeyDown(Sender: TObject; var Key: Word;

@@ -11,6 +11,7 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = True
+  Position = poDesigned
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -194,9 +195,6 @@ object MainForm: TMainForm
     Title = 'About'
     ButtonPlacing = abpRight
     ButtonKind = abkDone
-    DlgLeft = 60
-    DlgTop = 40
-    CentreDlg = False
     VersionInfo = AboutVersionInfo
     Position = abpOwner
     UseOwnerAsParent = True

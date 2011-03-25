@@ -12,6 +12,7 @@ object GenericDlg: TGenericDlg
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96

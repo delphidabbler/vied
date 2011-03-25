@@ -220,9 +220,8 @@ begin
     // We're only displaying edit control
     pnlBody.Height := fMemoHeight + edStr.Top;
   end;
-  // Call inherited methods to arrange remainin controls and position over owner
+  // Call inherited method to arrange remaining controls
   ArrangeControls;
-  AlignToOwner;
 end;
 
 procedure TStringEditor.btnInsertClick(Sender: TObject);
