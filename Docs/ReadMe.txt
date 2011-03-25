@@ -6,96 +6,108 @@ Contents
 --------
 
 1) License and Copyright
-2) Installation - instructions on how to install the program
-3) Uninstalling - instructions on how to uninstall the program
-4) Updates - details of where to check for program updates
-5) Getting in Touch - how to contact DelphiDabbler
-6) About DelphiDabbler
+2) System Requirements
+3) Installation - instructions on how to install the program
+4) Uninstalling - instructions on how to uninstall the program
+5) Updates - details of where to check for program updates
+6) Getting in Touch - how to contact DelphiDabbler
+7) About DelphiDabbler
 
 
 1) License and Copyright
 ------------------------
 
 This is open source software. A full copy of the license can be found in the
-file License.txt that is installed in the main program installation folder.
+file License.rtf that is installed in the main program installation folder.
  
+ 
+2) System Requirements
+----------------------
 
-2) Installation
+Version Information Editor requires Windows 2000 or later. It will not run on
+Windows 95, 98, Me, NT3 or NT4.
+
+The program's memory and hard disk requirements are modest and any computer
+capable of running the required operating system will be suitable.
+
+
+3) Installation
 ---------------
 
-Version Information Editor is installed using the setup program VIEdInst.exe.
-The following notes describe how to use the setup program.
+Version Information Editor is installed using the setup program. This should be
+named VIEd-Setup-9.9.9.exe, where 9.9.9 is replaced by the program version
+number.
 
-Please note that admin privileges are required on Windows NT, 2000, XP and
-Vista. On Vista the program will also require elevation.
+The setup program is usually distributed in a zip file that also contains this
+read-me file.
 
-i)    VIEdInst.exe is distributed in a zip file. Unzip the zip file to a
-      suitable location on your computer.
+Extract the setup program from the zip file and double click it to run.
 
-ii)   Double click VIEdInst.exe to run it. The setup program is a console
-      (command line) application that will display information in a console
-      window.
+Please note that admin privileges are required to run the installer. On Vista
+and later the program may also require elevation.
 
-iii)  Some introductory text will be displayed then the program will display the
-      default path on which it will install. This will be
-      [Program Files]\DelphiDabbler\VIEd where [Program Files] is the location
-      of the program files folder on your computer. If you wish to install to
-      the default location simply press return. Otherwise enter the name of the
-      required folder and press return.
+The setup program is a standard wizard based installer, with the following
+pages:
 
-iv)   A license dialog box will now be displayed. Click the Accept button to
-      accept the license, or Decline to reject the license and abandon the
-      installation.
+* Welcome page - press "Next" to begin the installation.
 
-v)    If the license was accepted the installation will now proceed. Details of
-      the files installed and the registry changes made will be displayed.
+* License page - read the license and select the "I accept the agreement" radio
+  button if you are happy with it. Then press "Next" to continue.
+  
+* Destination Location page - choose a directory where you want to install the
+  program, or just accept the default. Press "Next" to continue once you've made
+  your choice.
+  
+* Ready to Install page - displays the options you've chosen. Use "Back" to go 
+  back if you want to change anything, or press "Install" to go ahead.
+  Installation now starts and a progress bar is briefly show before the final
+  page is displayed.
 
-vi)   When the installation completes "Press return to exit" will be displayed.
-      Press return to exit the setup program. Version Information Editor is now
-      installed.
-
-To create a shortcut to the program, find the file VIEd.exe in the folder where
-the program was installed, right click the file and select Send To from the
-mouse menu, then select the option to create a shortcut on the desktop. This
-shortcut can be copied to the start menu if required.
+* Completion page - informs that the install has completed. This page gives the
+  option of starting the program and displaying this read-me file. Click
+  "Finish" to close the wizard. VIEd is now installed.
 
 
-3) Uninstalling
+4) Uninstalling
 ---------------
 
 To uninstall Version Information Editor open the control panel and start the
-Add/Remove Programs applet. Locate DelphiDabbler Version Information Editor in
-the list of installed programs and click the remove button. The uninstaller when
-then run. This is a console application that will display a list of the files it
-attempts to remove and the registry entries it deletes.
+"Add/Remove Programs" or "Programs and Features" applet or similar. Locate
+DelphiDabbler Version Information Editor in the list of installed programs and
+click the remove button. The uninstaller will now run, asking you to confirm
+that you want to uninstall.
 
-Note that the uninstaller requires admin privileges on Windows NT, 2000, XP and
-Vista. On Vista the uninstaller will also require elevation.
-
-The uninstaller will leave a few files behind in the folder where Version
-Information Editor was installed ([Program Files]\DelphiDabbler\VIEd by
-default). These files, and the program folder, can be deleted manually.
+Note that the uninstaller requires admin privileges. On Vista and later the 
+uninstaller may also require elevation.
 
 
-4) Updates
+5) Updates
 ----------
 
 Check the Version Information Editor web page at
-http://www.delphidabbler.com/vied for program updates and an update log.
+http://www.delphidabbler.com/vied for program updates.
 
 
-5) Getting in Touch
+6) Getting in Touch
 -------------------
 
 Please get in touch if you have any comments, suggestions or if you find any
 bugs. You can contact the author by completing the form at
 http://www.delphidabbler.com/contact.
 
+However bugs and feature requests should be made via the Version Information
+Tools Issue Tracker at http://www.delphidabbler.com/url/vitools-issues
 
-6) About DelphiDabbler
+
+7) About DelphiDabbler
 ----------------------
 
-The DelphiDabbler is Peter Johnson -- a hobbyist Delphi programmer living in
+The DelphiDabbler is Peter Johnson - a hobbyist Delphi programmer living in
 Ceredigion, Wales, UK. The DelphiDabbler website is at
 http://www.delphidabbler.com and contains all the Peter's open source programs,
-Delphi components, programming articles and resources.
+Dlphi library code, programming articles, hints and tips and other resources.
+
+--------------------------------------------------------------------------------
+$Rev$
+$Date$
+--------------------------------------------------------------------------------
