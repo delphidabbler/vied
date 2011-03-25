@@ -70,7 +70,8 @@ uses
 
 begin
   Application.Title := 'Version Information Editor';
-  Application.HelpFile := 'VIEd.hlp';
+  Application.MainFormOnTaskBar := True;
+  Application.ModalPopupMode := pmAuto;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
