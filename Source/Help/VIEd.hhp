@@ -1,0 +1,14 @@
+[OPTIONS]
+Auto TOC=9
+Compatibility=1.1
+Compiled file=..\..\Exe\VIEd.chm
+Contents file=TOC.hhc
+Default topic=HTML\index.htm
+Display compile progress=No
+Index file=Index.hhk
+Language=0x809 English (United Kingdom)
+Title=Version Information Editor Help
+
+
+[FILES]
+HTML\index.htm
