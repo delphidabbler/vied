@@ -59,14 +59,19 @@ type
     ///  <summary>Form creation event handler. Arranges controls and sizes form.
     ///  </summary>
     procedure FormCreate(Sender: TObject);
-    ///  <summary>Help button click event handler. Attempts to display help
-    ///  topic matching A-link keyword associated with the form.</summary>
+    ///  <summary>Help button click event handler. Displays a help topic
+    ///  associated with this dialog box.</summary>
+    ///  <remarks>If the HelpTopic property is set the topic it specifies is
+    ///  displayed. Otherwise an attempt is made to access the topic via any
+    ///  a-link keyword associated with the dialog box.</remarks>
     procedure btnHelpClick(Sender: TObject);
     ///  <summary>Handles key presses on form. Acts as if help button has been
     ///  pressed if user presses F1.</summary>
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   strict private
+    ///  <summary>Value of HelpTopic property.</summary>
+    fHelpTopic: string;
     ///  <summary>Gets help A-link keyword for this dialog.</summary>
     ///  <remarks>If HelpKeyword property is set its value is returned,
     ///  otherwise the name of the form is used.</remarks>
@@ -74,6 +79,12 @@ type
   strict protected
     ///  <summary>Arranges controls within form.</summary>
     procedure ArrangeControls; virtual;
+  public
+    ///  <summary>Name of help topic associated with dialog box.</summary>
+    ///  <remarks>If this property is set the specified topic is displayed when
+    ///  help is accessed. If HelpTopic is '' then the help file is accessed via
+    ///  an a-link keyword.</remarks>
+    property HelpTopic: string read fHelpTopic write fHelpTopic;
   end;
 
 
@@ -109,7 +120,10 @@ end;
 
 procedure TGenericDlg.btnHelpClick(Sender: TObject);
 begin
-  THelp.ShowALink(GetHelpALinkKeyword, THelp.DlgErrTopic);
+  if HelpTopic <> '' then
+    THelp.ShowTopic(HelpTopic)
+  else
+    THelp.ShowALink(GetHelpALinkKeyword, THelp.DlgErrTopic);
 end;
 
 procedure TGenericDlg.FormCreate(Sender: TObject);
