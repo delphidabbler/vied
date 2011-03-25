@@ -94,7 +94,7 @@ begin
   // Simply create and display dialog box
   with TResCompilerDlg.Create(Owner) do
     try
-      HelpContext := HELP_DLG_RESCOMP;
+//      HelpContext := HELP_DLG_RESCOMP;
       ShowModal;
     finally
       Free;
@@ -106,7 +106,7 @@ procedure TResCompilerDlg.FormShow(Sender: TObject);
   settings and sets help context for browse dlg box}
 begin
   inherited;
-  dlgBrowse.HelpContext := HELP_DLG_BROWSERESCOMP;
+//  dlgBrowse.HelpContext := HELP_DLG_BROWSERESCOMP;
   edCompiler.Text := Settings.ReadStr(siCompilerPath);
   edCmdLine.Text := Settings.ReadStr(siCompilerCmdLine);
 end;

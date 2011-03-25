@@ -260,7 +260,7 @@ begin
   inherited;
   if fCompulsory and (edStr.Text = '') then
     // No text entered and text is compulsory: check whether to accept anyway
-    if MsgStringRequired(fKind, HELP_MSGDLG_STRINGREQUIRED) = mrOk then
+    if MsgStringRequired(fKind) = mrOk then
     begin
       // Not accepting: don't close dlg
       ModalResult := mrNone;
@@ -312,7 +312,7 @@ begin
       Result := False;
       edStr.SelStart := Pos(Tok, edStr.Text) - 1;
       edStr.SelLength := Length(Tok);
-      MsgInvalidField(Tok, fKind, HELP_MSGDLG_BADFIELD);
+      MsgInvalidField(Tok, fKind);
       Exit;
     end;
     // Record part of string to be examined: i.e. all string after current field

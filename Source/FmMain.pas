@@ -422,7 +422,7 @@ begin
     except
       // Trap file errors and display message
       on E: EInOutError do
-        MsgFileAccessError(FName, HELP_MSGDLG_FILEACCESSERROR);
+        MsgFileAccessError(FName);
     end;
   end
   else
@@ -511,7 +511,7 @@ begin
     except
       // Catch and report any file errors with a generic message
       on E: EInOutError do
-        MsgFileAccessError(FName, HELP_MSGDLG_FILEACCESSERROR);
+        MsgFileAccessError(FName);
     end;
   end
   else
@@ -617,38 +617,38 @@ begin
   MFNewClick(Self);
   // Set up help contexts
   // system dialogs
-  SaveDlg.HelpContext :=              HELP_DLG_SAVEAS;
-  ExportDlg.HelpContext :=            HELP_DLG_EXPORT;
-  OpenDlg.HelpContext :=              HELP_DLG_OPEN;
-  CompilerDlg.HelpContext :=          HELP_DLG_COMPILEFILE;
-  AboutBoxDlg.HelpContext :=          HELP_DLG_ABOUT;
+//  SaveDlg.HelpContext :=              HELP_DLG_SAVEAS;
+//  ExportDlg.HelpContext :=            HELP_DLG_EXPORT;
+//  OpenDlg.HelpContext :=              HELP_DLG_OPEN;
+//  CompilerDlg.HelpContext :=          HELP_DLG_COMPILEFILE;
+//  AboutBoxDlg.HelpContext :=          HELP_DLG_ABOUT;
   // menu options
-  MFile.HelpContext :=                HELP_MENU_FILE;
-  MFNew.HelpContext :=                HELP_MENU_FILENEW;
-  MFOpen.HelpContext :=               HELP_MENU_FILEOPEN;
-  MFSave.HelpContext :=               HELP_MENU_FILESAVE;
-  MFSaveAs.HelpContext :=             HELP_MENU_FILESAVEAS;
-  MFExport.HelpContext :=             HELP_MENU_FILEEXPORT;
-  MFPreferences.HelpContext :=        HELP_MENU_FILEPREFERENCES;
-  MFViewRC.HelpContext :=             HELP_MENU_FILEVIEWRC;
-  MFExit.HelpContext :=               HELP_MENU_FILEEXIT;
-  MEdit.HelpContext :=                HELP_MENU_EDIT;
-  MECurrent.HelpContext :=            HELP_MENU_EDITCURRENT;
-  MERCIdentifier.HelpContext :=       HELP_MENU_EDITIDENTIFIER;
-  MERCComments.HelpContext :=         HELP_MENU_EDITRCCOMMENTS;
-  MEVIComments.HelpContext :=         HELP_MENU_EDITVICOMMENTS;
-  MEAnalyse.HelpContext :=            HELP_MENU_EDITANALYSE;
-  MECopy.HelpContext :=               HELP_MENU_EDITCOPY;
-  MOptions.HelpContext :=             HELP_MENU_OPTIONS;
-  MOAutoValidate.HelpContext :=       HELP_MENU_OPTIONSVALIDATION;
-  MODescribeFileFlags.HelpContext :=  HELP_MENU_OPTIONSDESCRIBE;
-  MOUserSetup.HelpContext :=          HELP_MENU_OPTIONSSETUP;
-  MOResCompiler.HelpContext :=        HELP_MENU_OPTIONSRESCOMP;
-  MHelp.HelpContext :=                HELP_MENU_HELP;
-  MHContents.HelpContext :=           HELP_MENU_HELPCONTENTS;
-  MHOverview.HelpContext :=           HELP_MENU_HELPOVERVIEW;
-  MHWebsite.HelpContext :=            HELP_MENU_WEBSITE;
-  MHAbout.HelpContext :=              HELP_MENU_HELPABOUT;
+//  MFile.HelpContext :=                HELP_MENU_FILE;
+//  MFNew.HelpContext :=                HELP_MENU_FILENEW;
+//  MFOpen.HelpContext :=               HELP_MENU_FILEOPEN;
+//  MFSave.HelpContext :=               HELP_MENU_FILESAVE;
+//  MFSaveAs.HelpContext :=             HELP_MENU_FILESAVEAS;
+//  MFExport.HelpContext :=             HELP_MENU_FILEEXPORT;
+//  MFPreferences.HelpContext :=        HELP_MENU_FILEPREFERENCES;
+//  MFViewRC.HelpContext :=             HELP_MENU_FILEVIEWRC;
+//  MFExit.HelpContext :=               HELP_MENU_FILEEXIT;
+//  MEdit.HelpContext :=                HELP_MENU_EDIT;
+//  MECurrent.HelpContext :=            HELP_MENU_EDITCURRENT;
+//  MERCIdentifier.HelpContext :=       HELP_MENU_EDITIDENTIFIER;
+//  MERCComments.HelpContext :=         HELP_MENU_EDITRCCOMMENTS;
+//  MEVIComments.HelpContext :=         HELP_MENU_EDITVICOMMENTS;
+//  MEAnalyse.HelpContext :=            HELP_MENU_EDITANALYSE;
+//  MECopy.HelpContext :=               HELP_MENU_EDITCOPY;
+//  MOptions.HelpContext :=             HELP_MENU_OPTIONS;
+//  MOAutoValidate.HelpContext :=       HELP_MENU_OPTIONSVALIDATION;
+//  MODescribeFileFlags.HelpContext :=  HELP_MENU_OPTIONSDESCRIBE;
+//  MOUserSetup.HelpContext :=          HELP_MENU_OPTIONSSETUP;
+//  MOResCompiler.HelpContext :=        HELP_MENU_OPTIONSRESCOMP;
+//  MHelp.HelpContext :=                HELP_MENU_HELP;
+//  MHContents.HelpContext :=           HELP_MENU_HELPCONTENTS;
+//  MHOverview.HelpContext :=           HELP_MENU_HELPOVERVIEW;
+//  MHWebsite.HelpContext :=            HELP_MENU_WEBSITE;
+//  MHAbout.HelpContext :=              HELP_MENU_HELPABOUT;
   // Process command line
   // Set initial dir of Open, Export and Save As dialog boxes to first parameter
   // unless param is -silent
@@ -766,7 +766,7 @@ begin
     Ed.Kind := AKind;       // info for title
     Ed.Text := DefChoice;   // default choice from drop-down list
     Ed.List := AList;       // the options for drop down list
-    Ed.HelpContext := HELP_DLG_EDITCONSTANT;
+//    Ed.HelpContext := HELP_DLG_EDITCONSTANT;
     // Display dlg box and act on user response (order of test is significant)
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return selected text (will be unchanged if user pressed cancel)
@@ -793,7 +793,7 @@ begin
     Ed.Kind := AKind;       // info for title
     Ed.Number := DefNumber; // the default number for editing
     Ed.ShowAsHex := True;   // tell dlg box to display default number as hex
-    Ed.HelpContext := HELP_DLG_EDITNUMBER;
+//    Ed.HelpContext := HELP_DLG_EDITNUMBER;
     // Display dlg box and act on input: NB order of test is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return number entered (will be unchanged if user pressed cancel)
@@ -830,7 +830,7 @@ begin
     Ed.Compulsory := MustEnter;     // record whether user must enter some text
     Ed.ValidFields := ValidFields;  // record list of valid fields
     Ed.AllowEnter := False;         // pressing Enter closes dlg box
-    Ed.HelpContext := HELP_DLG_EDITSTRING;
+//    Ed.HelpContext := HELP_DLG_EDITSTRING;
     // Display dlg box and act on input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record resulting text
@@ -859,7 +859,7 @@ begin
     Ed.Kind := AKind;     // info for title
     Ed.IncList := IList;  // list of items for "include" list
     Ed.ExcList := EList;  // list of items for "exclude" list
-    Ed.HelpContext := HELP_DLG_EDITBITSET;
+//    Ed.HelpContext := HELP_DLG_EDITBITSET;
     // Display dlg and act on user entry: order of test is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record items now on include list
@@ -887,7 +887,7 @@ begin
     // Set required properties
     Ed.Kind := VKind;               // info for title
     Ed.VersionNumber := Value;      // default version number for editing
-    Ed.HelpContext := HELP_DLG_EDITVNUMBER;
+//    Ed.HelpContext := HELP_DLG_EDITVNUMBER;
     // Display dlg and respond to user input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return new version number (will be unchanged if user pressed cancel)
@@ -928,7 +928,7 @@ begin
       // Perform analysis and get list of errors
       if fVerInfo.Analyse(EList) then
         // No error - report the fact
-        MsgNoAnalysisErrorsFound(HELP_MSGDLG_NOANALYSISERRORS)
+        MsgNoAnalysisErrorsFound
       else
       begin
         // There were errors - display them
@@ -937,7 +937,7 @@ begin
         // set the dlg box's caption and description
         DBox.Title := sAnalysisErrTitle;
         DBox.Description := sAnalysisErrDesc;
-        DBox.HelpContext := HELP_DLG_ANALYSIS;
+//        DBox.HelpContext := HELP_DLG_ANALYSIS;
         // display the dlg box
         DBox.ShowModal;
       end;
@@ -1001,10 +1001,7 @@ begin
     Index := DisplayListBox.ItemIndex;
     case Index of
       0, 8, 11:  // Titles - error - can't be edited
-        MsgCantEditTitle(
-          DisplayListBox.Items[DisplayListBox.ItemIndex],
-          HELP_MSGDLG_CANTEDITTITLE
-        );
+        MsgCantEditTitle(DisplayListBox.Items[DisplayListBox.ItemIndex]);
       1: // File version number
         fVerInfo.FileVersionNumber := GetVersionNumber(
           sFile, fVerInfo.FileVersionNumber
@@ -1063,9 +1060,7 @@ begin
                 sVXDSubType, fVerInfo.FileSubType
               );
             else       // All other file types - don't have sub-types
-              MsgCantEditSubType(
-                FileTypeToStr(fVerInfo.FileType), HELP_MSGDLG_CANTEDITSUBTYPE
-              );
+              MsgCantEditSubType(FileTypeToStr(fVerInfo.FileType));
           end;
         except
           on E: EVersionError do
@@ -1137,17 +1132,13 @@ begin
           )
         else if fVerInfo.StrInfo[StrInfoId] = '' then
           // string not permitted and there is no string - prevent edit
-          MsgNeedFileFlag(
-            fVerInfo.StrDesc[StrInfoId], HELP_MSGDLG_FILEFLAGREQUIRED
-          )
-        else if MsgDeleteInvalidText(
-          fVerInfo.StrDesc[StrInfoId], HELP_MSGDLG_NOTEXTALLOWED
-        ) then
+          MsgNeedFileFlag(fVerInfo.StrDesc[StrInfoId])
+        else if MsgDeleteInvalidText(fVerInfo.StrDesc[StrInfoId]) then
           // string not permitted, there is a value, user accepts deletion
           fVerInfo.StrInfo[StrInfoId] := '';
       end;
       -1: // No item selected - error
-        MsgNoItemToEdit(HELP_MSGDLG_NOITEMTOEDIT);
+        MsgNoItemToEdit;
     end;
     // Re-display and select current item agian
     fVerInfo.WriteToDisplay(DisplayListBox.Items);
@@ -1189,7 +1180,7 @@ begin
     Ed.Compulsory := False;           // user doesn't have to enter anything
     Ed.ValidFields := nil;            // no fields can be used
     Ed.AllowEnter := True;            // pressing enter starts a new line
-    Ed.HelpContext := HELP_DLG_EDITCOMMENTS;
+//    Ed.HelpContext := HELP_DLG_EDITCOMMENTS;
     // Call dialogue box and record user response
     if Ed.ShowModal = mrOK then
     begin
@@ -1214,7 +1205,7 @@ begin
   try
     // Set default identifier & help context
     Ed.Identifier := fVerInfo.Identifier;
-    Ed.HelpContext := HELP_DLG_EDITIDENTIFIER;
+//    Ed.HelpContext := HELP_DLG_EDITIDENTIFIER;
     // Display dlg box & get user's input and record if user made changes
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record new identifier - this will be unchanged if user clicked cancel
@@ -1245,7 +1236,7 @@ begin
     Ed.Compulsory := False;           // user doesn't have to enter anything
     Ed.ValidFields := nil;            // no fields can be used
     Ed.AllowEnter := True;            // pressing enter starts a new line
-    Ed.HelpContext := HELP_DLG_EDITCOMMENTS;
+//    Ed.HelpContext := HELP_DLG_EDITCOMMENTS;
     // Display dlg and record whether user made changes and clicked OK
     if Ed.ShowModal = mrOK then
     begin
@@ -1274,9 +1265,7 @@ begin
     // We have default output folder: uses it
     FileName := fVerInfo.ResOutputDir
       + ChangeFileExt(ExtractFileName(fCurrentFile), '.res');
-    if not FileExists(FileName)
-        or MsgOKToOverwrite(FileName, HELP_MSGDLG_OVERWRITEFILE
-      ) then
+    if not FileExists(FileName) or MsgOKToOverwrite(FileName) then
       DoExportRes(FileName);
   end
   else
@@ -1292,8 +1281,7 @@ begin
       );
       // check if file exists and OK to overwrite if so
       if not FileExists(CompilerDlg.FileName)
-        or MsgOKToOverwrite(CompilerDlg.FileName, HELP_MSGDLG_OVERWRITEFILE
-      ) then
+        or MsgOKToOverwrite(CompilerDlg.FileName) then
       begin
         // compile the file
         DoExportRes(CompilerDlg.FileName);
@@ -1325,7 +1313,7 @@ procedure TMainForm.MFExportClick(Sender: TObject);
     }
   begin
     Result := not FileExists(ExportDlg.FileName)
-      or MsgOKToOverwrite(ExportDlg.FileName, HELP_MSGDLG_OVERWRITEFILE);
+      or MsgOKToOverwrite(ExportDlg.FileName);
   end;
   // ---------------------------------------------------------------------------
 
@@ -1372,7 +1360,7 @@ begin
     end
     else
       // Can't cope with other extensions - refuse
-      MsgInvalidExtension(ExportDlg.FileName, HELP_MSGDLG_BADEXTENSION);
+      MsgInvalidExtension(ExportDlg.FileName);
   end;
 end;
 
@@ -1450,7 +1438,7 @@ begin
       // Set the dlg box's caption and description
       DBox.Title := sViewRCTitle;
       DBox.Description := sViewRCDesc;
-      DBox.HelpContext := HELP_DLG_VIEWRC;
+//      DBox.HelpContext := HELP_DLG_VIEWRC;
       // Display the dlg
       DBox.ShowModal;
     finally
@@ -1484,7 +1472,7 @@ procedure TMainForm.MHOverviewClick(Sender: TObject);
   }
 begin
   // Call WinHelp for overview topic in application's help file
-  Application.HelpContext(HELP_OVERVIEW);
+//  Application.HelpContext(HELP_OVERVIEW);
 end;
 
 procedure TMainForm.MHWebsiteClick(Sender: TObject);
@@ -1545,7 +1533,7 @@ begin
     DBox.AutoValidate := Settings.ReadBool(siAutoValidate);
     DBox.DescribeFileFlags := Settings.ReadBool(siDescribeFileFlags);
     // Set help context
-    DBox.HelpContext := HELP_DLG_SETUP;
+//    DBox.HelpContext := HELP_DLG_SETUP;
     // Display the dlg box and act on result
     if DBox.ShowModal = mrOK then
     begin
@@ -1618,7 +1606,7 @@ begin
   else
   begin
     // in-valid extension - tell user
-    MsgInvalidExtension(FileName, HELP_MSGDLG_BADEXTENSION);
+    MsgInvalidExtension(FileName);
     Result := False;
   end;
 end;
@@ -1642,7 +1630,7 @@ begin
   // Check if file has changed
   if fChanged then
     // File has changed - ask user if they want to save it
-    case MsgQuerySaveFile(fCurrentFile, HELP_MSGDLG_FILECHANGED) of
+    case MsgQuerySaveFile(fCurrentFile) of
       mrYes:
         // user want to save: result depends on whether saved OK
         //   it's OK to throw away if file was saved OK
@@ -1699,8 +1687,8 @@ begin
     if (AnsiCompareText(Ext, cVIExt) = 0) then
     begin
       // Saving version information file
-      if not FileExists(SaveDlg.FileName) or
-        MsgOKToOverwrite(SaveDlg.FileName, HELP_MSGDLG_OVERWRITEFILE) then
+      if not FileExists(SaveDlg.FileName)
+        or MsgOKToOverwrite(SaveDlg.FileName) then
       begin
         // Save a .vi file and set result to true: remember dir used for next
         // use of Save As
@@ -1711,7 +1699,7 @@ begin
     end
     else
       // Can't cope with other extensions - refuse
-      MsgInvalidExtension(SaveDlg.FileName, HELP_MSGDLG_BADEXTENSION);
+      MsgInvalidExtension(SaveDlg.FileName);
   end;
 end;
 

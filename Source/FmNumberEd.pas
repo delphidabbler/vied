@@ -106,7 +106,7 @@ begin
     on E: EConvertError do
     begin
       // We've had a conversion error: report to user & keep dlg open
-      MsgInvalidNumber(HELP_MSGDLG_BADNUMBER);
+      MsgInvalidNumber;
       ModalResult := 0;
       edNum.SetFocus;
     end;

@@ -94,7 +94,7 @@ begin
   if (edId.Text <> '') and CharInSet(edId.Text[1], ['0'..'9']) then
   begin
      // Identifier did start with digit - error
-    MsgInvalidIdentifier(HELP_MSGDLG_BADIDENTIFIER);
+    MsgInvalidIdentifier;
     ModalResult := 0;
     edId.SetFocus;
   end
