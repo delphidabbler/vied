@@ -31,7 +31,7 @@ are consenting to be bound by the agreement. If you do not agree to
 the terms and conditions of this agreement do not install or use any
 part of DelphiDabbler Version Information Editor.
 
-DelphiDabbler Version Information Editor is copyright (c) 1998-2008 by
+DelphiDabbler Version Information Editor is copyright (c) 1998-2011 by
 Peter D Johnson, http://www.delphidabbler.com.
 
 
