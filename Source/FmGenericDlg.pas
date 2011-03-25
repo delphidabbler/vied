@@ -109,7 +109,7 @@ end;
 
 procedure TGenericDlg.btnHelpClick(Sender: TObject);
 begin
-  THelp.ShowALink(GetHelpALinkKeyword, cDlgErrTopic);
+  THelp.ShowALink(GetHelpALinkKeyword, THelp.DlgErrTopic);
 end;
 
 procedure TGenericDlg.FormCreate(Sender: TObject);

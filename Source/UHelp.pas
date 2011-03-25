@@ -84,12 +84,11 @@ type
       static;
     ///  <summary>Closes down the help system.</summary>
     class procedure Quit; static;
+    const
+      ///  <summary>Topic displayed when a dialog box has no associated a-link
+      ///  keyword or a-link keyword matches no dialog box.</summary>
+      DlgErrTopic = 'dlg-nohelp';
   end;
-
-
-const
-  ///  Topic displayed when a dialog box has no associated topic
-  cDlgErrTopic = 'dlg-nohelp';
 
 
 implementation
