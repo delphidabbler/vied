@@ -1,5 +1,5 @@
 [OPTIONS]
-Auto TOC=9
+Binary Index=No
 Compatibility=1.1
 Compiled file=..\..\Exe\VIEd.chm
 Contents file=TOC.hhc

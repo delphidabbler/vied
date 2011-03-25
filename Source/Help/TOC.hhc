@@ -5,12 +5,12 @@
 <!-- Sitemap 1.0 -->
 </HEAD><BODY>
 <OBJECT type="text/site properties">
-	<param name="Auto Generated" value="Yes">
+	<param name="Window Styles" value="0x800025">
 </OBJECT>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Welcome     css/help.css">
-		<param name="Local" value="HTML/index.htm">
+		<param name="Name" value="Welcome">
+		<param name="Local" value="HTML\index.htm">
 		</OBJECT>
 </UL>
 </BODY></HTML>
