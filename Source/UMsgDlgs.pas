@@ -44,110 +44,84 @@ uses
   Classes;
 
 
-function MsgQuerySaveFile(const FileName: string;
-  const HelpContext: THelpContext): Word;
-  {Warns that a file has changed and contents will be lost and gets user's
-  response.
-    @param FileName [in] Name of file that has changed.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return mrYes to save file, mrNo to abandon file or mrCancel to cancel the
-      current operation.
-  }
+///  <summary>Displays dialog that warns that a file has changed and gets user's
+///  response.</summary>
+///  <param name="FileName">string [in] Name of file that has changed.</param>
+///  <returns>Word. mrYes to save file, mrNo to abandon file or mrCancel to
+///  cancel the current operation.</returns>
+function MsgQuerySaveFile(const FileName: string): Word;
 
-procedure MsgInvalidExtension(const FileName: string;
-  const HelpContext: THelpContext);
-  {Error message that notes a file has an invalid extension.
-    @param FileName [in] Name of file with invalid extenstion.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays error message that notes a file has an invalid extension.
+///  </summary>
+///  <param name="FileName">string [in] Name of file with invalid extension.
+///  </param>
+procedure MsgInvalidExtension(const FileName: string);
 
-function MsgOKToOverwrite(const FileName: string;
-  const HelpContext: THelpContext): Boolean;
-  {Seeks confirmation that it's OK to overwrite a file.
-    @param FileName [in] Name of file to be overwritten.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return True if it's OK to overwrite file, False if not.
-  }
+///  <summary>Display dialog seeking confirmation that it is OK to overwrite a
+///  file.</summary>
+///  <param name="FileName">string [in] Name of file to be overwritten.</param>
+///  <returns>Boolean. True if it is OK to overwrite the file.</returns>
+function MsgOKToOverwrite(const FileName: string): Boolean;
 
-procedure MsgNoItemToEdit(const HelpContext: THelpContext);
-  {Error message noting an attempt has been made to edit an item when none is
-  selected.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays error message noting an attempt has been made to edit an
+///  item when none is selected.</summary>
+procedure MsgNoItemToEdit;
 
-procedure MsgCantEditTitle(const Title: string;
-  const HelpContext: THelpContext);
-  {Error message noting an attempt has been made to edit a title.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays an error message noting an attempt has been made to edit
+///  a title.</summary>
+///  <param name="Title">string [in] The title concerned.</param>
+procedure MsgCantEditTitle(const Title: string);
 
-procedure MsgCantEditSubType(const FType: string;
-  const HelpContext: THelpContext);
-  {Error message noting an attempt has been made to edit a File Sub-Type for
-  a File Type which has no Sub-Type.
-    @param FType [in] File type that has no sub-type.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays an error message noting an attempt has been made to edit
+///  a File Sub-Type for a File Type which has no Sub-Type.</summary>
+///  <param name="FType">string [in] Name of file type.</param>
+procedure MsgCantEditSubType(const FType: string);
 
-procedure MsgInvalidNumber(const HelpContext: THelpContext);
-  {Error message noting an invalid number was entered.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays an error message noting an invalid number was entered.
+///  </summary>
+procedure MsgInvalidNumber;
 
-function MsgStringRequired(const StrDesc: string;
-  const HelpContext: THelpContext): Word;
-  {Warns that an entry is required for a string item.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return mrOK if user agrees to provide a string or mrIgnore if the user
-      chooses to ignore the warning.
-  }
+///  <summary>Displays a warning that an entry is required for a string item
+///  and gives the user the choice of providing an entry or not.</summary>
+///  <param name="StrDesc">string [in] Description of string item.</param>
+///  <returns>Word. mrOK if user agrees to provide a string or mrIgnore if the
+///  user chooses to ignore the warning.</returns>
+function MsgStringRequired(const StrDesc: string): Word;
 
-procedure MsgNeedFileFlag(const StrDesc: string;
-  const HelpContext: THelpContext);
-  {Error message noting an attempt was made to edit a string item which is only
-  valid if a specific File Flag is set.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays an error message noting an attempt was made to edit a
+///  string item which is only valid if a specific File Flag is set.</summary>
+///  <param name="StrDesc">string [in] Description of string item.</param>
+procedure MsgNeedFileFlag(const StrDesc: string);
 
-function MsgDeleteInvalidText(const StrDesc: string;
-  const HelpContext: THelpContext): Boolean;
-  {Offers to delete the text of a string item that can only have a value if a
-  specific file flag is set.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return True if the user agrees and False if not.
-  }
+///  <summary>Displays a message box that offers to delete the text of a string
+///  item that can only have a value if a specific file flag is set.</summary>
+///  <param name="StrDesc">string [in] Description of string item.</param>
+///  <returns>Boolean. True if the user agrees.</returns>
+function MsgDeleteInvalidText(const StrDesc: string): Boolean;
 
-procedure MsgInvalidField(const Field, StrDesc: string;
-  const HelpContext: THelpContext);
-  {Error message noting a field has been found in the text of a string item
-  where the field is not valid for the string item.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays an error message noting a field has been found in the
+///  text of a string item where the field is not valid for the string item.
+///  </summary>
+///  <param name="Field">string [in] Name of field.</param>
+///  <param name="StrDesc">string [in] Description of string item.</param>
+procedure MsgInvalidField(const Field, StrDesc: string);
 
-procedure MsgInvalidIdentifier(const HelpContext: THelpContext);
-  {Error message noting an identifier that begins with a digit has been entered.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Display an error message noting an identifier that begins with a
+///  digit has been entered.</summary>
+procedure MsgInvalidIdentifier;
 
-procedure MsgNoAnalysisErrorsFound(const HelpContext: THelpContext);
-  {Informs the user that no errors have been found following analysis of a file.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays a messages that informs the user that no errors have been
+///  found following analysis of a file.</summary>
+procedure MsgNoAnalysisErrorsFound;
 
-procedure MsgFileAccessError(const FileName: string;
-  const HelpContext: THelpContext);
-  {Error message noting an error occurred while accessing a file.
-    @param FileName [in] Name of file being accessed.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+///  <summary>Displays a message noting an error occurred while accessing a
+///  file.</summary>
+///  <param name="FileName">string [in] Name of file being accessed.</param>
+procedure MsgFileAccessError(const FileName: string);
 
+///  <summary>Displays an error message noting that no file name was specified.
+///  </summary>
 procedure MsgNoFileName;
-  {Error message noting that no file name was specified.
-  }
 
 
 implementation
@@ -157,7 +131,7 @@ uses
   // Delphi
   SysUtils, Controls, Dialogs, Forms,
   // Project
-  UAltBugFix;
+  UAltBugFix, UHelp;
 
 
 resourcestring
@@ -186,31 +160,23 @@ resourcestring
   sNoFileName = 'No file name was specified.';
   sUntitled = 'Untitled';
 
-
+///  <summary>Displays a customised message dialog box.</summary>
+///  <param name="Msg">string [in] Message displayed in dialog box.</param>
+///  <param name="MsgType">TMsgDlgType [in] Type of dialog box. Must not be
+///  mtCustom.</param>
+///  <param name="Buttons">TMsgDlgButtons [in] Set of buttons to display in
+///  dialog box.</param>
+///  <returns>Word. Value indicating which button was pressed to close the
+///  dialog box.</returns>
 function Display(const Msg: string; const MsgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpContext: THelpContext): Word;
-  {Displays a message in a customised dialog box.
-    @param Msg [in] Message displayed in dialog.
-    @param MsgType [in] Type of dialog box. Must not be mtCustom.
-    @param Buttons [in] Set of buttons to display in dialog box.
-    @param HelpContext [in] Help context number. Help button displayed if non
-      zero.
-    @return Value indicating which button was pressed to close dialog box.
-  }
+  const Buttons: TMsgDlgButtons): Word;
 var
   Dlg: TForm;           // dialog box instance
-  Btns: TMsgDlgButtons; // set of buttons to be displayed
 begin
-  Assert(MsgType <> mtCustom,                              // ** do not localise
-    'TMessageBox.Display: MsgType is mtCustom');
+  Assert(MsgType <> mtCustom, 'Display: MsgType is mtCustom');
   // Create a dialog box of required type
-  Btns := Buttons;
-  if HelpContext <> 0 then
-    Include(Btns, mbHelp);
-  Dlg := CreateMessageDialog(Msg, MsgType, Btns);
+  Dlg := CreateMessageDialog(Msg, MsgType, Buttons);
   try
-    // Set help context
-    Dlg.HelpContext := HelpContext;
     // Register dialog box to fix Delphi's Alt bug
     AltBugFix.RegisterCtrl(Dlg);
     // Display the dialog and return result
@@ -222,15 +188,7 @@ begin
   end;
 end;
 
-function MsgQuerySaveFile(const FileName: string;
-  const HelpContext: THelpContext): Word;
-  {Warns that a file has changed and contents will be lost and gets user's
-  response.
-    @param FileName [in] Name of file that has changed.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return mrYes to save file, mrNo to abandon file or mrCancel to cancel the
-      current operation.
-  }
+function MsgQuerySaveFile(const FileName: string): Word;
 var
   Str: string;     {the filename to be displayed}
 begin
@@ -240,183 +198,88 @@ begin
   else
     Str := '[' + sUntitled + ']';
   Result := Display(
-    Format(sQuerySaveFile, [Str]),
-    mtWarning,
-    [mbYes, mbNo, mbCancel, mbHelp],
-    HelpContext
+    Format(sQuerySaveFile, [Str]), mtWarning, [mbYes, mbNo, mbCancel, mbHelp]
   );
 end;
 
-procedure MsgInvalidExtension(const FileName: string;
-  const HelpContext: THelpContext);
-  {Error message that notes a file has an invalid extension.
-    @param FileName [in] Name of file with invalid extenstion.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgInvalidExtension(const FileName: string);
 begin
   Display(
     Format(sInvalidExtension, [ExtractFileName(FileName)]),
     mtError,
-    [mbOK, mbHelp],
-    HelpContext
+    [mbOK, mbHelp]
   );
 end;
 
-function MsgOKToOverwrite(const FileName: string;
-  const HelpContext: THelpContext): Boolean;
-  {Seeks confirmation that it's OK to overwrite a file.
-    @param FileName [in] Name of file to be overwritten.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return True if it's OK to overwrite file, False if not.
-  }
+function MsgOKToOverwrite(const FileName: string): Boolean;
 begin
   Result := Display(
-    Format(sOKToOverwrite, [FileName]),
-    mtConfirmation,
-    [mbYes, mbNo, mbHelp],
-    HelpContext
+    Format(sOKToOverwrite, [FileName]), mtConfirmation, [mbYes, mbNo, mbHelp]
   ) = mrYes;
 end;
 
-procedure MsgNoItemToEdit(const HelpContext: THelpContext);
-  {Error message noting an attempt has been made to edit an item when none is
-  selected.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgNoItemToEdit;
 begin
-  Display(sNoItemToEdit, mtError, [mbOK, mbHelp], HelpContext);
+  Display(sNoItemToEdit, mtError, [mbOK, mbHelp]);
 end;
 
-procedure MsgCantEditTitle(const Title: string;
-  const HelpContext: THelpContext);
-  {Error message noting an attempt has been made to edit a title.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgCantEditTitle(const Title: string);
 begin
-  Display(
-    Format(sCantEditTitle, [Title]), mtError, [mbOK, mbHelp], HelpContext
-  );
+  Display(Format(sCantEditTitle, [Title]), mtError, [mbOK, mbHelp]);
 end;
 
-procedure MsgCantEditSubType(const FType: string;
-  const HelpContext: THelpContext);
-  {Error message noting an attempt has been made to edit a File Sub-Type for
-  a File Type which has no Sub-Type.
-    @param FType [in] File type that has no sub-type.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgCantEditSubType(const FType: string);
 begin
-  Display(
-    Format(sCantEditSubType, [FType]), mtError, [mbOK, mbHelp], HelpContext
-  );
+  Display(Format(sCantEditSubType, [FType]), mtError, [mbOK, mbHelp]);
 end;
 
-procedure MsgInvalidNumber(const HelpContext: THelpContext);
-  {Error message noting an invalid number was entered.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgInvalidNumber;
 begin
-  Display(sInvalidNumber, mtError, [mbOK, mbHelp], HelpContext);
+  Display(sInvalidNumber, mtError, [mbOK, mbHelp]);
 end;
 
-function MsgStringRequired(const StrDesc: string;
-  const HelpContext: THelpContext): Word;
-  {Warns that an entry is required for a string item.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return mrOK if user agrees to provide a string or mrIgnore if the user
-      chooses to ignore the warning.
-  }
+function MsgStringRequired(const StrDesc: string): Word;
 begin
   Result := Display(
-    Format(sStringRequired, [StrDesc]),
-    mtWarning,
-    [mbOk, mbIgnore, mbHelp],
-    HelpContext
+    Format(sStringRequired, [StrDesc]), mtWarning, [mbOk, mbIgnore, mbHelp]
   );
 end;
 
-procedure MsgNeedFileFlag(const StrDesc: string;
-  const HelpContext: THelpContext);
-  {Error message noting an attempt was made to edit a string item which is only
-  valid if a specific File Flag is set.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgNeedFileFlag(const StrDesc: string);
 begin
-  Display(
-    Format(sNeedFileFlag, [StrDesc]), mtError, [mbOk, mbHelp], HelpContext
-  );
+  Display(Format(sNeedFileFlag, [StrDesc]), mtError, [mbOk, mbHelp]);
 end;
 
-function MsgDeleteInvalidText(const StrDesc: string;
-  const HelpContext: THelpContext): Boolean;
-  {Offers to delete the text of a string item that can only have a value if a
-  specific file flag is set.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-    @return True if the user agrees and False if not.
-  }
+function MsgDeleteInvalidText(const StrDesc: string): Boolean;
 begin
   Result := Display(
-    Format(sDeleteInvalidText, [StrDesc]),
-    mtWarning,
-    [mbYes, mbNo, mbHelp],
-    HelpContext
+    Format(sDeleteInvalidText, [StrDesc]), mtWarning, [mbYes, mbNo, mbHelp]
   ) = mrYes;
 end;
 
-procedure MsgInvalidField(const Field, StrDesc: string;
-  const HelpContext: THelpContext);
-  {Error message noting a field has been found in the text of a string item
-  where the field is not valid for the string item.
-    @param StrDesc [in] Description of string item.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgInvalidField(const Field, StrDesc: string);
 begin
-  Display(
-    Format(sInvalidField, [Field, StrDesc]),
-    mtError,
-    [mbOK, mbHelp],
-    HelpContext
-  );
+  Display(Format(sInvalidField, [Field, StrDesc]), mtError, [mbOK, mbHelp]);
 end;
 
-procedure MsgInvalidIdentifier(const HelpContext: THelpContext);
-  {Error message noting an identifier that begins with a digit has been entered.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgInvalidIdentifier;
 begin
-  Display(sInvalidIdentifier, mtError, [mbOK, mbHelp], HelpContext);
+  Display(sInvalidIdentifier, mtError, [mbOK, mbHelp]);
 end;
 
-procedure MsgNoAnalysisErrorsFound(const HelpContext: THelpContext);
-  {Informs the user that no errors have been found following analysis of a file.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgNoAnalysisErrorsFound;
 begin
-  Display(
-    sNoAnalysisErrorsFound, mtInformation, [mbOK, mbHelp], HelpContext
-  );
+  Display(sNoAnalysisErrorsFound, mtInformation, [mbOK, mbHelp]);
 end;
 
-procedure MsgFileAccessError(const FileName: string;
-  const HelpContext: THelpContext);
-  {Error message noting an error occurred while accessing a file.
-    @param FileName [in] Name of file being accessed.
-    @param HelpContext [in] References help topic associated with dialog box.
-  }
+procedure MsgFileAccessError(const FileName: string);
 begin
-  Display(
-    Format(sFileAccessError, [FileName]), mtError, [mbOK, mbHelp], HelpContext
-  );
+  Display(Format(sFileAccessError, [FileName]), mtError, [mbOK, mbHelp]);
 end;
 
 procedure MsgNoFileName;
-  {Error message noting that no file name was specified.
-  }
 begin
-  Display(sNoFileName, mtError, [mbOK], 0);
+  Display(sNoFileName, mtError, [mbOK]);
 end;
 
 end.
