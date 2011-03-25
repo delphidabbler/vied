@@ -171,12 +171,8 @@ object MainForm: TMainForm
       Caption = '&Help'
       object MHContents: TMenuItem
         Caption = '&Contents'
-        ShortCut = 16496
+        ShortCut = 112
         OnClick = MHContentsClick
-      end
-      object MHOverview: TMenuItem
-        Caption = '&Overview'
-        OnClick = MHOverviewClick
       end
       object MHSpacer1: TMenuItem
         Caption = '-'

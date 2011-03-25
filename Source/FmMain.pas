@@ -92,7 +92,6 @@ type
     MOResCompiler: TMenuItem;
     MHelp: TMenuItem;
     MHContents: TMenuItem;
-    MHOverview: TMenuItem;
     MHSpacer1: TMenuItem;
     MHWebsite: TMenuItem;
     MHSpacer2: TMenuItem;
@@ -133,7 +132,6 @@ type
     procedure MFViewRCClick(Sender: TObject);
     procedure MERCIdentifierClick(Sender: TObject);
     procedure MERCCommentsClick(Sender: TObject);
-    procedure MHOverviewClick(Sender: TObject);
     procedure MEVICommentsClick(Sender: TObject);
     procedure FileCatcherDropFiles(Sender: TObject);
     procedure WdwStateGetRegData(var RootKey: HKEY; var SubKey: String);
@@ -317,12 +315,6 @@ resourcestring
   sCompilePermission = 'Compiling will overwrite %0:s.';
   sAnalysisErrTitle = 'Analysis Errors';
   sAnalysisErrDesc = 'List of errors found during analysis:';
-  sNoWinHelp = 'You are running on Windows Vista or later and WinHelp is not '
-      + 'installed.'#10#10
-      + 'This means that you will not be able to use the program''s help.'#10#10
-      + 'Search for update KB917607 on MSDN or the Microsoft website to obtain '
-      + 'a copy of WinHelp that works on Vista or Windows 2008 Server.'#10#10
-      + 'This message will not be shown again.';
 
   // Dialog box titles
   sFile = 'File';
@@ -595,10 +587,6 @@ begin
       and not WS_EX_APPWINDOW or WS_EX_TOOLWINDOW
   );
   ShowWindow(Application.Handle, SW_SHOW);
-  // Ensure that application help file specifies full path
-  // this makes sure file can be found from standard dialogs
-  Application.HelpFile := ExtractFilePath(ParamStr(0))
-    + ExtractFileName(Application.HelpFile);
   // Set size of header sections and set list box tab stop
   DisplayHeader.SectionWidth[0] := 140;
   DisplayListBox.TabWidth :=
@@ -680,71 +668,16 @@ procedure TMainForm.FormDestroy(Sender: TObject);
     @param Sender [in] Not used.
   }
 begin
-  // Dispose of owned objects
   fVerInfo.Free;
-  // Free help system
-  Application.HelpCommand(HELP_QUIT, 0);
+  THelp.Quit;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
-  {Form show event handler: checks for presence of compiler and WinHelp.
+  {Form show event handler: checks for presence of resource compiler.
     @param Sender [in] Not used.
   }
-
-  function WindowsFolder: string;
-    {Gets Windows folder.
-      @return Full path to Windows folder.
-    }
-  begin
-    SetLength(Result, MAX_PATH);
-    SetLength(
-      Result, GetWindowsDirectory(PChar(Result), MAX_PATH)
-    );
-  end;
-
-  function IsWinHelpInstalled: Boolean;
-    {Checks if WinHelp is installed.
-      @return True if OS is earlier than Vista or if Vista or later and WinHelp
-        program exists in Windows folder. False otherwise.
-    }
-  var
-    WinHelpPath: string;  // full path to WinHelp
-  begin
-    if IsVistaOrLater then
-    begin
-      WinHelpPath := IncludeTrailingPathDelimiter(WindowsFolder)
-        + 'winhlp32.exe';
-      Result := FileExists(WinHelpPath);
-    end
-    else
-      Result := True;
-  end;
-
-  function Is1stRun: Boolean;
-    {Checks if this is first run of program.
-      @return True if this is first run of program.
-    }
-  begin
-    Result := not Settings.ReadBool(siHasRun);
-  end;
-
-  procedure RecordHasRun;
-    {Record in registry that the program has been run.
-    }
-  begin
-    Settings.WriteBool(siHasRun, True);
-  end;
-
 begin
-  // Check if a resource compiler has been set up
   CheckCompiler;
-  // If 1st run, Vista and WinHelp is not installed display a message to say so
-  if Is1stRun and not IsWinHelpInstalled then
-  begin
-    MessageBeep(0);
-    MessageDlg(sNoWinHelp, mtInformation, [mbOK], 0);
-  end;
-  RecordHasRun;
 end;
 
 function TMainForm.GetDropDownChoice(const AKind: string;
@@ -1462,17 +1395,7 @@ procedure TMainForm.MHContentsClick(Sender: TObject);
     @param Sender [in] Not used.
   }
 begin
-  // Call WinHelp for contents topic in application's help file
-  Application.HelpCommand(HELP_CONTENTS, 0);
-end;
-
-procedure TMainForm.MHOverviewClick(Sender: TObject);
-  {Help | Overview menu click event handler.
-    @param Sender [in] Not used.
-  }
-begin
-  // Call WinHelp for overview topic in application's help file
-//  Application.HelpContext(HELP_OVERVIEW);
+  THelp.Contents;
 end;
 
 procedure TMainForm.MHWebsiteClick(Sender: TObject);
