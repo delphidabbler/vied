@@ -74,6 +74,7 @@
 			<DCCReference Include="UAltBugFix.pas"/>
 			<DCCReference Include="UDlgParent.pas"/>
 			<DCCReference Include="UHelp.pas"/>
+			<DCCReference Include="UHTMLHelp.pas"/>
 			<DCCReference Include="UMsgDlgs.pas"/>
 			<DCCReference Include="UOSInfo.pas"/>
 			<DCCReference Include="UResCompiler.pas"/>

@@ -56,6 +56,7 @@ uses
   UAltBugFix in 'UAltBugFix.pas',
   UDlgParent in 'UDlgParent.pas',
   UHelp in 'UHelp.pas',
+  UHTMLHelp in 'UHTMLHelp.pas',
   UMsgDlgs in 'UMsgDlgs.pas',
   UOSInfo in 'UOSInfo.pas',
   UResCompiler in 'UResCompiler.pas',

@@ -40,12 +40,121 @@ unit UHelp;
 interface
 
 
+uses
+  // Delphi
+  Windows;
+
+
+type
+  ///  <summary>
+  ///  Record that provides methods used to manage the HTML help system.
+  ///  </summary>
+  THelp = record
+  strict private
+    ///  <summary>Returns fully qualified name of help file.</summary>
+    class function HelpFileName: string; static;
+    ///  <summary>Returns fully specified topic URL from a topic name.</summary>
+    ///  <remarks>Name of topic is same as topic HTML file, without the
+    ///  extension.</remarks>
+    class function TopicURL(const TopicName: string): string; static;
+    ///  <summary>Calss the HtmlHelp API with a specified command and
+    ///  parameters.</summary>
+    ///  <param name="Command">LongWord [in] Command to send to HTML Help.
+    ///  </param>
+    ///  <param name="TopicName">string [in] Names an HTML topic file within the
+    ///  help file, without extension. May be '' if no specific topic is
+    ///  required.</param>
+    ///  <param name="Data">LongWord [in] Command dependent data to pass to HTML
+    ///  Help.</param>
+    class procedure DoAppHelp(const Command: LongWord;
+      const TopicName: string; const Data: LongWord); static;
+  public
+    ///  <summary>Displays help contents.</summary>
+    class procedure Contents; static;
+    ///  <summary>Displays a given help topic.</summary>
+    ///  <param name="Topic">string [in] Help topic to display. This must be the
+    ///  name of the topic HTML file, without the extension.</param>
+    class procedure ShowTopic(Topic: string); static;
+    ///  <summary>Displays help topic(s) specified by an A-Link keyword.
+    ///  </summary>
+    ///  <param name="AKeyword">string [in] Required A-Link keyword.</param>
+    ///  <param name="ErrTopic">string [in] Name of topic to be displayed if
+    ///  AKeyword is not found.</param>
+    class procedure ShowALink(const AKeyword: string; const ErrTopic: string);
+      static;
+    ///  <summary>Closes down the help system.</summary>
+    class procedure Quit; static;
+  end;
+
+
 const
-  // We get the constants we export from map file (also used by help compiler)
-  {$Include Help\VIEd.map}
+  ///  Topic displayed when a dialog box has no associated topic
+  cDlgErrTopic = 'dlg-nohelp';
 
 
 implementation
 
 
+uses
+  // Delphi
+  SysUtils,
+  // Project
+  UHTMLHelp;
+
+
+{ THelp }
+
+class procedure THelp.Contents;
+begin
+  DoAppHelp(HH_DISPLAY_TOC, '', 0);
+end;
+
+class procedure THelp.DoAppHelp(const Command: LongWord;
+  const TopicName: string; const Data: LongWord);
+var
+  HelpURL: string; // URL of help file, or topic with help file
+begin
+  if TopicName = '' then
+    HelpURL := HelpFileName
+  else
+    HelpURL := TopicURL(TopicName);
+  HtmlHelp(GetDesktopWindow(), PChar(HelpURL), Command, Data);
+end;
+
+class function THelp.HelpFileName: string;
+begin
+  Result := ChangeFileExt(ParamStr(0), '.chm');
+end;
+
+class procedure THelp.Quit;
+begin
+  HtmlHelp(0, nil, HH_CLOSE_ALL, 0);
+end;
+
+class procedure THelp.ShowALink(const AKeyword: string;
+  const ErrTopic: string);
+var
+  ALink: THHAKLink;   // structure containing details of A-Link
+begin
+  // Fill in A link structure
+  ZeroMemory(@ALink, SizeOf(ALink));
+  ALink.cbStruct := SizeOf(ALink);      // size of structure
+  ALink.fIndexOnFail := False;
+  ALink.pszUrl := PChar(TopicURL(ErrTopic));
+  ALink.pszKeywords := PChar(AKeyword); // required keyword
+  // Display help
+  DoAppHelp(HH_ALINK_LOOKUP, '', LongWord(@ALink));
+end;
+
+class procedure THelp.ShowTopic(Topic: string);
+begin
+  DoAppHelp(HH_DISPLAY_TOPIC, Topic, 0);
+end;
+
+class function THelp.TopicURL(const TopicName: string): string;
+begin
+  Result := HelpFileName + '::/HTML/' + TopicName + '.htm';
+end;
+
 end.
+
