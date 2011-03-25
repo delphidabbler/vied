@@ -194,83 +194,81 @@ begin
   else
     Str := '[' + sUntitled + ']';
   Result := Display(
-    Format(sQuerySaveFile, [Str]), mtWarning, [mbYes, mbNo, mbCancel, mbHelp]
+    Format(sQuerySaveFile, [Str]), mtWarning, [mbYes, mbNo, mbCancel]
   );
 end;
 
 procedure MsgInvalidExtension(const FileName: string);
 begin
   Display(
-    Format(sInvalidExtension, [ExtractFileName(FileName)]),
-    mtError,
-    [mbOK, mbHelp]
+    Format(sInvalidExtension, [ExtractFileName(FileName)]), mtError, [mbOK]
   );
 end;
 
 function MsgOKToOverwrite(const FileName: string): Boolean;
 begin
   Result := Display(
-    Format(sOKToOverwrite, [FileName]), mtConfirmation, [mbYes, mbNo, mbHelp]
+    Format(sOKToOverwrite, [FileName]), mtConfirmation, [mbYes, mbNo]
   ) = mrYes;
 end;
 
 procedure MsgNoItemToEdit;
 begin
-  Display(sNoItemToEdit, mtError, [mbOK, mbHelp]);
+  Display(sNoItemToEdit, mtError, [mbOK]);
 end;
 
 procedure MsgCantEditTitle(const Title: string);
 begin
-  Display(Format(sCantEditTitle, [Title]), mtError, [mbOK, mbHelp]);
+  Display(Format(sCantEditTitle, [Title]), mtError, [mbOK]);
 end;
 
 procedure MsgCantEditSubType(const FType: string);
 begin
-  Display(Format(sCantEditSubType, [FType]), mtError, [mbOK, mbHelp]);
+  Display(Format(sCantEditSubType, [FType]), mtError, [mbOK]);
 end;
 
 procedure MsgInvalidNumber;
 begin
-  Display(sInvalidNumber, mtError, [mbOK, mbHelp]);
+  Display(sInvalidNumber, mtError, [mbOK]);
 end;
 
 function MsgStringRequired(const StrDesc: string): Word;
 begin
   Result := Display(
-    Format(sStringRequired, [StrDesc]), mtWarning, [mbOk, mbIgnore, mbHelp]
+    Format(sStringRequired, [StrDesc]), mtWarning, [mbOk, mbIgnore]
   );
 end;
 
 procedure MsgNeedFileFlag(const StrDesc: string);
 begin
-  Display(Format(sNeedFileFlag, [StrDesc]), mtError, [mbOk, mbHelp]);
+  Display(Format(sNeedFileFlag, [StrDesc]), mtError, [mbOk]);
 end;
 
 function MsgDeleteInvalidText(const StrDesc: string): Boolean;
 begin
   Result := Display(
-    Format(sDeleteInvalidText, [StrDesc]), mtWarning, [mbYes, mbNo, mbHelp]
+    Format(sDeleteInvalidText, [StrDesc]), mtWarning, [mbYes, mbNo]
   ) = mrYes;
 end;
 
 procedure MsgInvalidField(const Field, StrDesc: string);
 begin
-  Display(Format(sInvalidField, [Field, StrDesc]), mtError, [mbOK, mbHelp]);
+  Display(Format(sInvalidField, [Field, StrDesc]), mtError, [mbOK]);
 end;
 
 procedure MsgInvalidIdentifier;
 begin
-  Display(sInvalidIdentifier, mtError, [mbOK, mbHelp]);
+  Display(sInvalidIdentifier, mtError, [mbOK]);
 end;
 
 procedure MsgNoAnalysisErrorsFound;
 begin
-  Display(sNoAnalysisErrorsFound, mtInformation, [mbOK, mbHelp]);
+  Display(sNoAnalysisErrorsFound, mtInformation, [mbOK]);
 end;
 
 procedure MsgFileAccessError(const FileName: string);
 begin
-  Display(Format(sFileAccessError, [FileName]), mtError, [mbOK, mbHelp]);
+  Display(Format(sFileAccessError, [FileName]), mtError, [mbOK]);
 end;
 
 procedure MsgNoFileName;
