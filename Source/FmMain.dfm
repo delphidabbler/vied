@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 334
   Top = 148
-  Width = 603
-  Height = 377
+  ClientHeight = 321
+  ClientWidth = 587
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clBlack
@@ -42,7 +42,6 @@ object MainForm: TMainForm
     Width = 587
     Height = 302
     Align = alClient
-    ItemHeight = 16
     TabOrder = 1
     OnDblClick = MECurrentClick
   end
@@ -199,7 +198,6 @@ object MainForm: TMainForm
     Title = 'About'
     ButtonPlacing = abpRight
     ButtonKind = abkDone
-    ButtonGlyph = abgNone
     DlgLeft = 60
     DlgTop = 40
     CentreDlg = False
