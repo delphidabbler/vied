@@ -56,13 +56,24 @@ type
     bvlBottom: TBevel;
     pnlBody: TPanel;
     btnHelp: TButton;
+    ///  <summary>Form creation event handler. Arranges controls and sizes form.
+    ///  </summary>
     procedure FormCreate(Sender: TObject);
+    ///  <summary>Help button click event handler. Attempts to display help
+    ///  topic matching A-link keyword associated with the form.</summary>
     procedure btnHelpClick(Sender: TObject);
+    ///  <summary>Handles key presses on form. Acts as if help button has been
+    ///  pressed if user presses F1.</summary>
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-  protected
+  strict private
+    ///  <summary>Gets help A-link keyword for this dialog.</summary>
+    ///  <remarks>If HelpKeyword property is set its value is returned,
+    ///  otherwise the name of the form is used.</remarks>
+    function GetHelpALinkKeyword: string;
+  strict protected
+    ///  <summary>Arranges controls within form.</summary>
     procedure ArrangeControls; virtual;
-      {Arranges controls within window}
   end;
 
 
@@ -71,9 +82,9 @@ implementation
 
 uses
   // Delphi
-  Math, Windows,
+  Windows,
   // Project
-  UDlgParent;
+  UDlgParent, UHelp;
 
 
 {$R *.DFM}
@@ -87,7 +98,6 @@ resourcestring
 { TGenericDlg }
 
 procedure TGenericDlg.ArrangeControls;
-  {Arranges controls within window}
 begin
   ClientWidth := pnlBody.Width + 16;
   bvlBottom.Top := pnlBody.Height + 16;
@@ -98,30 +108,18 @@ begin
 end;
 
 procedure TGenericDlg.btnHelpClick(Sender: TObject);
-  {Help button click event handler - if there's a help context assigned then
-  calls main help file with topic whose context is stored in HelpContext
-  otherwise a warning dialog box is displayed}
 begin
-  if HelpContext <> 0 then
-    Application.HelpContext(HelpContext)
-  else
-    MessageBox(0, PChar(sNoHelp), PChar(Application.Title), MB_OK);
+  THelp.ShowALink(GetHelpALinkKeyword, cDlgErrTopic);
 end;
 
 procedure TGenericDlg.FormCreate(Sender: TObject);
-  {Form creation event handler - arranges controls, sizes form and applies a
-  Delphi bug fix}
 begin
-  // Set dialog box parent window to its owner
   TDlgParent.SetParentToOwner(Self);
-  // Position components
   ArrangeControls;
 end;
 
 procedure TGenericDlg.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-  {Checks if user has pressed F1 and acts as if help button has been pressed if
-  so}
 begin
   if (Key = VK_F1) and (Shift = []) then
   begin
@@ -129,6 +127,14 @@ begin
     btnHelp.Click;
     Key := 0;
   end;
+end;
+
+function TGenericDlg.GetHelpALinkKeyword: string;
+begin
+  if HelpKeyword <> '' then
+    Result := HelpKeyword
+  else
+    Result := Name;
 end;
 
 end.
