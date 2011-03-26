@@ -55,6 +55,7 @@ type
     chkDescFileFlags: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private // properties
     fAutoValidate: Boolean;
     fDescribeFileFlags: Boolean;
@@ -79,6 +80,13 @@ begin
   inherited;
   fAutoValidate := chkValidate.Checked;
   fDescribeFileFlags := chkDescFileFlags.Checked;
+end;
+
+procedure TUserSetupDlg.FormCreate(Sender: TObject);
+  {Form creation event handler. Sets help topic}
+begin
+  inherited;
+  HelpTopic := 'dlg-setup';
 end;
 
 procedure TUserSetupDlg.FormShow(Sender: TObject);

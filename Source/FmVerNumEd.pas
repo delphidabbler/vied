@@ -63,6 +63,7 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure VerEditKeyPress(Sender: TObject; var Key: Char);
+    procedure FormCreate(Sender: TObject);
   private // properties
     fKind: string;
     fVersionNumber: TPJVersionNumber;
@@ -91,6 +92,13 @@ begin
   fVersionNumber.V2 := StrToIntDef(edV2.Text, 0);
   fVersionNumber.V3 := StrToIntDef(edV3.Text, 0);
   fVersionNumber.V4 := StrToIntDef(edV4.Text, 0);
+end;
+
+procedure TVerNumEditor.FormCreate(Sender: TObject);
+  {Form creation event handler. Sets help topic}
+begin
+  inherited;
+  HelpTopic := 'dlg-vernum';
 end;
 
 procedure TVerNumEditor.FormShow(Sender: TObject);

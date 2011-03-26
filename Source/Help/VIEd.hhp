@@ -13,3 +13,15 @@ Title=Version Information Editor Help
 [FILES]
 HTML\index.htm
 HTML\dlg-nohelp.htm
+HTML\dlg-picklist.htm
+HTML\dlg-identifier.htm
+HTML\dlg-numbers.htm
+HTML\dlg-rescompiler.htm
+HTML\dlg-compilerdir.htm
+HTML\dlg-bitset.htm
+HTML\dlg-string.htm
+HTML\dlg-comments.htm
+HTML\dlg-setup.htm
+HTML\dlg-vernum.htm
+HTML\dlg-analysis.htm
+HTML\dlg-viewrc.htm

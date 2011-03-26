@@ -91,7 +91,7 @@ procedure TResOutputDirDlg.FormCreate(Sender: TObject);
   {Form construction: set dialog's help context}
 begin
   inherited;
-//  HelpContext := HELP_DLG_COMPILERFOLDER;
+  HelpTopic := 'dlg-compilerdir';
 end;
 
 function TResOutputDirDlg.GetDirName: string;

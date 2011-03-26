@@ -6,9 +6,56 @@
 </HEAD><BODY>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="analysis errors dialog box">
+		<param name="Local" value="HTML\dlg-analysis.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="bit set editor">
+		<param name="Local" value="HTML\dlg-bitset.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="choose compiler output folder dialogue box">
+		<param name="Local" value="HTML\dlg-compilerdir.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="comments editor">
+		<param name="Local" value="HTML\dlg-comments.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="identifier editor">
+		<param name="Local" value="HTML\dlg-identifier.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="number editor">
+		<param name="Local" value="HTML\dlg-numbers.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="pick list editor">
+		<param name="Local" value="HTML\dlg-picklist.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="setup dialog box">
+		<param name="Local" value="HTML\dlg-setup.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="string editor">
+		<param name="Local" value="HTML\dlg-string.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="version number editor">
+		<param name="Local" value="HTML\dlg-vernum.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="view rc statements dialogue box">
+		<param name="Local" value="HTML\dlg-viewrc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="welcome page">
-		<param name="Name" value="Help Index">
 		<param name="Local" value="HTML\index.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="specify resource compiler dialogue box">
+		<param name="Local" value="HTML\dlg-rescompiler.htm">
 		</OBJECT>
 </UL>
 </BODY></HTML>

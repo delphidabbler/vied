@@ -88,7 +88,7 @@ begin
   // Simply display the dlg box
   with TResCompilerCheckDlg.Create(Owner) do
     try
-//      HelpContext := HELP_DLG_CHECKRESCOMP;
+      HelpTopic := 'dlg-rescompiler';
       ShowModal;
     finally
       Free;

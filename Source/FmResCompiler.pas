@@ -94,7 +94,7 @@ begin
   // Simply create and display dialog box
   with TResCompilerDlg.Create(Owner) do
     try
-//      HelpContext := HELP_DLG_RESCOMP;
+      HelpTopic := 'dlg-rescompiler';
       ShowModal;
     finally
       Free;

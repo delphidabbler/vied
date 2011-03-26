@@ -680,7 +680,7 @@ begin
     Ed.Kind := AKind;       // info for title
     Ed.Text := DefChoice;   // default choice from drop-down list
     Ed.List := AList;       // the options for drop down list
-//    Ed.HelpContext := HELP_DLG_EDITCONSTANT;
+    Ed.HelpTopic := 'dlg-picklist';
     // Display dlg box and act on user response (order of test is significant)
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return selected text (will be unchanged if user pressed cancel)
@@ -707,7 +707,7 @@ begin
     Ed.Kind := AKind;       // info for title
     Ed.Number := DefNumber; // the default number for editing
     Ed.ShowAsHex := True;   // tell dlg box to display default number as hex
-//    Ed.HelpContext := HELP_DLG_EDITNUMBER;
+    Ed.HelpTopic := 'dlg-numbers';
     // Display dlg box and act on input: NB order of test is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return number entered (will be unchanged if user pressed cancel)
@@ -744,7 +744,7 @@ begin
     Ed.Compulsory := MustEnter;     // record whether user must enter some text
     Ed.ValidFields := ValidFields;  // record list of valid fields
     Ed.AllowEnter := False;         // pressing Enter closes dlg box
-//    Ed.HelpContext := HELP_DLG_EDITSTRING;
+    Ed.HelpTopic := 'dlg-string';
     // Display dlg box and act on input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record resulting text
@@ -773,7 +773,7 @@ begin
     Ed.Kind := AKind;     // info for title
     Ed.IncList := IList;  // list of items for "include" list
     Ed.ExcList := EList;  // list of items for "exclude" list
-//    Ed.HelpContext := HELP_DLG_EDITBITSET;
+    Ed.HelpTopic := 'dlg-bitset';
     // Display dlg and act on user entry: order of test is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record items now on include list
@@ -801,7 +801,6 @@ begin
     // Set required properties
     Ed.Kind := VKind;               // info for title
     Ed.VersionNumber := Value;      // default version number for editing
-//    Ed.HelpContext := HELP_DLG_EDITVNUMBER;
     // Display dlg and respond to user input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return new version number (will be unchanged if user pressed cancel)
@@ -851,7 +850,7 @@ begin
         // set the dlg box's caption and description
         DBox.Title := sAnalysisErrTitle;
         DBox.Description := sAnalysisErrDesc;
-//        DBox.HelpContext := HELP_DLG_ANALYSIS;
+        DBox.HelpTopic := 'dlg-analysis';
         // display the dlg box
         DBox.ShowModal;
       end;
@@ -1094,7 +1093,7 @@ begin
     Ed.Compulsory := False;           // user doesn't have to enter anything
     Ed.ValidFields := nil;            // no fields can be used
     Ed.AllowEnter := True;            // pressing enter starts a new line
-//    Ed.HelpContext := HELP_DLG_EDITCOMMENTS;
+    Ed.HelpTopic := 'dlg-comments';
     // Call dialogue box and record user response
     if Ed.ShowModal = mrOK then
     begin
@@ -1119,7 +1118,7 @@ begin
   try
     // Set default identifier & help context
     Ed.Identifier := fVerInfo.Identifier;
-//    Ed.HelpContext := HELP_DLG_EDITIDENTIFIER;
+    Ed.HelpTopic := 'dlg-identifier';
     // Display dlg box & get user's input and record if user made changes
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record new identifier - this will be unchanged if user clicked cancel
@@ -1150,7 +1149,7 @@ begin
     Ed.Compulsory := False;           // user doesn't have to enter anything
     Ed.ValidFields := nil;            // no fields can be used
     Ed.AllowEnter := True;            // pressing enter starts a new line
-//    Ed.HelpContext := HELP_DLG_EDITCOMMENTS;
+    Ed.HelpTopic := 'dlg-comments';
     // Display dlg and record whether user made changes and clicked OK
     if Ed.ShowModal = mrOK then
     begin
@@ -1352,7 +1351,7 @@ begin
       // Set the dlg box's caption and description
       DBox.Title := sViewRCTitle;
       DBox.Description := sViewRCDesc;
-//      DBox.HelpContext := HELP_DLG_VIEWRC;
+      DBox.HelpTopic := 'dlg-viewrc';
       // Display the dlg
       DBox.ShowModal;
     finally
@@ -1436,8 +1435,6 @@ begin
     // Set check boxes to default values
     DBox.AutoValidate := Settings.ReadBool(siAutoValidate);
     DBox.DescribeFileFlags := Settings.ReadBool(siDescribeFileFlags);
-    // Set help context
-//    DBox.HelpContext := HELP_DLG_SETUP;
     // Display the dlg box and act on result
     if DBox.ShowModal = mrOK then
     begin
