@@ -591,33 +591,6 @@ begin
 //  OpenDlg.HelpContext :=              HELP_DLG_OPEN;
 //  CompilerDlg.HelpContext :=          HELP_DLG_COMPILEFILE;
 //  AboutBoxDlg.HelpContext :=          HELP_DLG_ABOUT;
-  // menu options
-//  MFile.HelpContext :=                HELP_MENU_FILE;
-//  MFNew.HelpContext :=                HELP_MENU_FILENEW;
-//  MFOpen.HelpContext :=               HELP_MENU_FILEOPEN;
-//  MFSave.HelpContext :=               HELP_MENU_FILESAVE;
-//  MFSaveAs.HelpContext :=             HELP_MENU_FILESAVEAS;
-//  MFExport.HelpContext :=             HELP_MENU_FILEEXPORT;
-//  MFPreferences.HelpContext :=        HELP_MENU_FILEPREFERENCES;
-//  MFViewRC.HelpContext :=             HELP_MENU_FILEVIEWRC;
-//  MFExit.HelpContext :=               HELP_MENU_FILEEXIT;
-//  MEdit.HelpContext :=                HELP_MENU_EDIT;
-//  MECurrent.HelpContext :=            HELP_MENU_EDITCURRENT;
-//  MERCIdentifier.HelpContext :=       HELP_MENU_EDITIDENTIFIER;
-//  MERCComments.HelpContext :=         HELP_MENU_EDITRCCOMMENTS;
-//  MEVIComments.HelpContext :=         HELP_MENU_EDITVICOMMENTS;
-//  MEAnalyse.HelpContext :=            HELP_MENU_EDITANALYSE;
-//  MECopy.HelpContext :=               HELP_MENU_EDITCOPY;
-//  MOptions.HelpContext :=             HELP_MENU_OPTIONS;
-//  MOAutoValidate.HelpContext :=       HELP_MENU_OPTIONSVALIDATION;
-//  MODescribeFileFlags.HelpContext :=  HELP_MENU_OPTIONSDESCRIBE;
-//  MOUserSetup.HelpContext :=          HELP_MENU_OPTIONSSETUP;
-//  MOResCompiler.HelpContext :=        HELP_MENU_OPTIONSRESCOMP;
-//  MHelp.HelpContext :=                HELP_MENU_HELP;
-//  MHContents.HelpContext :=           HELP_MENU_HELPCONTENTS;
-//  MHOverview.HelpContext :=           HELP_MENU_HELPOVERVIEW;
-//  MHWebsite.HelpContext :=            HELP_MENU_WEBSITE;
-//  MHAbout.HelpContext :=              HELP_MENU_HELPABOUT;
   // Process command line
   // Set initial dir of Open, Export and Save As dialog boxes to first parameter
   // unless param is -silent
