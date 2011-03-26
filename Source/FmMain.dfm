@@ -47,7 +47,8 @@ object MainForm: TMainForm
     OnDblClick = MECurrentClick
   end
   object MainMenu: TMainMenu
-    Left = 168
+    Left = 32
+    Top = 32
     object MFile: TMenuItem
       Caption = '&File'
       OnClick = MFileClick
@@ -198,46 +199,24 @@ object MainForm: TMainForm
     VersionInfo = AboutVersionInfo
     Position = abpOwner
     UseOwnerAsParent = True
-    Left = 232
-    Top = 32
+    Left = 32
+    Top = 200
   end
   object AboutVersionInfo: TPJVersionInfo
-    Left = 200
-    Top = 32
-  end
-  object SaveDlg: TSaveDialog
-    Filter = 'Version info files (*.vi)|*.vi'
-    Options = [ofHideReadOnly, ofShowHelp, ofNoReadOnlyReturn]
-    Left = 232
-  end
-  object OpenDlg: TOpenDialog
-    DefaultExt = 'VI'
-    Filter = 'Version info files (*.vi)|*.vi'
-    Options = [ofHideReadOnly, ofShowHelp, ofPathMustExist, ofFileMustExist]
-    Left = 200
+    Left = 32
+    Top = 80
   end
   object WdwState: TPJRegWdwState
     AutoSaveRestore = True
     OnGetRegData = WdwStateGetRegData
-    Left = 200
-    Top = 64
-  end
-  object ExportDlg: TSaveDialog
-    Options = [ofHideReadOnly, ofShowHelp, ofNoReadOnlyReturn]
-    Title = 'Export File'
-    Left = 264
-  end
-  object CompilerDlg: TSaveDialog
-    Filter = 'Resource binary files (*.res)|*.res'
-    Options = [ofHideReadOnly, ofShowHelp, ofPathMustExist, ofEnableSizing]
-    Title = 'Compile To File'
-    Left = 296
+    Left = 32
+    Top = 136
   end
   object FileCatcher: TPJFormDropFiles
     ForegroundOnDrop = True
     Options = [dfoIncFolders, dfoIncFiles]
     OnDropFiles = FileCatcherDropFiles
-    Left = 264
-    Top = 32
+    Left = 32
+    Top = 264
   end
 end

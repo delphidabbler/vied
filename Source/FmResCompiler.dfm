@@ -3,6 +3,8 @@ inherited ResCompilerDlg: TResCompilerDlg
   Top = 367
   Caption = 'Specify Resource Compiler'
   OnShow = FormShow
+  ExplicitWidth = 504
+  ExplicitHeight = 361
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBody: TPanel
@@ -87,12 +89,5 @@ inherited ResCompilerDlg: TResCompilerDlg
   end
   inherited btnOK: TButton
     OnClick = btnOKClick
-  end
-  object dlgBrowse: TOpenDialog
-    Filter = 'Executable files (*.exe)|*.exe'
-    Options = [ofHideReadOnly, ofShowHelp, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Title = 'Browse for Resource Compiler'
-    Left = 352
-    Top = 24
   end
 end

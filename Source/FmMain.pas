@@ -46,7 +46,7 @@ uses
   // DelphiDabbler components
   PJVersionInfo, PJAbout, PJDropFiles, PJWdwState,
   // Project
-  UVInfo;
+  UCommonDlg, UVInfo;
 
 
 const
@@ -98,9 +98,6 @@ type
     MHAbout: TMenuItem;
     DisplayHeader: THeader;
     DisplayListBox: TListBox;
-    OpenDlg: TOpenDialog;
-    SaveDlg: TSaveDialog;
-    ExportDlg: TSaveDialog;
     AboutBoxDlg: TPJAboutBoxDlg;
     AboutVersionInfo: TPJVersionInfo;
     WdwState: TPJRegWdwState;
@@ -108,7 +105,6 @@ type
     MECompOut: TMenuItem;
     MFCompile: TMenuItem;
     MFSpacer1: TMenuItem;
-    CompilerDlg: TSaveDialog;
     FileCatcher: TPJFormDropFiles;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -142,12 +138,19 @@ type
     procedure MEditClick(Sender: TObject);
     procedure MECompOutFolderClick(Sender: TObject);
   private
+    fSaveDlg: TSaveDialogEx;
+    fExportDlg: TSaveDialogEx;
+    fCompilerDlg: TSaveDialogEx;
+    fOpenDlg: TOpenDialogEx;
     fVerInfo: TVInfo;
       {Instance of TVInfo class which formats, reads and saves version info}
     fCurrentFile: string;
       {Name of current file}
     fChanged: Boolean;
       {Flag true if current file has been altered since last load, save etc}
+    procedure CreateCommonDlgs;
+      {Creates and initialises dynamic common dialog box components.
+      }
     procedure MsgSilent(var Msg: TMessage); message MSG_SILENT;
       {Message handler for custom "silent" mesasge sent when user provides a
       -makerc switch as first item on command line. We generate a .rc file from
@@ -374,6 +377,32 @@ begin
   end;
 end;
 
+procedure TMainForm.CreateCommonDlgs;
+resourcestring
+  sVIFileFilter = 'Version info files (*.vi)|*.vi';
+  sExportDlgTitle = 'Export File';
+  sCompilerDlgTitle = 'Compile To File';
+  sCompilerDlgFilter = 'Resource binary files (*.res)|*.res';
+begin
+  fSaveDlg := TSaveDialogEx.Create(Self);
+  fSaveDlg.Filter := sVIFileFilter;
+  fSaveDlg.HelpTopic := 'dlg-filesave';
+
+  fExportDlg := TSaveDialogEx.Create(Self);
+  fExportDlg.Title := sExportDlgTitle;
+  fExportDlg.HelpTopic := 'dlg-fileexport';
+
+  fCompilerDlg := TSaveDialogEx.Create(Self);
+  fCompilerDlg.Title := sCompilerDlgTitle;
+  fCompilerDlg.Filter := sCompilerDlgFilter;
+  fCompilerDlg.HelpTopic := 'dlg-compile';
+
+  fOpenDlg := TOpenDialogEx.Create(Self);
+  fOpenDlg.DefaultExt := 'vi';
+  fOpenDlg.Filter := sVIFileFilter;
+  fOpenDlg.HelpTopic := 'dlg-fileopen';
+end;
+
 procedure TMainForm.CreateParams(var Params: TCreateParams);
   {Updates style of window to ensure this main window appears on task bar.
     @params Params [in/out] In: current parameters. Out: adjusted parameters.
@@ -543,7 +572,7 @@ begin
   // Check if file can be loaded and succeeds and set open dlg to use path
   // next time it is opened
   if QueryFileSave and OpenFile(FileCatcher.FileName) then
-    OpenDlg.InitialDir := ExtractFilePath(FileCatcher.FileName);
+    fOpenDlg.InitialDir := ExtractFilePath(FileCatcher.FileName);
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -568,6 +597,9 @@ procedure TMainForm.FormCreate(Sender: TObject);
   // ---------------------------------------------------------------------------
 
 begin
+  // Create dynamic components
+  CreateCommonDlgs;
+
   // Set size of header sections and set list box tab stop
   DisplayHeader.SectionWidth[0] := 140;
   DisplayListBox.TabWidth :=
@@ -584,13 +616,6 @@ begin
   MODescribeFileFlags.Checked := Settings.ReadBool(siDescribeFileFlags);
   // Emulate File | New menu click to get new file using preferences
   MFNewClick(Self);
-  // Set up help contexts
-  // system dialogs
-//  SaveDlg.HelpContext :=              HELP_DLG_SAVEAS;
-//  ExportDlg.HelpContext :=            HELP_DLG_EXPORT;
-//  OpenDlg.HelpContext :=              HELP_DLG_OPEN;
-//  CompilerDlg.HelpContext :=          HELP_DLG_COMPILEFILE;
-//  AboutBoxDlg.HelpContext :=          HELP_DLG_ABOUT;
   // Process command line
   // Set initial dir of Open, Export and Save As dialog boxes to first parameter
   // unless param is -silent
@@ -610,9 +635,9 @@ begin
     else
     begin
       // First param is considered to be default path for various file dialogs
-      OpenDlg.InitialDir := ParamStr(1);
-      SaveDlg.InitialDir := ParamStr(1);
-      ExportDlg.InitialDir := ParamStr(1);
+      fOpenDlg.InitialDir := ParamStr(1);
+      fSaveDlg.InitialDir := ParamStr(1);
+      fExportDlg.InitialDir := ParamStr(1);
     end;
   end;
 end;
@@ -1158,21 +1183,21 @@ begin
   begin
     // No default output folder: get output file from user
     // display file dialog box
-    if CompilerDlg.InitialDir = '' then
-      CompilerDlg.InitialDir := ExportDlg.InitialDir;
-    if CompilerDlg.Execute then
+    if fCompilerDlg.InitialDir = '' then
+      fCompilerDlg.InitialDir := fExportDlg.InitialDir;
+    if fCompilerDlg.Execute then
     begin
-      CompilerDlg.FileName := EnsureExtension(
-        CompilerDlg.FileName, CompilerDlg.Filter, CompilerDlg.FilterIndex
+      fCompilerDlg.FileName := EnsureExtension(
+        fCompilerDlg.FileName, fCompilerDlg.Filter, fCompilerDlg.FilterIndex
       );
       // check if file exists and OK to overwrite if so
-      if not FileExists(CompilerDlg.FileName)
-        or MsgOKToOverwrite(CompilerDlg.FileName) then
+      if not FileExists(fCompilerDlg.FileName)
+        or MsgOKToOverwrite(fCompilerDlg.FileName) then
       begin
         // compile the file
-        DoExportRes(CompilerDlg.FileName);
+        DoExportRes(fCompilerDlg.FileName);
         // record file's folder for future reference
-        CompilerDlg.InitialDir := ExtractFilePath(CompilerDlg.FileName);
+        fCompilerDlg.InitialDir := ExtractFilePath(fCompilerDlg.FileName);
       end;
     end;
   end;
@@ -1198,8 +1223,8 @@ procedure TMainForm.MFExportClick(Sender: TObject);
       @return True if file can be written to, False otherwise.
     }
   begin
-    Result := not FileExists(ExportDlg.FileName)
-      or MsgOKToOverwrite(ExportDlg.FileName);
+    Result := not FileExists(fExportDlg.FileName)
+      or MsgOKToOverwrite(fExportDlg.FileName);
   end;
   // ---------------------------------------------------------------------------
 
@@ -1212,26 +1237,27 @@ var
 begin
   // Set up acceptable file filters / extensions
   // we can always write RC files
-  ExportDlg.Filter := cRCFilter;
+  fExportDlg.Filter := cRCFilter;
   if HaveCompiler then
     // we can write RES files if we have an associated compiler
-    ExportDlg.Filter := ExportDlg.Filter + '|' + cResFilter;
+    fExportDlg.Filter := fExportDlg.Filter + '|' + cResFilter;
   // Display Export dialog box and process selected file if user OKs
-  if ExportDlg.Execute then
+  if fExportDlg.Execute then
   begin
     // Ensure that file names without extension gets appropriate one
-    ExportDlg.FileName := EnsureExtension(ExportDlg.FileName,
-      ExportDlg.Filter, ExportDlg.FilterIndex);
+    fExportDlg.FileName := EnsureExtension(
+      fExportDlg.FileName, fExportDlg.Filter, fExportDlg.FilterIndex
+    );
     // Record file extension and use it to select how to export file
-    Ext := ExtractFileExt(ExportDlg.FileName);
+    Ext := ExtractFileExt(fExportDlg.FileName);
     if CompareText(Ext, cRCExt) = 0 then
     begin
       // Saving resource source file if possible
       if CanWrite then
       begin
         // Export a .rc file + remember dir used for next use of Save As
-        DoExportRC(ExportDlg.FileName);
-        ExportDlg.InitialDir := ExtractFilePath(ExportDlg.FileName);
+        DoExportRC(fExportDlg.FileName);
+        fExportDlg.InitialDir := ExtractFilePath(fExportDlg.FileName);
       end;
     end
     else if CompareText(Ext, cResExt) = 0 then
@@ -1240,13 +1266,13 @@ begin
       if CanWrite then
       begin
         // Export a .rc file + remember dir used for next use of Save As
-        DoExportRes(ExportDlg.FileName);
-        ExportDlg.InitialDir := ExtractFilePath(ExportDlg.FileName);
+        DoExportRes(fExportDlg.FileName);
+        fExportDlg.InitialDir := ExtractFilePath(fExportDlg.FileName);
       end;
     end
     else
       // Can't cope with other extensions - refuse
-      MsgInvalidExtension(ExportDlg.FileName);
+      MsgInvalidExtension(fExportDlg.FileName);
   end;
 end;
 
@@ -1273,12 +1299,9 @@ procedure TMainForm.MFOpenClick(Sender: TObject);
     @param Sender [in] Not used.
   }
 begin
-  // Attempt to open file
-  if QueryFileSave                        // check if we need to save prev file
-    and OpenDlg.Execute                   // open file dlg: did user OK?
-    and OpenFile(OpenDlg.FileName) then   // try to open file
-      // File open succeeded: record path so open dlg uses it next time
-      OpenDlg.InitialDir := ExtractFilePath(OpenDlg.FileName);
+  if QueryFileSave and fOpenDlg.Execute and OpenFile(fOpenDlg.FileName) then
+    // File open succeeded: record path so open dlg uses it next time
+    fOpenDlg.InitialDir := ExtractFilePath(fOpenDlg.FileName);
 end;
 
 procedure TMainForm.MFPreferencesClick(Sender: TObject);
@@ -1550,30 +1573,30 @@ var
 begin
   // Assume we didn't save file
   Result := False;
-  SaveDlg.FileName := fCurrentFile;
-  if SaveDlg.Execute then
+  fSaveDlg.FileName := fCurrentFile;
+  if fSaveDlg.Execute then
   begin
     // Ensure that file names without extension gets appropriate one
-    SaveDlg.FileName := EnsureExtension(SaveDlg.FileName,
-      SaveDlg.Filter, SaveDlg.FilterIndex);
+    fSaveDlg.FileName := EnsureExtension(fSaveDlg.FileName,
+      fSaveDlg.Filter, fSaveDlg.FilterIndex);
     // Test extension and act on result
-    Ext := ExtractFileExt(SaveDlg.FileName);
+    Ext := ExtractFileExt(fSaveDlg.FileName);
     if (AnsiCompareText(Ext, cVIExt) = 0) then
     begin
       // Saving version information file
-      if not FileExists(SaveDlg.FileName)
-        or MsgOKToOverwrite(SaveDlg.FileName) then
+      if not FileExists(fSaveDlg.FileName)
+        or MsgOKToOverwrite(fSaveDlg.FileName) then
       begin
         // Save a .vi file and set result to true: remember dir used for next
         // use of Save As
-        DoSave(SaveDlg.FileName);
-        SaveDlg.InitialDir := ExtractFilePath(SaveDlg.FileName);
+        DoSave(fSaveDlg.FileName);
+        fSaveDlg.InitialDir := ExtractFilePath(fSaveDlg.FileName);
         Result := True;
       end
     end
     else
       // Can't cope with other extensions - refuse
-      MsgInvalidExtension(SaveDlg.FileName);
+      MsgInvalidExtension(fSaveDlg.FileName);
   end;
 end;
 

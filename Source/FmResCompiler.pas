@@ -40,9 +40,9 @@ interface
 
 uses
   // Delphi
-  Dialogs, StdCtrls, Buttons, Controls, ExtCtrls, Classes, Forms,
+  StdCtrls, Buttons, Controls, ExtCtrls, Classes, Forms,
   // Project
-  FmGenericOKDlg;
+  FmGenericOKDlg, UCommonDlg;
 
 type
 
@@ -51,8 +51,6 @@ type
     Dialog box where user can enter details of the resource compiler to be used
     to create binary resource files. This class directly updates compiler
     information in registry.
-
-    Inheritance: TResCompilerDlg -> TGenericOKDlg -> TGenericDlg -> [TForm]
   }
   TResCompilerDlg = class(TGenericOKDlg)
     lblCompiler: TLabel;
@@ -63,11 +61,13 @@ type
     lblHelp1: TLabel;
     lblHelp2: TLabel;
     lblHelp3: TLabel;
-    dlgBrowse: TOpenDialog;
     procedure FormShow(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure sbBrowseClick(Sender: TObject);
     procedure edCompilerChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  strict private
+    fBrowseDlg: TOpenDialogEx;
   public
     class procedure EditResCompiler(Owner: TForm);
       {Displays dialog box which updates information in registry according to
@@ -78,7 +78,7 @@ implementation
 
 uses
   // Delphi
-  SysUtils,
+  SysUtils, Dialogs,
   // Project
   UHelp, USettings;
 
@@ -101,12 +101,24 @@ begin
     end;
 end;
 
+procedure TResCompilerDlg.FormCreate(Sender: TObject);
+  {Form creation event handler. Creates and sets up custom file open dialog box}
+resourcestring
+  sBrowseDlgFilter = 'Executable files (*.exe)|*.exe';
+  sBrowseDlgTitle = 'Browse for Resource Compiler';
+begin
+  inherited;
+  fBrowseDlg := TOpenDialogEx.Create(Self);
+  fBrowseDlg.Title := sBrowseDlgTitle;
+  fBrowseDlg.Filter := sBrowseDlgFilter;
+  fBrowseDlg.HelpTopic := 'dlg-browserescomp';
+end;
+
 procedure TResCompilerDlg.FormShow(Sender: TObject);
   {Form Show event handler: sets up controls to reflect current compiler
   settings and sets help context for browse dlg box}
 begin
   inherited;
-//  dlgBrowse.HelpContext := HELP_DLG_BROWSERESCOMP;
   edCompiler.Text := Settings.ReadStr(siCompilerPath);
   edCmdLine.Text := Settings.ReadStr(siCompilerCmdLine);
 end;
@@ -161,8 +173,8 @@ procedure TResCompilerDlg.sbBrowseClick(Sender: TObject);
   entered in edit control}
 begin
   inherited;
-  if dlgBrowse.Execute then
-    edCompiler.Text := dlgBrowse.FileName;
+  if fBrowseDlg.Execute then
+    edCompiler.Text := fBrowseDlg.FileName;
 end;
 
 procedure TResCompilerDlg.edCompilerChange(Sender: TObject);
