@@ -409,6 +409,7 @@ procedure TMainForm.CreateParams(var Params: TCreateParams);
   }
 begin
   inherited;
+  Params.WinClassName := 'DelphiDabbler.VIEd.Main';
 end;
 
 procedure TMainForm.DoExportRC(const FName: string);
