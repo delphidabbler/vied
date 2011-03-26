@@ -56,6 +56,7 @@ type
     cmbDropDown: TComboBox;
     procedure FormShow(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private // properties
     fText: string;
     fKind: string;
@@ -79,6 +80,13 @@ procedure TDropDownListEditor.btnOKClick(Sender: TObject);
 begin
   inherited;
   fText := cmbDropDown.Text;
+end;
+
+procedure TDropDownListEditor.FormCreate(Sender: TObject);
+  {Form creation event handler. Sets help topic}
+begin
+  inherited;
+  HelpTopic := 'dlg-picklist';
 end;
 
 procedure TDropDownListEditor.FormShow(Sender: TObject);

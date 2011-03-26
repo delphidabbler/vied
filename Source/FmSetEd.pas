@@ -107,11 +107,13 @@ begin
 end;
 
 procedure TSetEditor.FormCreate(Sender: TObject);
-  {Form creation event handler: creates owned string list objects}
+  {Form creation event handler: creates owned string list objects and sets help
+  topic}
 begin
   inherited;
   fIncList := TStringList.Create;
   fExcList := TStringList.Create;
+  HelpTopic := 'dlg-bitset';
 end;
 
 procedure TSetEditor.FormDestroy(Sender: TObject);

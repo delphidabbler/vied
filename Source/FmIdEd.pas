@@ -59,6 +59,7 @@ type
     procedure edIdKeyPress(Sender: TObject; var Key: Char);
     procedure FormShow(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     fIdentifier: string;
       {Value of Identifier property}
@@ -112,6 +113,13 @@ begin
   inherited;
   if not CharInSet(Key, ['a'..'z', 'A'..'Z', '_', '0'..'9', #8]) then
     Key := #0
+end;
+
+procedure TIdEditor.FormCreate(Sender: TObject);
+  {Form creation event handler. Sets help topic}
+begin
+  inherited;
+  HelpTopic := 'dlg-identifier';
 end;
 
 procedure TIdEditor.FormShow(Sender: TObject);

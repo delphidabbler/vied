@@ -139,6 +139,8 @@ type
       be displayed.
       }
   public
+    property HelpTopic;
+      {Redeclared to make public}
     property Kind: string write fKind;
       {Description of the kind of edit required - will be preceeded by 'Edit'
       (write only)}

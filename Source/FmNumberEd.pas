@@ -61,6 +61,7 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure edNumKeyPress(Sender: TObject; var Key: Char);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     fShowAsHex: Boolean;
       {Value of ShowAsHex property}
@@ -122,6 +123,13 @@ begin
   inherited;
   if not CharInSet(Key, [#8, '$', '0'..'9', 'A'..'F', 'a'..'f']) then
     Key := #0;
+end;
+
+procedure TNumEditor.FormCreate(Sender: TObject);
+  {Form creation event handler. Sets help topic}
+begin
+  inherited;
+  HelpTopic := 'dlg-numbers';
 end;
 
 procedure TNumEditor.FormShow(Sender: TObject);

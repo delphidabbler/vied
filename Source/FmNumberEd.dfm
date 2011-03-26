@@ -1,6 +1,8 @@
 inherited NumEditor: TNumEditor
   Caption = ''
   OnShow = FormShow
+  ExplicitWidth = 504
+  ExplicitHeight = 361
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBody: TPanel

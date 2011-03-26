@@ -678,7 +678,6 @@ begin
     Ed.Kind := AKind;       // info for title
     Ed.Text := DefChoice;   // default choice from drop-down list
     Ed.List := AList;       // the options for drop down list
-    Ed.HelpTopic := 'dlg-picklist';
     // Display dlg box and act on user response (order of test is significant)
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return selected text (will be unchanged if user pressed cancel)
@@ -705,7 +704,6 @@ begin
     Ed.Kind := AKind;       // info for title
     Ed.Number := DefNumber; // the default number for editing
     Ed.ShowAsHex := True;   // tell dlg box to display default number as hex
-    Ed.HelpTopic := 'dlg-numbers';
     // Display dlg box and act on input: NB order of test is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return number entered (will be unchanged if user pressed cancel)
@@ -771,7 +769,6 @@ begin
     Ed.Kind := AKind;     // info for title
     Ed.IncList := IList;  // list of items for "include" list
     Ed.ExcList := EList;  // list of items for "exclude" list
-    Ed.HelpTopic := 'dlg-bitset';
     // Display dlg and act on user entry: order of test is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record items now on include list
@@ -1116,7 +1113,6 @@ begin
   try
     // Set default identifier & help context
     Ed.Identifier := fVerInfo.Identifier;
-    Ed.HelpTopic := 'dlg-identifier';
     // Display dlg box & get user's input and record if user made changes
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Record new identifier - this will be unchanged if user clicked cancel

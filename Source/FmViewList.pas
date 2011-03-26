@@ -60,6 +60,8 @@ type
     fTitle: string;
     procedure SetList(const Value: TStringList);
   public
+    property HelpTopic;
+      {Redeclared to make public}
     property List: TStringList write SetList;
       {The list to display in dialog's memo control}
     property Title: string write fTitle;
