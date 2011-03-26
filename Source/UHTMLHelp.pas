@@ -1,8 +1,9 @@
 {
  * UHTMLHelp.pas
  *
- * Provides a partial translation of HTMLHelp header files. Dynamically imports
- * HTMLHelp function from hhctrl.ocx.
+ * Provides a minimal translation of HTMLHelp header files sufficient for the
+ * needs of Version Information Editor. Dynamically imports HTMLHelp function
+ * from hhctrl.ocx.
  *
  * $Rev$
  * $Date$
@@ -73,99 +74,10 @@ const
 
   ///  Opens a help topic in a specified help window
   HH_DISPLAY_TOPIC           = $0000;
-  ///  Alias for HH_DISPLAY_TOPIC
-  HH_HELP_FINDER             = HH_DISPLAY_TOPIC;
   ///  Selects the Contents tab in the Navigation pane of the HTML Help Viewer
   HH_DISPLAY_TOC             = $0001;
-  ///  Selects the Index tab in the Navigation pane of the HTML Help Viewer and
-  ///  searches for the keyword specified in the dwData parameter
-  HH_DISPLAY_INDEX           = $0002;
-  ///  Selects the Search tab in the Navigation pane of the HTML Help Viewer
-  HH_DISPLAY_SEARCH          = $0003;
-  ///  Creates a new help window or modifies an existing help window at run time
-  HH_SET_WIN_TYPE            = $0004;
-  ///  Retrieves a pointer to the HH_WINTYPE structure associated with a
-  ///  specified window type
-  HH_GET_WIN_TYPE            = $0005;
-  ///  Returns the handle of a specified window type
-  HH_GET_WIN_HANDLE          = $0006;
-  ///  No documentation in htmlhelp.chm
-  HH_ENUM_INFO_TYPE          = $0007;
-  ///  No documentation in htmlhelp.chm
-  HH_SET_INFO_TYPE           = $0008;
-  ///  Locates and selects the contents entry for the help topic that is open in
-  ///  the Topic pane of the HTML Help Viewer
-  HH_SYNC                    = $0009;
-  ///  Reserved for future use
-  HH_RESERVED1               = $000A;
-  ///  Reserved for future use
-  HH_RESERVED2               = $000B;
-  ///  Reserved for future use
-  HH_RESERVED3               = $000C;
-  ///  Looks up one or more keywords in a compiled help file
-  HH_KEYWORD_LOOKUP          = $000D;
-  ///  Opens a pop-up window that displays the contents of one of the following:
-  ///  an explicit text string; a text string based on a resource ID; a text
-  ///  string ID based on a text file contained in a compiled help file
-  HH_DISPLAY_TEXT_POPUP      = $000E;
-  ///  Displays a help topic based on a mapped topic ID
-  HH_HELP_CONTEXT            = $000F;
-  ///  Opens a pop-up context menu. Generally used in response to the Windows
-  ///  WM_CONTEXTMENU message. For example, this message is sent when a user
-  ///  right-clicks a dialog box control
-  HH_TP_HELP_CONTEXTMENU     = $0010;
-  ///  Opens a pop-up help topic. Generally used in response to the Windows
-  ///  WM_HELP message. For example, this message is sent when a user presses F1
-  HH_TP_HELP_WM_HELP         = $0011;
   ///  Closes all windows opened directly or indirectly by the calling program
   HH_CLOSE_ALL               = $0012;
-  ///  Looks up one or more Associative Link (ALink) names in compiled help file
-  HH_ALINK_LOOKUP            = $0013;
-  ///  Returns information about the last error that occurred in hhctrl.ocx
-  HH_GET_LAST_ERROR          = $0014;
-  ///  No documentation in htmlhelp.chm
-  HH_ENUM_CATEGORY           = $0015;
-  ///  No documentation in htmlhelp.chm
-  HH_ENUM_CATEGORY_IT        = $0016;
-  ///  No documentation in htmlhelp.chm
-  HH_RESET_IT_FILTER         = $0017;
-  ///  No documentation in htmlhelp.chm
-  HH_SET_INCLUSIVE_FILTER    = $0018;
-  ///  No documentation in htmlhelp.chm
-  HH_SET_EXCLUSIVE_FILTER    = $0019;
-  ///  Initializes the help system for use and must be the first HTML Help
-  ///  command called. It returns a cookie which must be used in the
-  ///  HH_UNINITIALIZE call
-  HH_INITIALIZE              = $001C;
-  ///  Called to properly shut down HTML Help. This function should be the last
-  ///  help command the application calls. HH_UNINITIALIZE should not be called
-  ///  during DLL process detach, but during the normal application shutdown
-  ///  process
-  HH_UNINITIALIZE            = $001D;
-  ///  Called in a Window application's message loop to ensure proper handling
-  ///  of Windows messages, especially keyboard messages when running HTML Help
-  ///  single thread
-  HH_PRETRANSLATEMESSAGE     = $00FD;
-  ///  No documentation in htmlhelp.chm
-  HH_SET_GLOBAL_PROPERTY     = $00FC;
-
-
-type
-  ///  <summary>
-  ///  Structure used to specify one or more ALink names or KLink keywords to be
-  ///  searched for.
-  ///  </summary>
-  THHAKLink = packed record
-    cbStruct: Integer;    // sizeof this structure
-    fReserved: BOOL;      // must be FALSE (really!)
-    pszKeywords: LPCTSTR; // semi-colon separated keywords
-    pszUrl: LPCTSTR;      // URL to jump to if no keywords found (may be nil)
-    pszMsgText: LPCTSTR;  // MessageBox text on failure (used if pszUrl nil)
-    pszMsgTitle: LPCTSTR; // Title of any failure MessageBox
-    pszWindow: LPCTSTR;   // Window to display pszURL in
-    fIndexOnFail: BOOL;   // Displays index if keyword lookup fails.
-  end;
-  PHHAKLink = ^THHAKLink;
 
 type
   ///  <summary>

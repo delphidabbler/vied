@@ -69,25 +69,19 @@ type
     class procedure DoAppHelp(const Command: LongWord;
       const TopicName: string; const Data: LongWord); static;
   public
+    const
+      ///  <summary>Topic displayed when a dialog box has no associated a-link
+      ///  keyword or a-link keyword matches no dialog box.</summary>
+      DlgErrTopic = 'dlg-nohelp';
+  public
     ///  <summary>Displays help contents.</summary>
     class procedure Contents; static;
     ///  <summary>Displays a given help topic.</summary>
     ///  <param name="Topic">string [in] Help topic to display. This must be the
     ///  name of the topic HTML file, without the extension.</param>
     class procedure ShowTopic(Topic: string); static;
-    ///  <summary>Displays help topic(s) specified by an A-Link keyword.
-    ///  </summary>
-    ///  <param name="AKeyword">string [in] Required A-Link keyword.</param>
-    ///  <param name="ErrTopic">string [in] Name of topic to be displayed if
-    ///  AKeyword is not found.</param>
-    class procedure ShowALink(const AKeyword: string; const ErrTopic: string);
-      static;
     ///  <summary>Closes down the help system.</summary>
     class procedure Quit; static;
-    const
-      ///  <summary>Topic displayed when a dialog box has no associated a-link
-      ///  keyword or a-link keyword matches no dialog box.</summary>
-      DlgErrTopic = 'dlg-nohelp';
   end;
 
 
@@ -128,21 +122,6 @@ end;
 class procedure THelp.Quit;
 begin
   HtmlHelp(0, nil, HH_CLOSE_ALL, 0);
-end;
-
-class procedure THelp.ShowALink(const AKeyword: string;
-  const ErrTopic: string);
-var
-  ALink: THHAKLink;   // structure containing details of A-Link
-begin
-  // Fill in A link structure
-  ZeroMemory(@ALink, SizeOf(ALink));
-  ALink.cbStruct := SizeOf(ALink);      // size of structure
-  ALink.fIndexOnFail := False;
-  ALink.pszUrl := PChar(TopicURL(ErrTopic));
-  ALink.pszKeywords := PChar(AKeyword); // required keyword
-  // Display help
-  DoAppHelp(HH_ALINK_LOOKUP, '', LongWord(@ALink));
 end;
 
 class procedure THelp.ShowTopic(Topic: string);
