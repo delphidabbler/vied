@@ -53,6 +53,7 @@ uses
   FmViewList in 'FmViewList.pas' {ViewListDlg},
   FmVerNumEd in 'FmVerNumEd.pas' {VerNumEditor},
   FmResOutputDir in 'FmResOutputDir.pas' {ResOutputDirDlg},
+  UCommonDlg in 'UCommonDlg.pas',
   UDlgParent in 'UDlgParent.pas',
   UHelp in 'UHelp.pas',
   UHTMLHelp in 'UHTMLHelp.pas',

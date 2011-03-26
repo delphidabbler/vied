@@ -71,6 +71,7 @@
 			<DCCReference Include="FmResOutputDir.pas">
 				<Form>ResOutputDirDlg</Form>
 			</DCCReference>
+			<DCCReference Include="UCommonDlg.pas"/>
 			<DCCReference Include="UDlgParent.pas"/>
 			<DCCReference Include="UHelp.pas"/>
 			<DCCReference Include="UHTMLHelp.pas"/>
