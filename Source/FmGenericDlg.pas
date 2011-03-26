@@ -72,10 +72,9 @@ type
   strict private
     ///  <summary>Value of HelpTopic property.</summary>
     fHelpTopic: string;
-    ///  <summary>Gets help A-link keyword for this dialog.</summary>
-    ///  <remarks>If HelpKeyword property is set its value is returned,
-    ///  otherwise the name of the form is used.</remarks>
-    function GetHelpALinkKeyword: string;
+    ///  <summary>Displays help topic determined by HelpTopic property if
+    ///  present, otherwise displays an error topic.</summary>
+    procedure DisplayHelp;
   strict protected
     ///  <summary>Arranges controls within form.</summary>
     procedure ArrangeControls; virtual;
@@ -120,10 +119,15 @@ end;
 
 procedure TGenericDlg.btnHelpClick(Sender: TObject);
 begin
+  DisplayHelp;
+end;
+
+procedure TGenericDlg.DisplayHelp;
+begin
   if HelpTopic <> '' then
     THelp.ShowTopic(HelpTopic)
   else
-    THelp.ShowALink(GetHelpALinkKeyword, THelp.DlgErrTopic);
+    THelp.ShowTopic(THelp.DlgErrTopic);
 end;
 
 procedure TGenericDlg.FormCreate(Sender: TObject);
@@ -138,17 +142,9 @@ begin
   if (Key = VK_F1) and (Shift = []) then
   begin
     // F1 pressed with no modifier
-    btnHelp.Click;
+    DisplayHelp;
     Key := 0;
   end;
-end;
-
-function TGenericDlg.GetHelpALinkKeyword: string;
-begin
-  if HelpKeyword <> '' then
-    Result := HelpKeyword
-  else
-    Result := Name;
 end;
 
 end.
