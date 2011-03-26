@@ -75,6 +75,11 @@ type
     ///  this is handled if the property is not set.</remarks>
     procedure DisplayHelp;
   strict protected
+    ///  <summary>Modifies the form's window creation parameters to provide a
+    ///  custom window class name for the form.</summary>
+    ///  <remarks>This method is called by the VCL just before the form's
+    ///  window is created.</remarks>
+    procedure CreateParams(var Params: TCreateParams); override;
     ///  <summary>Arranges controls within form.</summary>
     procedure ArrangeControls; virtual;
     ///  <summary>Specifies name of help topic associated with dialog box.
@@ -96,7 +101,7 @@ implementation
 
 uses
   // Delphi
-  Windows,
+  SysUtils, Windows,
   // Project
   UDlgParent, UHelp;
 
@@ -124,6 +129,17 @@ end;
 procedure TGenericDlg.btnHelpClick(Sender: TObject);
 begin
   DisplayHelp;
+end;
+
+procedure TGenericDlg.CreateParams(var Params: TCreateParams);
+var
+  ClsName: string;  // name of window class
+begin
+  inherited;
+  ClsName := 'DelphiDabbler.VIEd.' + Name;
+  StrLCopy(
+    Params.WinClassName, PChar(ClsName), SizeOf(Params.WinClassName) - 1
+  );
 end;
 
 procedure TGenericDlg.DisplayHelp;
