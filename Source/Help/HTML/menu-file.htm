@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is menu-file.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      menu-file
+    </title>
+    <link
+      rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      File Menu
+    </h1>
+    <table class="menu">
+      <tr>
+        <td class="item">
+          New (<span class="smallcaps">Ctrl+N</span>)
+        </td>
+        <td class="desc">
+          Creates a new, un-named document in memory and displays it. The
+          contents of the new document reflect the user's current <span
+            class="link"
+          >preferences</span>. If there are any unsaved changes in the current
+          document you will be prompted to save changes before continuing.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          Open (<span class="smallcaps">Ctrl+O</span>)
+        </td>
+        <td class="desc">
+          Opens an existing <span
+            class="link"
+          >version information file</span> using the <a
+            href="dlg-fileopen.htm"
+          >Open File</a> dialogue box. If there are any unsaved changes in the
+          current document you will be prompted to save changes before
+          continuing.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          Save (<span class="smallcaps">Ctrl+S</span>)
+        </td>
+        <td class="desc">
+          Saves the current document to disk as a <span
+            class="link"
+          >version information file</span>. If the document has not yet been
+          saved the <a
+            href="dlg-filesave.htm"
+          >Save File</a> dialogue box is displayed where a name and location for 
+          the file can be chosen.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          Save As (<span class="smallcaps">Ctrl+A</span>)
+        </td>
+        <td class="desc">
+          Permits the current document to be saved as a <span
+            class="link"
+          >version information file</span> under a new name. The <a
+            href="dlg-filesave.htm"
+          >Save File</a> dialogue box is displayed where a new name and location
+          for the file can be chosen.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          Export (<span class="smallcaps">Ctrl+E</span>)
+        </td>
+        <td class="desc">
+          Enables a resource file to be created from the current document. Both 
+          resource source (.rc) files and binary resource files (.res) can be
+          created. The .res file type is only available if a resource compiler
+          has been <span
+            class="link"
+          >registered</span> with the program. The <a
+            href="dlg-fileexport.htm"
+          >Export File</a> dialogue box is displayed where the name and type of
+          the exported file can be specified.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          Compile (<span class="smallcaps">F9</span>)
+        </td>
+        <td class="desc">
+          Causes the current document to be compiled into a binary resource
+          file. This option is disabled unless program has been set up to work
+          with an <span
+            class="link"
+          >external resource compiler</span>. If a default output folder for
+          the compiler has been specified for this document, and the document
+          has been saved, the output file has the same name as the document and
+          is stored in the designated folder. Otherwise a <a
+            href="dlg-compile.htm"
+          >dialog box</a> is displayed where the name of the .res file can be
+          entered. To specify a default output folder use the Edit | Compiler
+          Output Folder menu option.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          Save As Preferences
+        </td>
+        <td class="desc">
+          Causes the current document to be saved as the current <span
+            class="link"
+          >preferences</span>. These preferences will be used as the default
+          whenever a new document is created, either at program start-up or when
+          the File | New menu option is selected.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          View RC Statements
+        </td>
+        <td class="desc">
+          Displays the <a
+            href="dlg-viewrc.htm"
+          >View RC Statements</a> dialogue box which shows how the current
+          document will appear when converted to a <span
+            class="link"
+          >VERSIONINFO resource statement</a>.
+        </td>
+      </tr>
+      <tr>
+        <td class="item">
+          Exit
+        </td>
+        <td class="desc">
+          Exits the program. If there are any unsaved changes to the current
+          document you will be prompted to save the changes before closing.
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

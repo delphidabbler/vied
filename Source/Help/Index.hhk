@@ -30,12 +30,28 @@
 		<param name="Local" value="HTML\dlg-compile.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="edit menu">
+		<param name="Local" value="HTML\menu-edit.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="export file dialogue box">
 		<param name="Local" value="HTML\dlg-fileexport.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="file menu">
+		<param name="Local" value="HTML\menu-file.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="help menu">
+		<param name="Local" value="HTML\menu-help.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="identifier editor">
 		<param name="Local" value="HTML\dlg-identifier.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="main menu">
+		<param name="Local" value="HTML\menu.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="number editor">
@@ -44,6 +60,10 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="open file dialogue box">
 		<param name="Local" value="HTML\dlg-fileopen.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="options menu">
+		<param name="Local" value="HTML\menu-options.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="pick list editor">
