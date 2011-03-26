@@ -14,12 +14,24 @@
 		<param name="Local" value="HTML\dlg-bitset.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="browse for resource compikle dialogue box">
+		<param name="Local" value="HTML\dlg-browserescomp.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="choose compiler output folder dialogue box">
 		<param name="Local" value="HTML\dlg-compilerdir.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="comments editor">
 		<param name="Local" value="HTML\dlg-comments.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="compile to file dialogue box">
+		<param name="Local" value="HTML\dlg-compile.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="export file dialogue box">
+		<param name="Local" value="HTML\dlg-fileexport.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="identifier editor">
@@ -30,8 +42,16 @@
 		<param name="Local" value="HTML\dlg-numbers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="open file dialogue box">
+		<param name="Local" value="HTML\dlg-fileopen.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="pick list editor">
 		<param name="Local" value="HTML\dlg-picklist.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="save file dialogue box">
+		<param name="Local" value="HTML\dlg-filesave.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="setup dialog box">
