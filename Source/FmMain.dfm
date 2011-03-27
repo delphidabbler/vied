@@ -177,7 +177,7 @@ object MainForm: TMainForm
         OnClick = MHContentsClick
       end
       object MHHowDoI: TMenuItem
-        Caption = 'How Do I?'
+        Caption = '&How Do I?'
         OnClick = MHHowDoIClick
       end
       object MHSpacer1: TMenuItem
@@ -189,6 +189,10 @@ object MainForm: TMainForm
       end
       object MHSpacer2: TMenuItem
         Caption = '-'
+      end
+      object MHLicense: TMenuItem
+        Caption = 'License'
+        OnClick = MHLicenseClick
       end
       object MHAbout: TMenuItem
         Caption = '&About...'

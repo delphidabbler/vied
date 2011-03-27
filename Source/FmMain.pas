@@ -107,6 +107,7 @@ type
     MFSpacer1: TMenuItem;
     FileCatcher: TPJFormDropFiles;
     MHHowDoI: TMenuItem;
+    MHLicense: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -139,6 +140,7 @@ type
     procedure MEditClick(Sender: TObject);
     procedure MECompOutFolderClick(Sender: TObject);
     procedure MHHowDoIClick(Sender: TObject);
+    procedure MHLicenseClick(Sender: TObject);
   private
     fSaveDlg: TSaveDialogEx;
     fExportDlg: TSaveDialogEx;
@@ -1380,6 +1382,15 @@ procedure TMainForm.MHHowDoIClick(Sender: TObject);
   }
 begin
   THelp.ShowTopic('howto');
+end;
+
+procedure TMainForm.MHLicenseClick(Sender: TObject);
+  {Help | License menu click event handler: displays program's license in help
+  file.
+    @param Sender [in] Not used.
+  }
+begin
+  THelp.ShowTopic('license');
 end;
 
 procedure TMainForm.MHWebsiteClick(Sender: TObject);
