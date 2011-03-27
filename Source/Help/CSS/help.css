@@ -43,15 +43,19 @@ h1 {
   font-size: 12pt;
   font-weight: bold;
   color: navy;
+  background-color: #eef;
   margin: 0 0 0.5em 0;
-  padding-bottom: 2px;
+  padding: 3px;
   border-bottom: 1px silver solid;
 }
 
 h2 {
-  font-size: 10pt;
+  font-size: 11pt;
   font-weight: bold;
+  color: black;
   margin: 0.8em 0 0 0;
+  padding-bottom: 2px;
+  border-bottom: 1px silver dotted;
 }
 
 h3 {
@@ -127,6 +131,7 @@ table {
   font-size: 9pt;
   margin: 0.5em 0 0 0;
   padding: 0;
+  background-color: #ccc;
 }
 
 tr {
@@ -135,24 +140,34 @@ tr {
   margin: 0;
 }
 
-td {
-  padding: 4px;
+td,
+th {
+  padding: 0.5em;
   margin: 1px;
 }
-
-table.menu {
-  background-color: #ccc;
-  margin-left: 1em;
+  
+td {
+  background-color: white;
+  font-weight: normal;
 }
 
-table.menu td.item {
-  width: 6em;
+th {
+  font-weight: bold;
   font-style: italic;
+}
+
+th,
+td.shaded,
+table.menu td.item {
   background-color: #eee;
 }
 
+table.menu td.item {
+  width: 8em;
+  font-style: italic;
+}
+
 table.menu td.desc {
-  background-color: white;
 }
 
 span.menuref {
