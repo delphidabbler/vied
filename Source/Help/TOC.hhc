@@ -148,5 +148,9 @@
 			<param name="Local" value="HTML\whatis-preferences.htm">
 			</OBJECT>
 	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="End Use License Agreement">
+		<param name="Local" value="HTML\license.htm">
+		</OBJECT>
 </UL>
 </BODY></HTML>

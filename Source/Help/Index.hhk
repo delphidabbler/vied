@@ -39,6 +39,10 @@
 		<param name="Local" value="HTML\menu-edit.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="end user license agreement">
+		<param name="Local" value="HTML\license.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="export file dialogue box">
 		<param name="Local" value="HTML\dlg-fileexport.htm">
 		</OBJECT>
