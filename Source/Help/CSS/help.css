@@ -168,11 +168,11 @@ table.menu td.desc {
   font-weight: bold;
 }
 
-.todo {
-  background-color: yellow;
+.todo, .link {
+  background-color: #ffff77;
 }
 
 .link {
-  color: red;
-  font-weight: bold;
+  color: green;
+  border-bottom: 1px green dashed;
 }
