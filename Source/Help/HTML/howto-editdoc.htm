@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is howto-editdoc.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      howto-editdoc
+    </title>
+    <link
+      rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>How do I</em> ... Edit a document
+    </h1>
+    <p>
+      You must first choose the document you wish to edit. This can either be
+      a <a
+        href="howto-newdoc.htm"
+      >new document</a> or you can open an existing document either by using the
+      <span class="menuref">File | Open</span> menu option or by dragging the
+      file from Windows Explorer and dropping it on the window.
+    </p>
+    <p>
+      There are four different aspects of the document that can be edited
+    </p>
+    <h2>
+      Version information
+    </h2>
+    <p>
+      This is the most important aspect of the document and is displayed in the
+      main window, which is divided into three distinct parts, each under its
+      own heading which is described below.
+    </p>
+    <p>
+      Version information items under each heading can be edited individually
+      either double clicking the item or selecting it and choosing the
+      <span class="menuref">Edit | Current Item</span> menu option or pressing
+      <span class="smallcaps">F2</span>. A dialogue box suitable for editing the 
+      selected item is displayed. <a
+        href="howto-edititem.htm"
+      >Learn more</a>.
+    </p>
+    <h3>
+      FIXED FILE INFO
+    </h3>
+    <p class="indent">
+      The fixed file info items are numeric items, flags or bitmasks that define
+      the file and product version numbers, the target operating system, the
+      application type and some optional flags that provide further information
+      about the build.
+    </p>
+    <h3>
+      TRANSLATION INFO
+    </h3>
+    <p class="indent">
+      This section contains information about the language and character set
+      used in the executable file.
+    </p>
+    <h3>
+      STRING INFO
+    </h3>
+    <p class="indent">
+      This section contains string file information. There are 12 predefined
+      entries each of which is labelled in the display. Each can take up to 128 
+      characters of text.
+    </p>
+    <p class="indent">
+      The editor supports special <a 
+        href="whatis-fields.htm"
+      >fields</a> that can be inserted into string info items to enable the
+      text to be automatically updated with the value of the field. This is the
+      most powerful feature of the Version Information Editor and greatly eases
+      the updating of version information resources. <a
+        href="howto-fields.htm"
+      >Learn how to use fields.</a>.
+    </p>  
+    <h3>
+      Limitations
+    </h3>
+    <p>
+      Although the version information specification allows for more than one 
+      translation and a separate string file information section to be 
+      associated with each translation this program supports only one
+      translation and one string file information section.
+    </p>
+    <p>
+      Custom string file information entries are also permitted but not
+      supported by the program.
+    </p>
+    <h2>
+      Identifier
+    </h2>
+    <p>
+      Although not strictly required, an <a
+        href="whatis-identifier.htm"
+      >identifier</a> for the version information
+      resource can be specified. <a
+        href="howto-editid.htm"
+      >Learn more</a>.
+    <h2>
+      Version Information File Comments
+    </h2>
+    <p>
+      <a
+        href="howto-commentvi.htm"
+      >Comments can be specified</a> that are added to the top of saved <a
+        href="whatis-vifile.htm"
+      >version information files</a>.
+    </p>
+    <h2>
+      Resource file comments
+    </h2>
+    <p>
+      <a
+        href="howto-commentrc.htm"
+      >Comments can be specified</a> for inclusion in generated <a
+        href="whatis-resfile.htm"
+      >resource source files</a>.
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is whatis-resfile.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      whatis-resfile
+    </title>
+    <link rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>What is</em> ... A Resource File
+    </h1>
+  </body>
+  <p>
+    A resource file is a file containing the definition of various Windows
+    resources to be used by an application, DLL or certain other Windows files.
+    Such resources include:
+  </p>
+  <ul class="unspaced">
+    <li>
+      String Tables
+    </li>
+    <li>
+      Bitmaps
+    </li>
+    <li>
+      Icons
+    </li>
+    <li>
+      Cursors
+    </li>
+  </ul>
+  <p>
+    Of course resource files can also include version information. Version
+    information in resource files is contained in a <a
+      href="whatis-vistatement.htm"
+    >VERSIONINFO statement</a>.
+  </p>
+  <p>
+    Resource files are usually created as resource source (.rc) files and
+    compiled into binary (.res) files by a resource compiler. These binary files
+    are finally linked into applications by a linker.
+  </p>
+  <p>
+    This program can <a
+      href="howto-creatercfile.htm"
+    >create resource source files</a> that contain a single VERSIONINFO
+    statement but no other resources. It can also copy a VERSIONINFO statement
+    to the clipboard for <a
+      href="howto-insertrcfile.htm"
+    >insertion</a> into an existing resource file.
+  </p>
+  <p>
+    If an external resource compiler is available Version Information Editor can
+    use it to create a binary resource file containing just the version 
+    information. <a
+      href="howto-rescompiler.htm"
+    >More information</a>.
+  </p>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is whatis-fields.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      whatis-fields
+    </title>
+    <link rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>What are</em> ... Fields
+    </h1>
+    <p>
+      Fields are probably the most useful component of the Version Information
+      Editor and can be used to make updating of version information files much
+      easier.
+    </p>
+    <p>
+      This topic describes what fields are and which ones are available. To
+      learn how to use them see <a
+        href="howto-fields.htm"
+      >How do I use Fields</a>.
+    </p>
+    <p>
+      A field is a kind of named variable or macro which can be embedded
+      anywhere in the text of a STRING INFO item in a version information
+      document.
+    </p>
+    <p>
+      When the document is exported as a <a
+        href="whatis-resfile.htm"
+      >resource file</a> any fields embedded in STRING INFO items are replaced
+      by the values they represent.
+    </p>
+    <p>
+      Fields names are enclosed in angle brackets when embedded in text - e.g.
+      <code>&lt;FIELDNAME&gt;</code>. Because the opening angle bracket is used
+      to indicate the start of a field, it can't be used directly in text.
+      Instead the special field <code>&lt;&lt;&gt;</code> must be used. Not all
+      fields are valid for use with each string info item.
+    </p>
+    <p>
+      Here is a list of supported fields:
+    </p>
+    <table>
+      <tr>
+        <th>
+          Field
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#F1&gt;
+        </td>
+        <td>
+          The 1st and most significant number of the <em>File Version #</em>
+          item in the fixed file info section.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#F2&gt;
+        </td>
+        <td>
+          The 2nd most significant number of the <em>File Version #</em> item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#F3&gt;
+        </td>
+        <td>
+          The 3rd most significant number of the <em>File Version #</em> item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#F4&gt;
+        </td>
+        <td>
+          The 4th and least significant number of the <em>File Version #</em>
+          item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#P1&gt;
+        </td>
+        <td>
+          The 1st and most significant number of the <em>Product Version #</em>
+          item in the fixed file info section.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#P2&gt;
+        </td>
+        <td>
+          The 2nd most significant number of the <em>Product Version #</em>
+          item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#P3&gt;
+        </td>
+        <td>
+          The 3rd most significant number of the <em>Product Version #</em> 
+          item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;#P4&gt;
+        </td>
+        <td>
+          The 4th and least significant number of the <em>Product Version #</em>
+          item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;YEAR&gt;
+        </td>
+        <td>
+          The current 4 digit year according to the system clock.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;SHORTFNAME&gt;
+        </td>
+        <td>
+          The value of the <em>Original File Name</em> string info item without
+          any extension (e.g. if <em>Original File Name</em> is 
+          &quot;MYPROG.EXE&quot; then &lt;SHORTNAME&gt; is set to
+          &quot;MYPROG&quot;. <strong>Note:</strong> This field is not valid
+          for use in the <em>Original File Name</em> item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;PRODUCTNAME&gt;
+        </td>
+        <td>
+          The value of the <em>Product Name</em> string info item.
+          <strong>Note:</strong> This field is not valid for use in the
+          <em>Product Name</em> item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;SPECIALBUILD&gt;
+        </td>
+        <td>
+          The value of the <em>Special Build</em> string info item.
+          <strong>Note:</strong> This field is not valid for use in the
+          <em>Special Build</em> item.
+        </td>
+      </tr>
+      <tr>
+        <td class="shaded">
+          &lt;&lt;&gt;
+        </td>
+        <td>
+          Inserts the &quot;&lt;&quot; character.
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

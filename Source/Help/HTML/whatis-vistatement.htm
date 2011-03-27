@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is whatis-vistatement.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      whatis-vistatement
+    </title>
+    <link
+      rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>What is</em> ... A VERSIONINFO statement
+    </h1>
+    <p>
+      This is an important concept because the sole purpose of this program is
+      to make it easy to create and update VERSIONINFO resource statements.
+    </p>
+    <p>
+      A VERSIONINFO statement defines a resource within a resource file that
+      provides information about an executable file's version along with 
+      additional related information.
+    </p>
+    <p>
+      In brief, a VERSIONINFO statement can contain the following information:
+    </p>
+    <ul>
+      <li>
+        File and product version numbers, both as binary values and as strings.
+      </li>
+      <li>
+        The target operating system.
+      </li>
+      <li>
+        The type of file (e.g. application, DLL, device driver, font etc. and,
+        for some file types, a sub-type.
+      </li>
+      <li>
+        Flags indicating whether the executable is a debug release, pre-release,
+        a special build etc.
+      </li>
+      <li>
+        The target language.
+      </li>
+      <li>
+        The character set used by the executable.
+      </li>
+      <li>
+        A set of predefined string values stored as name / value pairs for such
+        uses as general comments, file descriptions, name of company, copyright, 
+        name of product etc.
+      </li>
+    </ul>
+    <p>
+      VERSIONINFO statements can have more than one language or character set,
+      with different string information for each language / character set. They
+      can also have additional string values with user-defined names. However
+      these features are not supported by Version Information Editor at present.
+    </p>
+    <p>
+      VERSIONINFO statements always have a resource type of VERSIONINFO and a
+      resource id of 1.
+    </p>
+    <p>
+      <span class="todo">TODO: Provide link to detailed information about
+      VERSIONINFO statements.</span>
+    </p>
+  </body>
+</html>

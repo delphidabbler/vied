@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is howto-edititem.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      howto-edititem
+    </title>
+    <link
+      rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>How do I</em> ... Edit a version information item
+    </h1>
+    <p>
+      Version information items are discrete peices of version information, each
+      displayed on a different line in the main editor window.
+    </p>
+    <p>
+      Each item is edited by double clicking it or selecting it with the mouse
+      or arrow keys an pressing <span class="smallcaps">F2</span> or choosing
+      the <span class="menuref">Edit | Current Item</span> menu option.
+    </p>
+    <p>
+      An editor dialogue box appears related to the type of item being edited.
+      The following dialogue boxes are used:
+    </p>
+    <h2>
+      Fixed File Info section
+    </h2>
+    <ul>
+      <li>
+        <a 
+          href="dlg-vernum.htm"
+        >Version Number Editor<a>: Used to edit the <em>File Version #</em>
+        and <em>Product Version #</em> items.
+      </li>
+      <li>
+        <a
+          href="dlg-picklist.htm"
+        >Pick List Editor</a>: Used to edit the <em>File OS</em> and <em>File
+        Type</em> items. It is also used for <em>File Sub-Type</em> when
+        <em>File Type</em> is either VFT_DRV or VFT_FONT.
+      </li>
+      <li>
+        <a
+          href="dlg-numbers.htm"
+        >Number Editor</a>: Used to the <em>File Sub-Type</em> item when
+        <em>File Type</em> is set to VFT_VXD.
+      </li>
+      <li>
+        <a
+          href="dlg-bitset.htm"
+        >Bit set editor</a>: Used to edit the bit sets used for the <em>File
+        Flags Mask</em> and <em>File Flags</em> items.
+      </li>
+    </ul>
+    <h2>
+      Translation Info section
+    </h2>
+    <p>
+      The <a
+        href="dlg-picklist.htm"
+      >Pick List Editor</a> is used to edit both the <em>Language</em> and
+      <em>Character Set</em> items.
+    </p>
+    <h2>
+      String Info section
+    </h2>
+    <p>
+      Each string info item is edited using the <a
+        href="dlg-string.htm"
+      >String Editor</a>. Note that this editor permits the use of <a
+        href="howto-fields.htm"
+      >fields</a>.
+    </p>
+    <p>
+      When <a
+        href="whatis-autovalidation.htm"
+      >automatic validation</a> is switched on an error message is displayed if
+      the <em>Private Build</em> or <em>Special Build</em> items are selected,
+      have no values and the appropriate <em>File Flag</em> is not set. In the
+      case where these items have a value a warning appears giving the option
+      of deleting the entry.
+    </p>
+  </body>
+</html>

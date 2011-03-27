@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is howto-insertrcfile.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      howto-insertrcfile
+    </title>
+    <link
+      rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>How do I</em> ... Insert code into an existing resource source file
+    </h1>
+    <p>
+      Sometimes you may prefer to insert or update a <a
+        href="whatis-vistatement.htm"
+      >version information statement</a> in an existing <a
+        href="whatis-resfile.htm"
+      >resource source file</a> rather than create a resource file containing
+      only the version information statement.
+    </p>
+    <p>
+      Version Information Editor offers no direct way to do this, but does
+      provide some help to make the process easy. Here's what to do:
+    </p>
+    <ol>
+      <li>
+        Copy the current document to the clipboard using the
+        <span class="menuref">Edit | Copy</span> menu option. The documents is
+        converted into a <a
+          href="whatis-vistatement.htm"
+        >version information statement</a> and placed on the clipboard in plain
+        text format.
+      </li>
+      <li>
+        Open the resource source file in a text editor. Find the location to
+        insert the version information and delete any existing statement.
+        <span class="warning">*</span>
+      </li>
+      <li>
+        Paste the version information statement the Editor placed on the
+        clipboard into the resource file.
+      </li>
+      <li>
+        Save the resource file.
+      </li>
+    </ol>
+    <p>
+      <span class="warning">*</span> Only one version information statement is 
+      permitted in a resource file so it is important that any existing
+      statement is deleted.
+    </p>
+  </body>
+</html>

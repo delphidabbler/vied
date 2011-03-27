@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is howto-fields.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      howto-fields
+    </title>
+    <link
+      rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>How do I</em> ... Use fields
+    </h1>
+    <p>
+      Proper use of is one of the most important concepts in Version Information
+      Editor since they make updating version information much easier. Before
+      going on make sure you understand <a
+        href="whatis-fields.htm"
+      >what fields are</a>.
+    </p>
+    <h2>
+      Entering Fields
+    </h2>
+    <p>
+      String info items can contain fields. These items are edited using the <a
+        href="dlg-string.htm"
+      >String Editor</a> which also provides support for using fields.
+    </p>
+    <p>
+      The safest and easiest way to enter fields in the editor is to place the
+      cursor in the text where the field is required then select the required
+      field from the <em>Insert Field</em> drop down list then click the
+      <em>Insert</em> which inserts the field into the text at the cursor
+      position.
+    </p>  
+    <p>
+      You can also enter the fields by hand by simply typing the field name in
+      angle brackets. However this is risky because the name may be mispelled or
+      the field may not be valid for this string info item. The drop down list
+      contains only those fields that are valid.
+    </p>
+    <h2>
+      Some Examples
+    </h2>
+    <h3>
+      Keep version numbers in sync
+    </h3>
+    <p>
+      To many people's surprise the version numbers stored in the <em>File
+      Version #</em> and <em>Product Version #</em> fixed file info items are
+      not necessarily reflected by the content of the <em>File Version</em> and
+      <em>Product Version</em> string info items. However you usually want this
+      to be the case and its easy to let the two get out of sync. Unsurprisingly
+      fields can fix this problem.
+    </p>
+    <p>
+      Suppose you always want the <em>File Version</em> string to have the text
+      &quot;Version W.X.Y build Z&quot; (without the quotes) where W, X, Y and Z
+      are the four parts of the version number recorded in the fixed file info
+      <em>File Version #</em> item. You can set the <em>File Version</em> string
+      to &quot;Version &lt;#F1&gt;.&lt;#F2&gt;.&lt;#F3&gt; build
+      &lt;#F4&gt;&quot;, again without the quotes.
+    </p>
+    <p>
+      Now, everytime you change the version number in <em>File Version #</em>
+      and render the result as a <a
+        href="whatis-vistatement.htm"
+      >VERSIONINFO statement</a> the <em>FileVersion</em> string info entry will
+      have the correct version number. For example if <em>File Version #</em> is
+      set to 1.2.3.4 then <em>File Version</em> will render as &quot;Version
+      1.2.3 build 4&quot;.
+    </p>
+    <p>
+      Of course any string info item could have been used here, and the same
+      applies to the <em>Product Version #</em> fixed file info item with the
+      use of the &lt;#P1&gt;, &lt;#P2&gt;, &lt;#P3&gt; and &lt;#P4&gt; fields.
+    </p>
+    <h3>
+      Automatically set the Internal Name
+    </h3>
+    <p>
+      It is customary in version information for the <em>Internal Name</em>
+      string info item to be set to the name of the file minus any extension.
+      This is the purpose of the &lt;SHORTFNAME&gt; field.
+    </p>
+    <p>
+      Simply set the <em>Original File Name</em> string item to the name of the
+      program file name with extension then set the <em>Internal Name</em> 
+      string item to &quot;&lt;SHORTFNAME&gt;&quot; (without the quotes). Now,
+      assuming <em>Original File Name</em> is &quot;Program.exe&quot; the name
+      of the <em>Internal Name</em> string, when rendered, will be &quot;Progra
+      m&quot;. If you later change <em>Original File Name</em>, internal name
+      will update automatically.
+    </p>
+    <h3>
+      Special Build
+    </h3>
+    <p>
+      The &lt;SPECIALBUILD&gt; field makes it easy to include the text of any
+      special build info in string info items such as <em>Product Version</em>.
+      You can append any special build info to the product version string by
+      setting <em>Product Version</em> to something like &quot;Release
+      &lt;#P1&gt;.&lt;#P2&gt; &lt;SPECIALBUILD&gt;&quot; (without the quotes).
+    </p>
+    <p>
+      Now, if <em>Special Build</em> is set to &quot;DEBUG&quot; and <em>Product
+      Version #</em> is 1.2.3.5, <em>Product Version</em> will render as
+      &quot;Release 1.2 DEBUG&quot;. If <em>Special Build</em> is not set
+      <em>Product Version</em> renders as &quot;Release 1.2 &quot; (note the
+      trailing space).
+    </p>
+    <h3>
+      Product Name
+    </h3>
+    <p>
+      Some people repeat the product name in the <em>Product Version</em> string
+      item. The &lt;PRODUCTNAME&gt; field helps with this. Simply set
+      <em>Product Version</em> to something like &quot;&lt;PRODUCTNAME&gt;
+      v&lt#P1&gt;.&lt;#P2&gt;&quot;, without the quotes and, assuming
+      <em>Product Name</em> is set to &quot;My Product&quot; and <em>Product
+      Version #</em> is 1.2.3.4, <em>Product Version</em> will render as
+      &quot;My Product v1.2&quot;.
+    </p>
+    <h3>
+      Updating the year
+    </h3>
+    <p>
+      The &lt;YEAR&gt; field is useful in copyright statements. If you want to
+      update the year in a copyright statement automatically then just use this
+      macro in the <em>Legal Copyright</em> string like this: &quot;Copyright
+      &lt;YEAR&gt; My Company&quot;. This will insert the current year into the
+      string when the resource statement is rendered. For example if rendered in
+      2010 the string will be &quot;Copyright 2010 My Company&quot;, and the
+      following year it will change to &quot;Copyright 2011 My Company&quot;.
+    </p>
+    <h2>
+      Checking Results
+    </h2>
+    <p>
+      You can easily check the result of using fields by previewing the resource
+      source code that will be generated. Use the <span class="menuref">File |
+      View RC Statements</span> menu option to do this.
+    </p>
+  </body>
+</html>

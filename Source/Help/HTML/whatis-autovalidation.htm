@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is whatis-autovalidation.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      whatis-autovalidation
+    </title>
+    <link
+      rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      <em>What is</em> ... Auto-validation
+    </h1>
+    <p>
+      When automatic validation is switched on invalid information in a <a
+        href="whatis-vifile.htm"
+      >version information file</a> is corrected as the file is loaded. This
+      also applies to the preferences used when creating a new document.
+    </p>
+    <p>
+      Additionally while editing the current document while automatic validation
+      is switched on:
+    </p>
+    <ol>
+      <li>
+        The user is warned when an attempt is made to delete string information
+        that is compulsory.
+      </li>
+      <li>
+        The &quot;Private Build&quot; and &quot;Special Build&quot; strings can
+        only be edited if the appropriate File Flags are set, otherwise any
+        values assigned to these string items will be deleted.
+      </li>
+      <li>
+        Inappropriate File Sub-Types are inhibited. (Valid File Sub-Types are
+        dependent on the File Type).
+      </li>
+    </ol>
+    <p>
+      When automatic validation is switched off many of these checks are not
+      carried out.
+    </p>
+    <p>
+      Automatic validation can be switched on or off using the
+      <span class="menuref">Options | Automatic Validation</span> menu option.
+      The default setting for this feature can be set in the <a
+        href="dlg-setup.htm"
+      >User Setup</a> dialog box.
+    </p>
+  </body>
+</html>

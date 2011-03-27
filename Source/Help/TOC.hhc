@@ -34,5 +34,109 @@
 			<param name="Local" value="HTML\menu-help.htm">
 			</OBJECT>
 	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="How Do I?">
+		<param name="Local" value="HTML\howto.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Create a new document">
+			<param name="Local" value="HTML\howto-newdoc.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Edit a document">
+			<param name="Local" value="HTML\howto-editdoc.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Edit a version information item">
+			<param name="Local" value="HTML\howto-edititem.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Edit an identifier">
+			<param name="Local" value="HTML\howto-editid.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Create a resource source file">
+			<param name="Local" value="HTML\howto-creatercfile.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Insert code into an existing resource source file">
+			<param name="Local" value="HTML\howto-insertrcfile.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Preview resource source code">
+			<param name="Local" value="HTML\howto-previewrc.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Comment my version information document">
+			<param name="Local" value="HTML\howto-commentvi.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Include comments in a resource source file">
+			<param name="Local" value="HTML\howto-commentrc.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Save my editing preferences">
+			<param name="Local" value="HTML\howto-preferences.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Compile a binary resource file">
+			<param name="Local" value="HTML\howto-compile.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Use fields">
+			<param name="Local" value="HTML\howto-fields.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Validate version information as it is entered">
+			<param name="Local" value="HTML\howto-validate.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Analyse a document for errors">
+			<param name="Local" value="HTML\howto-analyse.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Customise the display">
+			<param name="Local" value="HTML\howto-customise.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Register a resource compiler">
+			<param name="Local" value="HTML\howto-rescompiler.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Definitions">
+		<param name="Local" value="HTML\whatis.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Version Information file">
+			<param name="Local" value="HTML\whatis-vifile.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VERSIONINFO statement">
+			<param name="Local" value="HTML\whatis-vistatement.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Identifier">
+			<param name="Local" value="HTML\whatis-identifier.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Fields">
+			<param name="Local" value="HTML\whatis-fields.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Automatic validation">
+			<param name="Local" value="HTML\whatis-autovalidation.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Resource file">
+			<param name="Local" value="HTML\whatis-resfile.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Preferences">
+			<param name="Local" value="HTML\whatis-preferences.htm">
+			</OBJECT>
+	</UL>
 </UL>
 </BODY></HTML>
