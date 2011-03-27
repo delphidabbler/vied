@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * $Rev$
+ * $Date$
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is cmdline.htm
+ *
+ * The Initial Developer of the Original Code is Peter Johnson
+ * (http://www.delphidabbler.com/).
+ *
+ * Portions created by the Initial Developer are Copyright (C) 2011 Peter
+ * Johnson. All Rights Reserved.
+ *
+ * Contributor(s)
+ *   NONE
+ *
+ * ***** END LICENSE BLOCK *****
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      cmdline
+    </title>
+    <link rel="stylesheet" href="../css/help.css" type="text/css">
+  </head>
+  <body>
+    <h1>
+      Command Line Options
+    </h1>
+    <p>
+      This topic describes the options available when Version Information Editor
+      is started from the command line.
+    </p>
+    <h2>
+      Window-less (&quot;silent&quot;) operation
+    </h2>
+    <p>
+      The program can export a <a
+        href="whatis-resfile.htm"
+      >resource source (.rc) file</a> from a native <a
+        href="whatis-vifile.htm"
+      >version information (.vi)  file</a> without displaying a window. This
+      option is provided to enable the program to be used in automated build
+      systems and make files.
+    </p>
+    <p>
+      The required command line is:
+    </p>
+    <pre class="indent">vied -makerc vifilename [rcfilename]</pre>
+    <p>
+      <code>-makerc</code> must be the first parameter and the name of the .vi
+      file to be processed must be the second parameter. Put this name in quotes
+      if it contains spaces. The third (optional) parameter is the name of the
+      .rc file to be generated, again in quotes if necessary. If the third
+      parameter is not provided the generated .rc will have the same name as the 
+      .vi file, but with the extension changed to .rc.
+    </p>
+    <p>
+      Once the file has been generated, or if there is an error the program
+      terminates. The program retrurns one of the following exit codes:
+    </p>
+    <ul class="unspaced">
+      <li>
+        0 &ndash; the program completed successfully.
+      </li>
+      <li>
+        1 &ndash; error: the input file does not exist.
+      </li>
+      <li>
+        2 &ndash; error: there was a problem loading the .vi file.
+      </li>
+      <li>
+        3 &ndash; error: there was a problem converting and/or writing the .rc file.
+      </li>
+    </ul>
+    <h2>
+      Default file paths
+    </h2>
+    <p>
+      If a directory path is passed as the only parameter on the command line
+      this is used as the default directory for all the program’s file dialog
+      boxes.
+    </p>
+    <p>
+      The default directory may be overridden by the program if another path
+      would make more sense.
+    </p>
+  </body>
+</html>

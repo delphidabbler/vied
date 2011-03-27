@@ -17,9 +17,14 @@
 		<param name="Name" value="browse for resource compikle dialogue box">
 		<param name="Local" value="HTML\dlg-browserescomp.htm">
 		</OBJECT>
+		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="choose compiler output folder dialogue box">
 		<param name="Local" value="HTML\dlg-compilerdir.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="command line options">
+		<param name="Local" value="HTML\cmdline.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="comments editor">
@@ -64,6 +69,10 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="options menu">
 		<param name="Local" value="HTML\menu-options.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="overview">
+		<param name="Local" value="HTML\overview.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="pick list editor">

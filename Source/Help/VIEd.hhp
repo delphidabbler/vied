@@ -12,6 +12,8 @@ Title=Version Information Editor Help
 
 [FILES]
 HTML\index.htm
+HTML\cmdline.htm
+HTML\overview.htm
 HTML\dlg-nohelp.htm
 HTML\dlg-picklist.htm
 HTML\dlg-identifier.htm
