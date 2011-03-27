@@ -176,6 +176,10 @@ object MainForm: TMainForm
         ShortCut = 112
         OnClick = MHContentsClick
       end
+      object MHHowDoI: TMenuItem
+        Caption = 'How Do I?'
+        OnClick = MHHowDoIClick
+      end
       object MHSpacer1: TMenuItem
         Caption = '-'
       end
