@@ -58,7 +58,6 @@ uses
   UHelp in 'UHelp.pas',
   UHTMLHelp in 'UHTMLHelp.pas',
   UMsgDlgs in 'UMsgDlgs.pas',
-  UOSInfo in 'UOSInfo.pas',
   UResCompiler in 'UResCompiler.pas',
   USettings in 'USettings.pas',
   UUtils in 'UUtils.pas',

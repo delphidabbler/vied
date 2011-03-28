@@ -285,7 +285,7 @@ uses
   // Delphi
   SysUtils, ShellAPI,
   // Project units
-  UHelp, UMsgDlgs, UOSInfo, UVerUtils, UUtils, USettings, UResCompiler,
+  UHelp, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
   FmDropDownListEd, FmIdEd, FmNumberEd, FmResCompiler, FmResCompilerCheck,
   FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd, FmResOutputDir;
 
