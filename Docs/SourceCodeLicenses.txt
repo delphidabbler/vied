@@ -3,9 +3,9 @@
 SOURCE CODE LICENSING
 ________________________________________________________________________________
 
-This document discusses and presents the relevant licenses governing the
-Version Information Editor source code available from DelphiDabbler.com and the
-Subversion repository on Google Code at
+This document reviews the relevant licenses governing the Version Information
+Editor source code available from DelphiDabbler.com and the Subversion
+repository on Google Code at
 http://code.google.com/p/verinfo-tools/source/browse/.
 
 The source code includes:
@@ -16,7 +16,7 @@ The source code includes:
 The download does not include all the source code required to build Version
 Information Editor. Explicitly it doesn't include:
 
-+ Source files from the Delphi 2010 VCL. You must have Delphi in order to access
++ Source files from the Delphi VCL. You must have Delphi in order to access
   these files.
 + DelphiDabbler library components and units. These are all available from
   http://www.delphidabbler.com/software/vied/download
@@ -49,7 +49,7 @@ license can be found in MPL.txt
 Image Files (.ico, .bmp, .gif)
 ________________________________________________________________________________
 
-The images are used in the program are stored in the "Source" directory and its
+The images used in the program are stored in the "Source" directory and its
 sub-directories.
 
 Images may also be embedded in forms by various VCL controls. Separate image
@@ -57,7 +57,8 @@ files are not provided in this case.
 
 All images are either original or have been copied or adapted from various
 sources. With the exception of the images listed under "Exceptions" below, all
-images are in the public domain and can be re-used without restriction.
+images are believed to be in the public domain and can be re-used without
+restriction.
 
 Exceptions
 ----------
@@ -66,7 +67,7 @@ The file "Source\Assets\VIEd.ico" is copyright (C) 2009 Peter Johnson (www.delph
 
 This file may not be altered in any way and may not be used in any other
 programs, including programs derived from the Version Information Editor code
-base, unless explicit permission is given by the author.
+base, unless explicit permission is given by the copyright holder.
 
 This means that if you modify an aspect of the Version Information Editor code
 base and publish your changes then you must remove the icon or replace it with
