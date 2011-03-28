@@ -34,8 +34,8 @@
 
 
 [Fixed File Info]
-File Version #=2, 11, 2, 0
-Product Version #=2, 11, 2, 0
+File Version #=2, 12, 0, 0
+Product Version #=2, 12, 0, 0
 File OS=4
 File Type=1
 File Sub-Type=0
@@ -47,7 +47,7 @@ Language=2057
 Character Set=1252
 
 [String File Info]
-Comments=This program is released under an open source license. See the file \"License.txt\" distributed with the program.
+Comments=This program is released under an open source license. See the file \"License.rtf\" distributed with the program.
 Company Name=DelphiDabbler
 File Description=Version Information Editor executable file v<#F1>.<#F2>.<#F3>
 File Version=v<#F1>.<#F2>.<#F3>
