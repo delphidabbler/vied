@@ -7,11 +7,12 @@ object MainForm: TMainForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clBlack
   Font.Height = -13
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Tahoma'
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = True
   Position = poDesigned
+  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -26,12 +27,6 @@ object MainForm: TMainForm
     Align = alTop
     AllowResize = False
     BorderStyle = bsNone
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
     Sections.Sections = (
       #0'42'#0'Label'
       #0'43'#0'Value')
@@ -207,6 +202,11 @@ object MainForm: TMainForm
     VersionInfo = AboutVersionInfo
     Position = abpOwner
     UseOwnerAsParent = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
     Left = 32
     Top = 200
   end

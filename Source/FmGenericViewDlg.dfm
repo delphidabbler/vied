@@ -6,8 +6,8 @@ inherited GenericViewDlg: TGenericViewDlg
     TabOrder = 2
   end
   object btnDone: TButton
-    Left = 232
-    Top = 304
+    Left = 302
+    Top = 374
     Width = 75
     Height = 25
     Cancel = True
