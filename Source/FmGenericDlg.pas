@@ -24,7 +24,7 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 2002-2011 Peter
+ * Portions created by the Initial Developer are Copyright (C) 2002-2014 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
@@ -138,7 +138,9 @@ begin
   inherited;
   ClsName := 'DelphiDabbler.VIEd.' + Name;
   StrLCopy(
-    Params.WinClassName, PChar(ClsName), SizeOf(Params.WinClassName) - 1
+    Params.WinClassName,
+    PChar(ClsName),
+    SizeOf(Params.WinClassName) div SizeOf(Char) - 1
   );
 end;
 
