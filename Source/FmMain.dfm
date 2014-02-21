@@ -19,27 +19,57 @@ object MainForm: TMainForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
-  object DisplayHeader: THeader
+  object DisplayListView: TListView
     Left = 0
     Top = 0
     Width = 587
-    Height = 19
-    Align = alTop
-    AllowResize = False
-    BorderStyle = bsNone
-    Sections.Sections = (
-      #0'42'#0'Label'
-      #0'43'#0'Value')
-    TabOrder = 0
-  end
-  object DisplayListBox: TListBox
-    Left = 0
-    Top = 19
-    Width = 587
-    Height = 302
+    Height = 321
     Align = alClient
-    TabOrder = 1
-    OnDblClick = MECurrentClick
+    Columns = <
+      item
+        Caption = 'Label'
+        Width = 140
+      end
+      item
+        Caption = 'Value'
+        Width = 300
+      end>
+    Groups = <
+      item
+        Header = 'Fixed File Information'
+        GroupID = 0
+        State = [lgsNormal]
+        HeaderAlign = taLeftJustify
+        FooterAlign = taLeftJustify
+        TitleImage = -1
+        ExtendedImage = -1
+      end
+      item
+        Header = 'Translation Information'
+        GroupID = 1
+        State = [lgsNormal]
+        HeaderAlign = taLeftJustify
+        FooterAlign = taLeftJustify
+        TitleImage = -1
+        ExtendedImage = -1
+      end
+      item
+        Header = 'String Information'
+        GroupID = 2
+        State = [lgsNormal]
+        HeaderAlign = taLeftJustify
+        FooterAlign = taLeftJustify
+        TitleImage = -1
+        ExtendedImage = -1
+      end>
+    GroupView = True
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = DisplayListViewDblClick
+    ExplicitTop = 19
+    ExplicitHeight = 302
   end
   object MainMenu: TMainMenu
     Left = 32
