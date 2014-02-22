@@ -109,6 +109,4 @@ http://www.delphidabbler.com/ and contains all the Peter's open source programs,
 Delphi library code, programming articles, hints and tips and other resources.
 
 --------------------------------------------------------------------------------
-$Rev$
-$Date$
---------------------------------------------------------------------------------
+

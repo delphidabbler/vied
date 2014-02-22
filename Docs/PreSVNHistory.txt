@@ -975,6 +975,3 @@ The BRCC32 compiler was failing when passed file names containing spaces.
         manually adding command lines
 
 --------------------------------------------------------------------------------
-$Rev$
-$Date$
---------------------------------------------------------------------------------

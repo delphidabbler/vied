@@ -1,14 +1,12 @@
 ; ------------------------------------------------------------------------------
 ; Change Log for Version Information Editor
-; $Rev$
-; $Date$
 ; ------------------------------------------------------------------------------
 
 Release v2.12 of 28 March 2011
 + Completely rewrote help system:
   - Changed from WinHelp to HTML Help.
   - Removed context sensitive help for menu options.
-  - Help menu revised to access relevant topics in new help file. 
+  - Help menu revised to access relevant topics in new help file.
   - F1 rather than Ctrl+F1 now displays help contents.
 + Modified to compile cleanly with Delphi 2010 compiler.
 + Handling of common dialogue boxes changed to centre them over main window and to work with HTML help.
