@@ -265,6 +265,7 @@ clean:
   -@del /S *.dsk 2>nul
   -@del /S *.local 2>nul
   -@del /S *.identcache 2>nul
+  -@del /S *.orig 2>nul
   # remove __history folders
   -@for /F "usebackq" %i in (`dir /S /B /A:D ..\__history`) do @rmdir /S /Q %i
   @cd Source
