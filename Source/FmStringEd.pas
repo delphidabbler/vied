@@ -66,23 +66,31 @@ type
     procedure btnInsertClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
   private
-    fWrapLines: Boolean;
-      {Value of WrapLines property}
-    fCompulsory: Boolean;
-      {Value of Compulsory property}
-    fFixedWidthFont: Boolean;
-      {Value of FixedWidth Font property}
-    fMemoWidth: Integer;
-      {Value of MemoWidth property}
-    fMemoHeight: Integer;
-      {Value of MemoHeight property}
-    fText: string;
-      {Value of Text property}
-    fKind: string;
-      {Value of Kind property}
-    fDisplayFieldStuff: Boolean;
-      {Flag true if field related controls are being displayed in dlg box and
-      false if not}
+    const
+      // Default window dimensions
+      DefMemoWidth = 300;
+      DefMemoHeight = 200;
+      // Mininum window dimensions
+      MinWindowWidth = 320;
+      MinWindowHeight = 200;
+    var
+      fWrapLines: Boolean;
+        {Value of WrapLines property}
+      fCompulsory: Boolean;
+        {Value of Compulsory property}
+      fFixedWidthFont: Boolean;
+        {Value of FixedWidth Font property}
+      fMemoWidth: Integer;
+        {Value of MemoWidth property}
+      fMemoHeight: Integer;
+        {Value of MemoHeight property}
+      fText: string;
+        {Value of Text property}
+      fKind: string;
+        {Value of Kind property}
+      fDisplayFieldStuff: Boolean;
+        {Flag true if field related controls are being displayed in dlg box and
+        false if not}
     function GetLines: TStrings;
       {Read access method for Lines property.
         @return Reference to lines of string editor control.
@@ -224,6 +232,17 @@ begin
   end;
   // Call inherited method to arrange remaining controls
   ArrangeControls;
+  // Set anchors to permit controls to re-arrange as dialogue to be resized
+  pnlBody.Anchors := [akLeft, akRight, akTop, akBottom];
+  lblStr.Anchors := [akTop, akLeft];
+  edStr.Anchors := [akLeft, akRight, akTop, akBottom];
+  lblField.Anchors := [akLeft, akBottom];
+  cmbField.Anchors := [akLeft, akRight, akBottom];
+  btnInsert.Anchors := [akRight, akBottom];
+  bvlBottom.Anchors := [akLeft, akRight, akBottom];
+  btnOK.Anchors := [akRight, akBottom];
+  btnCancel.Anchors := [akRight, akBottom];
+  btnHelp.Anchors := [akRight, akBottom];
 end;
 
 procedure TStringEditor.btnInsertClick(Sender: TObject);
@@ -328,8 +347,8 @@ procedure TStringEditor.FormCreate(Sender: TObject);
     @param Sender [in] Not used.
   }
 begin
-  fMemoWidth := 295;
-  fMemoHeight := 102;
+  fMemoWidth := DefMemoWidth;
+  fMemoHeight := DefMemoHeight;
   inherited;  // inherited last: we may want to use values to arrange controls
 end;
 
@@ -361,6 +380,9 @@ begin
   cmbField.ItemIndex := 0;
   // Arrange dlg box according to whether field controls are being displayed
   Arrange;
+  // Constrain dlg box
+  Constraints.MinWidth := MinWindowWidth;
+  Constraints.MinHeight := MinWindowHeight;
 end;
 
 function TStringEditor.GetLines: TStrings;
