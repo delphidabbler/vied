@@ -24,7 +24,7 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2014 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
@@ -44,7 +44,7 @@ uses
   // Delphi
   StdCtrls, Controls, ExtCtrls, Classes,
   // Project
-  FmGenericOKDlg;
+  FmGenericOKDlg, UMemoCaretPosDisplayMgr;
 
 
 type
@@ -61,10 +61,13 @@ type
     edStr: TMemo;
     cmbField: TComboBox;
     btnInsert: TButton;
+    lblCaretPos: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnInsertClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     const
       // Default window dimensions
@@ -91,6 +94,8 @@ type
       fDisplayFieldStuff: Boolean;
         {Flag true if field related controls are being displayed in dlg box and
         false if not}
+      fCaretDisplayMgr: TMemoCaretPosDisplayMgr;
+        {Manages display of caret position in memo control}
     function GetLines: TStrings;
       {Read access method for Lines property.
         @return Reference to lines of string editor control.
@@ -146,6 +151,10 @@ type
       {Arrange dialog box components and size according to whether fields are to
       be displayed.
       }
+    procedure UpdateCaretPosState;
+      {Displays or hides caret position label depending on if there is enough
+      room for it.
+      }
   public
     property HelpTopic;
       {Redeclared to make public}
@@ -180,8 +189,8 @@ type
       size is adjusted accordingly}
     property AllowEnter: Boolean write SetAllowEnter;
       {Flag which allows return to enter a new line when true and not when
-      false. Text property will usually be used when this falg is false and
-      Lines property will usually be used when the falg is true}
+      false. Text property will usually be used when this flag is false and
+      Lines property will usually be used when the flag is true}
   end;
 
 
@@ -190,7 +199,7 @@ implementation
 
 uses
   // Delphi
-  SysUtils,
+  SysUtils, Windows, Graphics, Types,
   // Project
   UHelp, UMsgDlgs;
 
@@ -212,6 +221,8 @@ begin
   edStr.Width := fMemoWidth;
   pnlBody.Width := fMemoWidth;
   lblStr.Width := fMemoWidth;
+  lblCaretPos.Top := lblStr.Top;
+  lblCaretPos.Left := fMemoWidth - lblCaretPos.Width;
   btnInsert.Left := pnlBody.Width - btnInsert.Width;
   cmbField.Width := pnlBody.Width - btnInsert.Width - 16;
   // Set component heights and vertical positions
@@ -235,6 +246,7 @@ begin
   // Set anchors to permit controls to re-arrange as dialogue to be resized
   pnlBody.Anchors := [akLeft, akRight, akTop, akBottom];
   lblStr.Anchors := [akTop, akLeft];
+  lblCaretPos.Anchors := [akTop, akRight];
   edStr.Anchors := [akLeft, akRight, akTop, akBottom];
   lblField.Anchors := [akLeft, akBottom];
   cmbField.Anchors := [akLeft, akRight, akBottom];
@@ -352,6 +364,18 @@ begin
   inherited;  // inherited last: we may want to use values to arrange controls
 end;
 
+procedure TStringEditor.FormDestroy(Sender: TObject);
+begin
+  fCaretDisplayMgr.Free;
+  inherited;
+end;
+
+procedure TStringEditor.FormResize(Sender: TObject);
+begin
+  inherited;
+  UpdateCaretPosState;
+end;
+
 procedure TStringEditor.FormShow(Sender: TObject);
   {Event handler called when form is shown: intialises controls.
     @param Sender [in] Not used.
@@ -383,6 +407,9 @@ begin
   // Constrain dlg box
   Constraints.MinWidth := MinWindowWidth;
   Constraints.MinHeight := MinWindowHeight;
+  // Manage caret: best to create this here rather than FormCreate to ensure
+  // initial caret state is captured
+  fCaretDisplayMgr := TMemoCaretPosDisplayMgr.Create(edStr, lblCaretPos);
 end;
 
 function TStringEditor.GetLines: TStrings;
@@ -512,6 +539,35 @@ begin
     edStr.WordWrap := False;
     edStr.ScrollBars := ssBoth;
   end;
+end;
+
+procedure TStringEditor.UpdateCaretPosState;
+
+  function StringExtent(const S: string; const Font: TFont): TSize;
+  var
+    Canvas: TCanvas; // canvas used to measure text extent
+  begin
+    Assert(Assigned(Font));
+    Canvas := TCanvas.Create;
+    try
+      Canvas.Handle := CreateDC('DISPLAY', nil, nil, nil);
+      try
+        Canvas.Font := Font;
+        Result := Canvas.TextExtent(S);
+      finally
+        DeleteDC(Canvas.Handle);
+        Canvas.Handle := 0;
+      end;
+    finally
+      Canvas.Free;
+    end;
+  end;
+
+var
+  EditorCaptionWidth: Integer;
+begin
+  EditorCaptionWidth := StringExtent(lblStr.Caption, lblStr.Font).cx;
+  lblCaretPos.Visible := lblStr.Left + EditorCaptionWidth < lblCaretPos.Left;
 end;
 
 end.

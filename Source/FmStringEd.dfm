@@ -3,6 +3,8 @@ inherited StringEditor: TStringEditor
   Caption = ''
   ClientHeight = 402
   ClientWidth = 603
+  OnDestroy = FormDestroy
+  OnResize = FormResize
   OnShow = FormShow
   ExplicitWidth = 619
   ExplicitHeight = 440
@@ -28,6 +30,15 @@ inherited StringEditor: TStringEditor
       Height = 13
       Caption = 'Insert &Field:'
       FocusControl = cmbField
+    end
+    object lblCaretPos: TLabel
+      Left = 285
+      Top = 0
+      Width = 60
+      Height = 13
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'lblCaretPos'
     end
     object edStr: TMemo
       Left = 0
