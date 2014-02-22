@@ -1,7 +1,5 @@
-
-¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-SOURCE CODE LICENSING
-________________________________________________________________________________
+Source Code Licensing
+=====================
 
 This document reviews the relevant licenses governing the Version Information
 Editor source code available from DelphiDabbler.com and the Subversion
@@ -22,9 +20,8 @@ Information Editor. Explicitly it doesn't include:
   http://www.delphidabbler.com/software/vied/download
 
 
-¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 Original Source Code
-________________________________________________________________________________
+--------------------
 
 Original source files are stored the "Source" directory and its sub-directories.
 
@@ -45,9 +42,8 @@ Many files are licensed under the Mozilla Public License. A full copy of that
 license can be found in MPL.txt
 
 
-¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 Image Files (.ico, .bmp, .gif)
-________________________________________________________________________________
+------------------------------
 
 The images used in the program are stored in the "Source" directory and its
 sub-directories.
@@ -60,8 +56,8 @@ sources. With the exception of the images listed under "Exceptions" below, all
 images are believed to be in the public domain and can be re-used without
 restriction.
 
-Exceptions
-----------
+
+### Exceptions
 
 The file "Source\Assets\VIEd.ico" is copyright (C) 2009 Peter Johnson (www.delphidabbler.com).
 
@@ -72,6 +68,3 @@ base, unless explicit permission is given by the copyright holder.
 This means that if you modify an aspect of the Version Information Editor code
 base and publish your changes then you must remove the icon or replace it with
 your own.
-
-
-¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯

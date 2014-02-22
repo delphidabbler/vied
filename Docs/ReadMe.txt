@@ -5,13 +5,13 @@ DelphiDabbler Version Information Editor
 Contents
 --------
 
-1) License and Copyright
-2) System Requirements
-3) Installation - instructions on how to install the program
-4) Uninstalling - instructions on how to uninstall the program
-5) Updates - details of where to check for program updates
-6) Getting in Touch - how to contact DelphiDabbler
-7) About DelphiDabbler
+1. License and Copyright
+2. System Requirements
+3. Installation - instructions on how to install the program
+4. Uninstalling - instructions on how to uninstall the program
+5. Updates - details of where to check for program updates
+6. Getting in Touch - how to contact DelphiDabbler
+7. About DelphiDabbler
 
 
 1) License and Copyright
@@ -108,5 +108,4 @@ Ceredigion, Wales, UK. The DelphiDabbler website is at
 http://www.delphidabbler.com/ and contains all the Peter's open source programs,
 Delphi library code, programming articles, hints and tips and other resources.
 
---------------------------------------------------------------------------------
 
