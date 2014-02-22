@@ -68,8 +68,6 @@ object MainForm: TMainForm
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = DisplayListViewDblClick
-    ExplicitTop = 19
-    ExplicitHeight = 302
   end
   object MainMenu: TMainMenu
     Left = 32
@@ -140,9 +138,14 @@ object MainForm: TMainForm
       Caption = '&Edit'
       OnClick = MEditClick
       object MECurrent: TMenuItem
-        Caption = 'C&urrent Item...'
+        Caption = 'Edit C&urrent Item...'
         ShortCut = 113
         OnClick = MECurrentClick
+      end
+      object MEClearCurrent: TMenuItem
+        Caption = 'Cle&ar Current Item'
+        ShortCut = 16430
+        OnClick = MEClearCurrentClick
       end
       object MESpacer0: TMenuItem
         Caption = '-'

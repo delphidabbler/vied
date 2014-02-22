@@ -18,7 +18,7 @@ interface
 uses
   // Delphi
   Forms, StdCtrls, Dialogs, Menus, Classes, Controls, ExtCtrls, Windows,
-  Messages, ComCtrls,
+  Messages, ComCtrls, Generics.Collections,
   // DelphiDabbler components
   PJVersionInfo, PJAbout, PJDropFiles, PJWdwState,
   // Project
@@ -85,6 +85,7 @@ type
     DisplayListView: TListView;
     MFSpacer3: TMenuItem;
     MFClearPreferences: TMenuItem;
+    MEClearCurrent: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -120,7 +121,31 @@ type
     procedure MHLicenseClick(Sender: TObject);
     procedure DisplayListViewDblClick(Sender: TObject);
     procedure MFClearPreferencesClick(Sender: TObject);
+    procedure MEClearCurrentClick(Sender: TObject);
+  strict private
+    type
+      TVIItemUpdateCallback = reference to procedure(const VI: TVInfo);
+      TVIItemRenderCallback = reference to function(const VI: TVInfo): string;
+      TVIItemCallback = reference to procedure(const VI: TVInfo;
+        const LI: TListItem);
+      TVIItem = record
+      strict private
+        var
+          fListItem: TListItem;
+          fEditProc: TVIItemUpdateCallback;
+          fClearProc: TVIItemUpdateCallback;
+          fRenderProc: TVIItemRenderCallback;
+      public
+        constructor Create(const AListItem: TListItem;
+          const AEditProc, AClearProc: TVIItemUpdateCallback;
+          const ARenderProc: TVIItemRenderCallback);
+        property ListItem: TListItem read fListItem;
+        property EditProc: TVIItemUpdateCallback read fEditProc;
+        property ClearProc: TVIItemUpdateCallback read fClearProc;
+        property RenderProc: TVIItemRenderCallback read fRenderProc;
+      end;
   private
+    fVIItems: TList<TVIItem>;
     fSaveDlg: TSaveDialogEx;
     fExportDlg: TSaveDialogEx;
     fCompilerDlg: TSaveDialogEx;
@@ -252,6 +277,21 @@ type
         @param Index [in] Index of list view item whose version information is
           to be edited.
       }
+    procedure ClearViItem(Index: Integer);
+      {Clears the version information item at given index in list view.
+        @param Index [in] Index of list view item whose version information is
+          to be cleared.
+      }
+    procedure Init;
+      {Initialises main display are records details of version info items in
+      display.
+      }
+    procedure SetListItemValue(const AListItem: TListItem; const Value: string);
+      {Sets the value of a version information item stored in given list item
+      to given value.
+        @param AListItem [in] List item to be updated.
+        @param Value [in] Value to be displated.
+      }
   protected
     procedure CreateParams(var Params: TCreateParams); override;
       {Updates style of window to ensure this main window appears on task bar.
@@ -374,6 +414,12 @@ begin
   end;
 end;
 
+procedure TMainForm.ClearViItem(Index: Integer);
+begin
+  fVIItems[Index].ClearProc(fVerInfo);
+  DisplayVI;
+end;
+
 procedure TMainForm.CreateCommonDlgs;
 resourcestring
   sVIFileFilter = 'Version info files (*.vi)|*.vi';
@@ -424,97 +470,16 @@ end;
 procedure TMainForm.DisplayVI;
   {Displays version information.
   }
-
-  // Adds a list view item in given group with given caption and text
-  procedure AddItem(AGroupID: Integer; const ACaption, AText: string);
-  var
-    LI: TListItem;
-  begin
-    LI := DisplayListView.Items.Add;
-    LI.Caption := ACaption;
-    LI.SubItems.Add(AText);
-    LI.GroupID := AGroupID;
-  end;
-
-resourcestring
-  sFileVersion = 'File Version #';
-  sProductVersion = 'Product Version #';
-  sFileOS = 'File OS';
-  sFileType = 'File Type';
-  sFileSubType = 'File Sub-type';
-  sFileFlagsMask = 'File Flags Mask';
-  sFileFlags = 'File Flags';
-  sLanguage = 'Language';
-  sCharSet = 'Character Set';
 var
-  I: TStrInfo;  // loop control for string info
+  Idx: Integer;
 begin
   // Ensure the VerUtils routines use Pascal Hex symbol for output
-  UsePasHexSymbol(True);
   DisplayListView.Items.BeginUpdate;
   try
-    DisplayListView.Clear;
-    // Add Fixed File Info items to list
-    AddItem(
-      lvgiFixedFileInfo,
-      sFileVersion,
-      VersionNumberToStr(fVerInfo.FileVersionNumber)
-    );
-    AddItem(
-      lvgiFixedFileInfo,
-      sProductVersion,
-      VersionNumberToStr(fVerInfo.ProductVersionNumber)
-    );
-    AddItem(
-      lvgiFixedFileInfo,
-      sFileOS,
-      FileOSToStr(fVerInfo.FileOS)
-    );
-    AddItem(
-      lvgiFixedFileInfo,
-      sFileType, FileTypeToStr(fVerInfo.FileType)
-    );
-    AddItem(
-      lvgiFixedFileInfo,
-      sFileSubType,
-      FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
-    );
-    if fVerInfo.DescribeFileFlags then
-    begin
-      AddItem(
-        lvgiFixedFileInfo,
-        sFileFlagsMask,
-        FileFlagSetToStr(fVerInfo.FileFlagsMask)
+    for Idx := 0 to Pred(DisplayListView.Items.Count) do
+      SetListItemValue(
+        fVIItems[Idx].ListItem, fVIItems[Idx].RenderProc(fVerInfo)
       );
-      AddItem(
-        lvgiFixedFileInfo,
-        sFileFlags,
-        FileFlagSetToStr(fVerInfo.FileFlags)
-      );
-    end
-    else
-    begin
-      AddItem(
-        lvgiFixedFileInfo,
-        sFileFlagsMask,
-        HexSymbol + IntToHex(fVerInfo.FileFlagsMask, 2)
-      );
-      AddItem(
-        lvgiFixedFileInfo,
-        sFileFlags,
-        HexSymbol + IntToHex(fVerInfo.FileFlags, 2)
-      );
-    end;
-    // Add Variable Info to list
-    AddItem(
-      lvgiTranslationInfo, sLanguage, LangCodeToStr(fVerInfo.LanguageCode)
-    );
-    AddItem(
-      lvgiTranslationInfo, sCharSet, CharCodeToStr(fVerInfo.CharSetCode)
-    );
-    // Add String info to list
-    for I := Low(TStrInfo) to High(TStrInfo) do
-      AddItem(lvgiStringInfo, fVerInfo.StrDesc[I], fVerInfo.StrInfo[I]);
   finally
     DisplayListView.Items.EndUpdate;
   end;
@@ -677,169 +642,11 @@ procedure TMainForm.EditViItem(Index: Integer);
     @param Index [in] Index of list view item whose version information is to be
       edited.
   }
-const
-  // Map of list view item index to pre-defined string information items
-  cStrInfo: array[9..20] of TStrInfo =
-    (siComments, siCompanyName, siFileDescription, siFileVersion,
-    siInternalName, siLegalCopyright, siLegalTrademarks, siOriginalFileName,
-    siPrivateBuild, siProductName, siProductVersion, siSpecialBuild);
-var
-  StrList: TStringList;    // for holding drop down lists / list box items
-  StrList2: TStringList;   // for holding list box items
-  StrInfoId: TStrInfo;     // for holding string info id
 begin
-  // Create the string lists
-  StrList2 := nil;
-  StrList := TStringList.Create;
-  try
-    StrList2 := TStringList.Create;
-    // Act according to selected item in list box
-    case Index of
-      0: // File version number
-        fVerInfo.FileVersionNumber := GetVersionNumber(
-          sFile, fVerInfo.FileVersionNumber
-        );
-      1: // Product version number
-        fVerInfo.ProductVersionNumber := GetVersionNumber(
-          sProduct, fVerInfo.ProductVersionNumber
-        );
-      2: // File OS
-        try
-          fVerInfo.FileOS := StrToFileOS(
-            GetDropDownChoice(
-              sFileOS, FileOSCodeList(StrList), FileOSToStr(fVerInfo.FileOS)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      3: // File Type
-        try
-          fVerInfo.FileType := StrToFileType(
-            GetDropDownChoice(
-              sFileType,
-              FileTypeCodeList(StrList),
-              FileTypeToStr(fVerInfo.FileType)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      4: // File sub-type
-        try
-          case fVerInfo.FileType of
-            VFT_DRV:   // Driver type
-              fVerInfo.FileSubType := StrToFileSubType(
-                fVerInfo.FileType,
-                GetDropDownChoice(
-                  sDrvSubType,
-                  DriverSubTypeCodeList(StrList),
-                  FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
-                )
-              );
-            VFT_FONT:  // Font type
-              fVerInfo.FileSubType := StrToFileSubType(
-                fVerInfo.FileType,
-                GetDropDownChoice(
-                  sFontSubType,
-                  FontSubTypeCodeList(StrList),
-                  FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
-                )
-              );
-            VFT_VXD:   // Virtual device driver type
-              fVerInfo.FileSubType := GetHexNumber(
-                sVXDSubType, fVerInfo.FileSubType
-              );
-            else       // All other file types - don't have sub-types
-              MsgCantEditSubType(FileTypeToStr(fVerInfo.FileType));
-          end;
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      5:   // File flags mask
-        fVerInfo.FileFlagsMask := StrListToFileFlagSet(
-          GetStringList(
-            sFileFlagsMask,
-            FileFlagSetToStrList(fVerInfo.FileFlagsMask, StrList),
-            FileFlagSetToStrList(not fVerInfo.FileFlagsMask, StrList2)
-          )
-        );
-      6:   // File flags
-        fVerInfo.FileFlags := StrListToFileFlagSet(
-          GetStringList(
-            sFileFlags,
-            FileFlagSetToStrList(
-              fVerInfo.FileFlags and fVerInfo.FileFlagsMask,
-              StrList
-            ),
-            FileFlagSetToStrList(
-              (not fVerInfo.FileFlags) and fVerInfo.FileFlagsMask,
-              StrList2
-            )
-          )
-        );
-      7:   // Language
-        try
-          fVerInfo.LanguageCode := StrToLangCode(
-            GetDropDownChoice(
-              sLanguage,
-              LanguageStrList(StrList),
-              LangCodeToStr(fVerInfo.LanguageCode)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      8:  // Character set
-        try
-          fVerInfo.CharSetCode := StrToCharCode(
-            GetDropDownChoice(
-              sCharSet,
-              CharSetStrList(StrList),
-              CharCodeToStr(fVerInfo.CharSetCode)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      9..20: // String Info items
-      begin
-        // find Id of string-info item
-        StrInfoId := cStrInfo[Index];
-        // build list of valid fields for the item
-        fVerInfo.ValidFields(StrInfoId, StrList);
-        // decide if we can enter a string
-        //   only if we're not validating *or*
-        //   we are validating and string is permitted
-        if (not fVerInfo.Validating) or fVerInfo.StrPermitted[StrInfoId] then
-          fVerInfo.StrInfo[StrInfoId] := GetString(
-            fVerInfo.StrDesc[StrInfoId],
-            fVerInfo.StrInfo[StrInfoId],
-            fVerInfo.StrRequired[StrInfoId] and fVerInfo.Validating,
-            StrList
-          )
-        else if fVerInfo.StrInfo[StrInfoId] = '' then
-          // string not permitted and there is no string - prevent edit
-          MsgNeedFileFlag(fVerInfo.StrDesc[StrInfoId])
-        else if MsgDeleteInvalidText(fVerInfo.StrDesc[StrInfoId]) then
-          // string not permitted, there is a value, user accepts deletion
-          fVerInfo.StrInfo[StrInfoId] := '';
-      end;
-      -1: // No item selected - error
-        MsgNoItemToEdit;
-    end;
-    // Re-display and select current item agian
-    DisplayVI;
-    DisplayListView.ItemIndex := Index;
-  finally
-    StrList2.Free;
-    StrList.Free;
-  end;
+  if Index < 0 then
+    Exit;
+  fVIItems[Index].EditProc(fVerInfo);
+  DisplayVI;
 end;
 
 procedure TMainForm.FileCatcherDropFiles(Sender: TObject);
@@ -876,6 +683,9 @@ procedure TMainForm.FormCreate(Sender: TObject);
   // ---------------------------------------------------------------------------
 
 begin
+  UsePasHexSymbol(True);  // ensure that hex values are rendered as in pascal
+  fVIItems := TList<TVIItem>.Create;
+  Init;
   // Create dynamic components
   CreateCommonDlgs;
 
@@ -923,6 +733,7 @@ procedure TMainForm.FormDestroy(Sender: TObject);
   }
 begin
   fVerInfo.Free;
+  fVIItems.Free;
   THelp.Quit;
 end;
 
@@ -1126,6 +937,414 @@ begin
     Result := False;
 end;
 
+procedure TMainForm.Init;
+
+  // Adds a list view item in given group with given caption
+  procedure AddItem(AGroupID: Integer; const ACaption: string;
+    const EditProc, DeleteProc: TVIItemUpdateCallback;
+    const DisplayProc: TVIItemRenderCallback);
+  var
+    LI: TListItem;
+  begin
+    LI := DisplayListView.Items.Add;
+    LI.Caption := ACaption;
+    LI.SubItems.Add('');  // sub item to display item's value
+    LI.GroupID := AGroupID;
+    fVIItems.Add(TVIItem.Create(LI, EditProc, DeleteProc, DisplayProc));
+  end;
+
+
+  procedure AddStringItem(StrInfoId: TStrInfo);
+
+    function CreateEditProc(StrInfoId: TStrInfo): TVIItemUpdateCallback;
+    begin
+      Result := procedure(const VI: TVInfo)
+      var
+        StrList: TStringList;
+      begin
+        StrList := TStringList.Create;
+        try
+          // build list of valid fields for the item
+          VI.ValidFields(StrInfoId, StrList);
+          // decide if we can enter a string
+          //   only if we're not validating *or*
+          //   we are validating and string is permitted
+          if (not VI.Validating) or VI.StrPermitted[StrInfoId] then
+            VI.StrInfo[StrInfoId] := GetString(
+              VI.StrDesc[StrInfoId],
+              VI.StrInfo[StrInfoId],
+              VI.StrRequired[StrInfoId] and VI.Validating,
+              StrList
+            )
+          else if VI.StrInfo[StrInfoId] = '' then
+            // string not permitted and there is no string - prevent edit
+            MsgNeedFileFlag(VI.StrDesc[StrInfoId])
+          else if MsgDeleteInvalidText(VI.StrDesc[StrInfoId]) then
+            // string not permitted, there is a value, user accepts deletion
+            VI.StrInfo[StrInfoId] := '';
+        finally
+          StrList.Free;
+        end;
+      end
+    end;
+
+    function CreateDeleteProc(StrInfoId: TStrInfo): TVIItemUpdateCallback;
+    begin
+      Result := procedure(const VI: TVInfo)
+      begin
+        VI.StrInfo[StrInfoId] := TVInfo.DefString;
+      end
+    end;
+
+    function CreateDisplayProc(StrInfoId: TStrInfo): TVIItemRenderCallback;
+    begin
+      Result := function(const VI: TVInfo): string
+      begin
+        Result := VI.StrInfo[StrInfoId];
+      end
+    end;
+
+  begin
+    AddItem(
+      lvgiStringInfo,
+      fVerInfo.StrDesc[StrInfoId],
+      CreateEditProc(StrInfoId),
+      CreateDeleteProc(StrInfoId),
+      CreateDisplayProc(StrInfoId)
+    );
+  end;
+
+var
+  I: TStrInfo;  // loop control for string info
+resourcestring
+  sFileVersion = 'File Version #';
+  sProductVersion = 'Product Version #';
+  sFileOS = 'File OS';
+  sFileType = 'File Type';
+  sFileSubType = 'File Sub-type';
+  sFileFlagsMask = 'File Flags Mask';
+  sFileFlags = 'File Flags';
+  sLanguage = 'Language';
+  sCharSet = 'Character Set';
+begin
+  DisplayListView.Items.BeginUpdate;
+  try
+    DisplayListView.Clear;
+    // Add Fixed File Info items to list
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileVersion,
+      procedure (const VI: TVInfo)
+      begin
+        VI.FileVersionNumber := GetVersionNumber(
+          sFile, VI.FileVersionNumber
+        );
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.FileVersionNumber := TVInfo.DefVersionNumber;
+      end,
+      function (const VI: TVInfo): string
+      begin
+        Result := VersionNumberToStr(VI.FileVersionNumber);
+      end
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sProductVersion,
+      procedure (const VI: TVInfo)
+      begin
+        VI.ProductVersionNumber := GetVersionNumber(
+          sProduct, VI.ProductVersionNumber
+        );
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.ProductVersionNumber := TVInfo.DefVersionNumber;
+      end,
+      function (const VI: TVInfo): string
+      begin
+        Result := VersionNumberToStr(VI.ProductVersionNumber);
+      end
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileOS,
+      procedure (const VI: TVInfo)
+      var
+        StrList: TStringList;
+      begin
+        try
+          StrList := TStringList.Create;
+          try
+            VI.FileOS := StrToFileOS(
+              GetDropDownChoice(
+                sFileOS, FileOSCodeList(StrList), FileOSToStr(VI.FileOS)
+              )
+            );
+          finally
+            StrList.Free;
+          end;
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.FileOS := TVInfo.DefFileOS;
+      end,
+      function (const VI: TVInfo): string
+      begin
+        Result := FileOSToStr(VI.FileOS);
+      end
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileType,
+      procedure (const VI: TVInfo)
+      var
+        StrList: TStringList;
+      begin
+        try
+          StrList := TStringList.Create;
+          try
+            VI.FileType := StrToFileType(
+              GetDropDownChoice(
+                sFileType,
+                FileTypeCodeList(StrList),
+                FileTypeToStr(VI.FileType)
+              )
+            );
+            if not ValidFileSubType(VI.FileType, VI.FileSubType) then
+              VI.FileSubType := DefaultFileSubType(VI.FileType);
+          finally
+            StrList.Free;
+          end;
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.FileType := TVInfo.DefFileType;
+        if not ValidFileSubType(VI.FileType, VI.FileSubType) then
+          VI.FileSubType := DefaultFileSubType(VI.FileType);
+      end,
+      function (const VI: TVInfo): string
+      begin
+        Result := FileTypeToStr(VI.FileType);
+      end
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileSubType,
+      procedure (const VI: TVInfo)
+      var
+        StrList: TStringList;
+      begin
+        try
+          StrList := TStringList.Create;
+          try
+            case VI.FileType of
+              VFT_DRV:   // Driver type
+                VI.FileSubType := StrToFileSubType(
+                  VI.FileType,
+                  GetDropDownChoice(
+                    sDrvSubType,
+                    DriverSubTypeCodeList(StrList),
+                    FileSubTypeToStr(VI.FileType, VI.FileSubType)
+                  )
+                );
+              VFT_FONT:  // Font type
+                VI.FileSubType := StrToFileSubType(
+                  VI.FileType,
+                  GetDropDownChoice(
+                    sFontSubType,
+                    FontSubTypeCodeList(StrList),
+                    FileSubTypeToStr(VI.FileType, VI.FileSubType)
+                  )
+                );
+              VFT_VXD:   // Virtual device driver type
+                VI.FileSubType := GetHexNumber(
+                  sVXDSubType, VI.FileSubType
+                );
+              else       // All other file types - don't have sub-types
+                MsgCantEditSubType(FileTypeToStr(VI.FileType));
+            end;
+          finally
+            StrList.Free;
+          end;
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.FileSubType := DefaultFileSubType(VI.FileType);
+      end,
+      function (const VI: TVInfo): string
+      begin
+        Result := FileSubTypeToStr(VI.FileType, VI.FileSubType);
+      end
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileFlagsMask,
+      procedure (const VI: TVInfo)
+      var
+        SL1, SL2: TStringList;
+      begin
+        SL1 := nil;
+        SL2 := nil;
+        try
+          SL1 := TStringList.Create;
+          SL2 := TStringList.Create;
+          VI.FileFlagsMask := StrListToFileFlagSet(
+            GetStringList(
+              sFileFlagsMask,
+              FileFlagSetToStrList(VI.FileFlagsMask, SL1),
+              FileFlagSetToStrList(not VI.FileFlagsMask, SL2)
+            )
+          );
+        finally
+          SL2.Free;
+          SL1.Free;
+        end;
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.FileFlagsMask := TVInfo.DefFileFlagsMask;
+      end,
+      function (const VI: TVInfo): string
+      begin
+        if VI.DescribeFileFlags then
+          Result := FileFlagSetToStr(VI.FileFlagsMask)
+        else
+          Result := HexSymbol + IntToHex(VI.FileFlagsMask, 2);
+      end
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileFlags,
+      procedure (const VI: TVInfo)
+      var
+        SL1, SL2: TStringList;
+      begin
+        SL1 := nil;
+        SL2 := nil;
+        try
+          SL1 := TStringList.Create;
+          SL2 := TStringList.Create;
+          VI.FileFlags := StrListToFileFlagSet(
+            GetStringList(
+              sFileFlags,
+              FileFlagSetToStrList(
+                VI.FileFlags and VI.FileFlagsMask,
+                SL1
+              ),
+              FileFlagSetToStrList(
+                (not VI.FileFlags) and VI.FileFlagsMask,
+                SL2
+              )
+            )
+          );
+        finally
+          SL2.Free;
+          SL1.Free;
+        end;
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.FileFlags := TVInfo.DefFileFlags;
+      end,
+      function (const VI: TVInfo): string
+      begin
+        if VI.DescribeFileFlags then
+          Result := FileFlagSetToStr(VI.FileFlags)
+        else
+          Result := HexSymbol + IntToHex(VI.FileFlags, 2);
+      end
+    );
+    // Add Variable Info to list
+    AddItem(
+      lvgiTranslationInfo,
+      sLanguage,
+      procedure (const VI: TVInfo)
+      var
+        StrList: TStringList;
+      begin
+        try
+          StrList := TStringList.Create;
+          try
+            VI.LanguageCode := StrToLangCode(
+              GetDropDownChoice(
+                sLanguage,
+                LanguageStrList(StrList),
+                LangCodeToStr(VI.LanguageCode)
+              )
+            );
+          finally
+            StrList.Free;
+          end;
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.LanguageCode := TVInfo.DefLanguageCode;
+      end,
+      function (const VI: TVInfo): string
+      begin
+        Result := LangCodeToStr(VI.LanguageCode);
+      end
+    );
+    AddItem(
+      lvgiTranslationInfo,
+      sCharSet,
+      procedure (const VI: TVInfo)
+      var
+        StrList: TStringList;
+      begin
+        try
+          StrList := TStringList.Create;
+          try
+            VI.CharSetCode := StrToCharCode(
+              GetDropDownChoice(
+                sCharSet,
+                CharSetStrList(StrList),
+                CharCodeToStr(VI.CharSetCode)
+              )
+            );
+          finally
+            StrList.Free;
+          end;
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      end,
+      procedure (const VI: TVInfo)
+      begin
+        VI.CharSetCode := TVInfo.DefCharSetCode;
+      end,
+      function (const VI: TVInfo): string
+      begin
+        Result := CharCodeToStr(VI.CharSetCode);
+      end
+    );
+    // Add String info to list
+    for I := Low(TStrInfo) to High(TStrInfo) do
+      AddStringItem(I);
+  finally
+    DisplayListView.Items.EndUpdate;
+  end;
+end;
+
 procedure TMainForm.MEAnalyseClick(Sender: TObject);
   {Edit | Analyse menu click event handler.
     @param Sender [in] Not used.
@@ -1161,6 +1380,15 @@ begin
   finally
     EList.Free;
   end;
+end;
+
+procedure TMainForm.MEClearCurrentClick(Sender: TObject);
+  {Edit | Clear Current Item menu click hander: clears the selected version
+  information item to its default stat.
+  }
+begin
+  if Assigned(DisplayListView) and (DisplayListView.ItemIndex >= 0) then
+    ClearViItem(DisplayListView.ItemIndex);
 end;
 
 procedure TMainForm.MECompOutFolderClick(Sender: TObject);
@@ -1791,6 +2019,12 @@ begin
     Caption := Application.Title + ' - ' + UpperCase(ExtractFileName(FName));
 end;
 
+procedure TMainForm.SetListItemValue(const AListItem: TListItem;
+  const Value: string);
+begin
+  AListItem.SubItems[0] := Value;
+end;
+
 procedure TMainForm.WdwStateGetRegData(var RootKey: HKEY;
   var SubKey: String);
   {Handler for event triggered by window state component when it needs to know
@@ -1801,6 +2035,18 @@ procedure TMainForm.WdwStateGetRegData(var RootKey: HKEY;
   }
 begin
   SubKey := Settings.MainWindowKey;
+end;
+
+{ TMainForm.TVIItem }
+
+constructor TMainForm.TVIItem.Create(const AListItem: TListItem;
+  const AEditProc, AClearProc: TVIItemUpdateCallback;
+  const ARenderProc: TVIItemRenderCallback);
+begin
+  fListItem := AListItem;
+  fEditProc := AEditProc;
+  fClearProc := AClearProc;
+  fRenderProc := ARenderProc;
 end;
 
 end.
