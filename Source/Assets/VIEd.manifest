@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-
 <!--
- * VIEd.manifest
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Manifest file specifying UI for use in XP and execution level required for
- * Vista.
+ * Copyright (C) 2014, Peter Johnson (www.delphidabbler.com).
+ *
+ * Windows manifest file that specifies UI themes are required and that a
+ * non-privileged execution level suffices.
  *
  * Based on a sample manifest in "Windows Vista User Account Control (UAC) and
  * Delphi" by Fredrik Haglund, CodeGear and content of Delphi 7's WindowsXP.res.
- *
- * $Rev$
- * $Date$
 -->
 
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
