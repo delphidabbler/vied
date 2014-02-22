@@ -92,11 +92,18 @@ object MainForm: TMainForm
         Caption = 'Save As &Preferences'
         OnClick = MFPreferencesClick
       end
+      object MFClearPreferences: TMenuItem
+        Caption = 'Clear Preferences'
+        OnClick = MFClearPreferencesClick
+      end
+      object MFSpacer2: TMenuItem
+        Caption = '-'
+      end
       object MFViewRC: TMenuItem
         Caption = '&View RC Statements...'
         OnClick = MFViewRCClick
       end
-      object MFSpacer2: TMenuItem
+      object MFSpacer3: TMenuItem
         Caption = '-'
       end
       object MFExit: TMenuItem
@@ -207,6 +214,11 @@ object MainForm: TMainForm
     VersionInfo = AboutVersionInfo
     Position = abpOwner
     UseOwnerAsParent = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
     Left = 32
     Top = 200
   end

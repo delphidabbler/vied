@@ -23,7 +23,7 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2014 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
@@ -108,6 +108,8 @@ type
     FileCatcher: TPJFormDropFiles;
     MHHowDoI: TMenuItem;
     MHLicense: TMenuItem;
+    MFSpacer3: TMenuItem;
+    MFClearPreferences: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -141,6 +143,7 @@ type
     procedure MECompOutFolderClick(Sender: TObject);
     procedure MHHowDoIClick(Sender: TObject);
     procedure MHLicenseClick(Sender: TObject);
+    procedure MFClearPreferencesClick(Sender: TObject);
   private
     fSaveDlg: TSaveDialogEx;
     fExportDlg: TSaveDialogEx;
@@ -306,6 +309,7 @@ resourcestring
       + #13#13'Click:'#13
       + '   ·   Yes to edit the compiler details.'#13
       + '   ·   No to make no changes.';
+  sClearPrefsQuery = 'Are you sure you want to clear your preferences?';
   sSuccess = 'File compiled successfully.';
   sCantRun = 'Can''t run resource compiler.'#13#13'Check compiler settings?';
   sCantCompile = 'Can''t compile this resource.'#13#13
@@ -1159,6 +1163,18 @@ begin
   finally
     Ed.Free;
   end;
+end;
+
+procedure TMainForm.MFClearPreferencesClick(Sender: TObject);
+  {File | Clear Preferences menu click handler. Deletes preference file if user
+  agrees.
+    @param Sender [in] Not used.
+  }
+begin
+  if not FileExists(PreferencesFileName) then
+    Exit;
+  if MessageDlg(sClearPrefsQuery, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    DeleteFile(PreferencesFileName);
 end;
 
 procedure TMainForm.MFCompileClick(Sender: TObject);
