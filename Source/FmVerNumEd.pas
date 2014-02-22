@@ -36,13 +36,22 @@ type
     edV2: TEdit;
     edV3: TEdit;
     edV4: TEdit;
+    btnPlus1V1: TButton;
+    btnPlus1V2: TButton;
+    btnPlus1V3: TButton;
+    btnPlus1V4: TButton;
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure VerEditKeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
-  private // properties
+    procedure btnPlus1V1Click(Sender: TObject);
+    procedure btnPlus1V2Click(Sender: TObject);
+    procedure btnPlus1V3Click(Sender: TObject);
+    procedure btnPlus1V4Click(Sender: TObject);
+  private
     fKind: string;
     fVersionNumber: TPJVersionNumber;
+    procedure BumpNumber(const Ed: TEdit);
   public
     property Kind: string write fKind;
       {Description of kind of version we are editing - write only}
@@ -68,6 +77,38 @@ begin
   fVersionNumber.V2 := StrToIntDef(edV2.Text, 0);
   fVersionNumber.V3 := StrToIntDef(edV3.Text, 0);
   fVersionNumber.V4 := StrToIntDef(edV4.Text, 0);
+end;
+
+procedure TVerNumEditor.btnPlus1V1Click(Sender: TObject);
+begin
+  BumpNumber(edV1);
+end;
+
+procedure TVerNumEditor.btnPlus1V2Click(Sender: TObject);
+begin
+  BumpNumber(edV2);
+end;
+
+procedure TVerNumEditor.btnPlus1V3Click(Sender: TObject);
+begin
+  BumpNumber(edV3);
+end;
+
+procedure TVerNumEditor.btnPlus1V4Click(Sender: TObject);
+begin
+  BumpNumber(edV4);
+end;
+
+procedure TVerNumEditor.BumpNumber(const Ed: TEdit);
+var
+  Value: Integer;
+begin
+  if Ed.Text <> '' then
+    Value := StrToInt(ed.Text)
+  else
+    Value := 0;
+  Inc(Value);
+  Ed.Text := IntToStr(Value);
 end;
 
 procedure TVerNumEditor.FormCreate(Sender: TObject);

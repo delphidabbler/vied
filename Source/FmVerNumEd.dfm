@@ -1,24 +1,26 @@
 inherited VerNumEditor: TVerNumEditor
   Caption = ''
   OnShow = FormShow
+  ExplicitWidth = 619
+  ExplicitHeight = 440
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBody: TPanel
     Width = 240
-    Height = 42
+    Height = 72
     ExplicitWidth = 240
-    ExplicitHeight = 42
+    ExplicitHeight = 72
     object lblPrompt: TLabel
       Left = 0
       Top = 0
-      Width = 219
+      Width = 226
       Height = 13
       Caption = 'Enter version numbers in the edit boxes below:'
     end
     object lblV: TLabel
       Left = 0
       Top = 18
-      Width = 7
+      Width = 8
       Height = 20
       Caption = 'v'
       Font.Charset = DEFAULT_CHARSET
@@ -31,8 +33,8 @@ inherited VerNumEditor: TVerNumEditor
     object lblDot1: TLabel
       Left = 67
       Top = 13
-      Width = 5
-      Height = 24
+      Width = 4
+      Height = 20
       Caption = '.'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -44,8 +46,8 @@ inherited VerNumEditor: TVerNumEditor
     object lblDot2: TLabel
       Left = 126
       Top = 13
-      Width = 5
-      Height = 24
+      Width = 4
+      Height = 20
       Caption = '.'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -57,8 +59,8 @@ inherited VerNumEditor: TVerNumEditor
     object lblDot3: TLabel
       Left = 185
       Top = 13
-      Width = 5
-      Height = 24
+      Width = 4
+      Height = 20
       Caption = '.'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -102,6 +104,42 @@ inherited VerNumEditor: TVerNumEditor
       MaxLength = 5
       TabOrder = 3
       OnKeyPress = VerEditKeyPress
+    end
+    object btnPlus1V1: TButton
+      Left = 28
+      Top = 45
+      Width = 25
+      Height = 25
+      Caption = '+1'
+      TabOrder = 4
+      OnClick = btnPlus1V1Click
+    end
+    object btnPlus1V2: TButton
+      Left = 87
+      Top = 45
+      Width = 25
+      Height = 25
+      Caption = '+1'
+      TabOrder = 5
+      OnClick = btnPlus1V2Click
+    end
+    object btnPlus1V3: TButton
+      Left = 146
+      Top = 45
+      Width = 25
+      Height = 25
+      Caption = '+1'
+      TabOrder = 6
+      OnClick = btnPlus1V3Click
+    end
+    object btnPlus1V4: TButton
+      Left = 205
+      Top = 45
+      Width = 25
+      Height = 25
+      Caption = '+1'
+      TabOrder = 7
+      OnClick = btnPlus1V4Click
     end
   end
   inherited btnOK: TButton
