@@ -343,6 +343,9 @@ resourcestring
   sCompilePermission = 'Compiling will overwrite %0:s.';
   sAnalysisErrTitle = 'Analysis Errors';
   sAnalysisErrDesc = 'List of errors found during analysis:';
+  sFileFlagMaskRequired = 'You can only specify flags that are included in '
+    + 'File Flags Mask.'#13#13
+    + 'Edit File Flags Mask, adding the required flags then try again.';
 
   // Dialogue box titles
   sFile = 'File';
@@ -1236,6 +1239,11 @@ begin
         SL1 := nil;
         SL2 := nil;
         try
+          if VI.FileFlagsMask = 0 then
+          begin
+            MessageDlg(sFileFlagMaskRequired, mtError, [mbOK], 0);
+            Exit;
+          end;
           SL1 := TStringList.Create;
           SL2 := TStringList.Create;
           VI.FileFlags := StrListToFileFlagSet(
