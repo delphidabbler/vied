@@ -164,7 +164,7 @@ type
       DefVersionNumber: TPJVersionNumber = (V1: 0; V2: 0; V3: 0; V4: 0);
       DefFileOS = VOS__WINDOWS32;
       DefFileType = VFT_APP;
-      DefFileFlagsMask = $3F;
+      DefFileFlagsMask = 0;
       DefFileFlags = 0;
       DefLanguageCode = $0809;
       DefCharSetCode = 1252;
