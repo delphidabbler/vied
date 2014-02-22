@@ -18,7 +18,7 @@ interface
 
 uses
   // Delphi
-  SysUtils, Classes,
+  SysUtils, Classes, Windows,
   // PJSoft library
   PJVersionInfo;
 
@@ -159,6 +159,18 @@ type
         @return Value of field.
       }
   public
+    const
+      // Default version information values
+      DefVersionNumber: TPJVersionNumber = (V1: 0; V2: 0; V3: 0; V4: 0);
+      DefFileOS = VOS__WINDOWS32;
+      DefFileType = VFT_APP;
+      DefFileFlagsMask = $3F;
+      DefFileFlags = 0;
+      DefLanguageCode = $0809;
+      DefCharSetCode = 1252;
+      DefString = '';
+      DefIdentifier = 'VERINFO';
+  public
     constructor Create;
       {Class constructor. Sets up object.
       }
@@ -263,7 +275,7 @@ implementation
 
 uses
   // Delphi
-  IniFiles, ClipBrd, Windows,
+  IniFiles, ClipBrd,
   // Project
   UVerUtils, UUtils;
 
@@ -311,19 +323,6 @@ const
   cVarFile = 'Variable File Info';
   cStringFile = 'String File Info';
   cConfig = 'Configuration Details';
-
-  // Fixed file info default values
-  cDefVersionNumber: TPJVersionNumber = (V1: 0; V2: 0; V3: 0; V4: 0);
-  cDefFileOS = VOS__WINDOWS32;
-  cDefFileType = VFT_APP;
-  cDefFileFlagsMask = $3F;
-  cDefFileFlags = 0;
-  cDefLanguageCode = $0809;
-  cDefCharSetCode = 1252;
-  cDefString = '';
-  cDefIdentifier = 'VERINFO';
-
-
 
 resourcestring
   // Default VI and RC comments
@@ -413,21 +412,21 @@ var
   J: Integer;   // loop control for default comments
 begin
   // Reset Fixed File Info to default values
-  fFileVersionNumber := cDefVersionNumber;
-  fProductVersionNumber := cDefVersionNumber;
-  fFileOS := cDefFileOS;
-  fFileType := cDefFileType;
-  fFileSubType := DefaultFileSubType(cDefFileType);
-  fFileFlagsMask := cDefFileFlagsMask;
-  fFileFlags := cDefFileFlags;
+  fFileVersionNumber := DefVersionNumber;
+  fProductVersionNumber := DefVersionNumber;
+  fFileOS := DefFileOS;
+  fFileType := DefFileType;
+  fFileSubType := DefaultFileSubType(DefFileType);
+  fFileFlagsMask := DefFileFlagsMask;
+  fFileFlags := DefFileFlags;
   // Reset variable info to default values
-  fLanguageCode := cDefLanguageCode;
-  fCharSetCode := cDefCharSetCode;
+  fLanguageCode := DefLanguageCode;
+  fCharSetCode := DefCharSetCode;
   // Reset string info to default values
   for I := Low(TStrInfo) to High(TStrInfo) do
-    fStrInfo.Values[cStrNames[I]] := cDefString;
+    fStrInfo.Values[cStrNames[I]] := DefString;
   // Reset identifier
-  fIdentifier := cDefIdentifier;
+  fIdentifier := DefIdentifier;
   // Reset comment string lists to default values
   // vi comments
   fVIComments.Clear;
@@ -673,26 +672,26 @@ begin
     // read in fixed file info
     FileVersionNumber := StrToVersionNumber(
         Ini.ReadString(cFixedFile, 'File Version #',
-        VersionNumberToStr(cDefVersionNumber)));
+        VersionNumberToStr(DefVersionNumber)));
     ProductVersionNumber := StrToVersionNumber(
         Ini.ReadString(cFixedFile, 'Product Version #',
-        VersionNumberToStr(cDefVersionNumber)));
-    FileOS := Ini.ReadInteger(cFixedFile, 'File OS', cDefFileOS);
-    FileType := Ini.ReadInteger(cFixedFile, 'File Type', cDefFileType);
+        VersionNumberToStr(DefVersionNumber)));
+    FileOS := Ini.ReadInteger(cFixedFile, 'File OS', DefFileOS);
+    FileType := Ini.ReadInteger(cFixedFile, 'File Type', DefFileType);
     FileSubType := Ini.ReadInteger(cFixedFile, 'File Sub-Type',
         DefaultFileSubType(FileType));
     FileFlagsMask := Ini.ReadInteger(cFixedFile, 'File Flags Mask',
-        cDefFileFlagsMask);
-    FileFlags := Ini.ReadInteger(cFixedFile, 'File Flags', cDefFileFlags);
+        DefFileFlagsMask);
+    FileFlags := Ini.ReadInteger(cFixedFile, 'File Flags', DefFileFlags);
     // read in variable file info
-    LanguageCode := Ini.ReadInteger(cVarFile, 'Language', cDefLanguageCode);
-    CharSetCode := Ini.ReadInteger(cVarFile, 'Character Set', cDefCharSetCode);
+    LanguageCode := Ini.ReadInteger(cVarFile, 'Language', DefLanguageCode);
+    CharSetCode := Ini.ReadInteger(cVarFile, 'Character Set', DefCharSetCode);
     // read in string info
     for I := Low(TStrInfo) to High(TStrInfo) do
-      StrInfo[I] := Ini.ReadString(cStringFile, StrDesc[I], cDefString);
+      StrInfo[I] := Ini.ReadString(cStringFile, StrDesc[I], DefString);
     // Read config section
     // read identifier
-    Identifier := Ini.ReadString(cConfig, 'Identifier', cDefIdentifier);
+    Identifier := Ini.ReadString(cConfig, 'Identifier', DefIdentifier);
     // read RC comments - stripping | characters (used to preserve indentation)
     fRCComments.Clear;
     for J := 0 to Ini.ReadInteger(cConfig, 'NumRCComments', 0) - 1 do
@@ -813,7 +812,7 @@ begin
   if (not Validating) or ValidCharCode(AValue) then
     fCharSetCode := AValue
   else
-    fCharSetCode := cDefCharSetCode;
+    fCharSetCode := DefCharSetCode;
 end;
 
 procedure TVInfo.SetFileFlags(AValue: LongInt);
@@ -847,7 +846,7 @@ begin
     fFileFlagsMask := AValue
   else
     // We are validating and value isn't OK - use default
-    fFileFlagsMask := cDefFileFlagsMask;
+    fFileFlagsMask := DefFileFlagsMask;
   // If validating ensure that FileFlags is a sub-set of new FileFlags mask
   if Validating then
     SetFileFlags(fFileFlags and fFileFlagsMask);
@@ -861,7 +860,7 @@ begin
   if (not Validating) or ValidFileOS(AValue) then
     fFileOS := AValue
   else
-    fFileOS := cDefFileOS;
+    fFileOS := DefFileOS;
 end;
 
 procedure TVInfo.SetFileSubType(AValue: LongInt);
@@ -885,7 +884,7 @@ begin
     fFileType := AValue
   else
     // We are validating and value isn't OK - use default
-    fFileType := cDefFileType;
+    fFileType := DefFileType;
   // If we're validating replace invalid sub types with default
   if Validating and not ValidFileSubType(fFileType, fFileSubType) then
     fFileSubType := DefaultFileSubType(fFileType);
@@ -899,7 +898,7 @@ begin
   if (not Validating) or ValidLangCode(AValue) then
     fLanguageCode := AValue
   else
-    fLanguageCode := cDefLanguageCode;
+    fLanguageCode := DefLanguageCode;
 end;
 
 procedure TVInfo.SetRCComments(SL: TStringList);
