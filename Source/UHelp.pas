@@ -5,8 +5,7 @@
  *
  * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
  *
- * Contains constant declarations for help context numbers in the help project
- * file.
+ * Displays topics from HTML Help file.
 }
 
 
@@ -66,9 +65,7 @@ implementation
 
 uses
   // Delphi
-  SysUtils,
-  // Project
-  UHTMLHelp;
+  SysUtils;
 
 
 { THelp }

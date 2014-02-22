@@ -32,7 +32,6 @@ uses
   UCommonDlg in 'UCommonDlg.pas',
   UDlgParent in 'UDlgParent.pas',
   UHelp in 'UHelp.pas',
-  UHTMLHelp in 'UHTMLHelp.pas',
   UMemoCaretPosDisplayMgr in 'UMemoCaretPosDisplayMgr.pas',
   UMsgDlgs in 'UMsgDlgs.pas',
   UResCompiler in 'UResCompiler.pas',

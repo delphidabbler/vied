@@ -74,7 +74,6 @@
 			<DCCReference Include="UCommonDlg.pas"/>
 			<DCCReference Include="UDlgParent.pas"/>
 			<DCCReference Include="UHelp.pas"/>
-			<DCCReference Include="UHTMLHelp.pas"/>
 			<DCCReference Include="UMemoCaretPosDisplayMgr.pas"/>
 			<DCCReference Include="UMsgDlgs.pas"/>
 			<DCCReference Include="UResCompiler.pas"/>
