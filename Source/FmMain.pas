@@ -42,7 +42,7 @@ interface
 uses
   // Delphi
   Forms, StdCtrls, Dialogs, Menus, Classes, Controls, ExtCtrls, Windows,
-  Messages,
+  Messages, ComCtrls,
   // DelphiDabbler components
   PJVersionInfo, PJAbout, PJDropFiles, PJWdwState,
   // Project
@@ -96,8 +96,6 @@ type
     MHWebsite: TMenuItem;
     MHSpacer2: TMenuItem;
     MHAbout: TMenuItem;
-    DisplayHeader: THeader;
-    DisplayListBox: TListBox;
     AboutBoxDlg: TPJAboutBoxDlg;
     AboutVersionInfo: TPJVersionInfo;
     WdwState: TPJRegWdwState;
@@ -108,6 +106,7 @@ type
     FileCatcher: TPJFormDropFiles;
     MHHowDoI: TMenuItem;
     MHLicense: TMenuItem;
+    DisplayListView: TListView;
     MFSpacer3: TMenuItem;
     MFClearPreferences: TMenuItem;
     procedure FormCreate(Sender: TObject);
@@ -143,6 +142,7 @@ type
     procedure MECompOutFolderClick(Sender: TObject);
     procedure MHHowDoIClick(Sender: TObject);
     procedure MHLicenseClick(Sender: TObject);
+    procedure DisplayListViewDblClick(Sender: TObject);
     procedure MFClearPreferencesClick(Sender: TObject);
   private
     fSaveDlg: TSaveDialogEx;
@@ -268,6 +268,14 @@ type
       {Reads preferences in file.
         @param FName [in] Name of preferences file.
       }
+    procedure DisplayVI;
+      {Displays version information.
+      }
+    procedure EditViItem(Index: Integer);
+      {Edits version information item at given index in list view.
+        @param Index [in] Index of list view item whose version information is
+          to be edited.
+      }
   protected
     procedure CreateParams(var Params: TCreateParams); override;
       {Updates style of window to ensure this main window appears on task bar.
@@ -302,7 +310,7 @@ const
   cVIExt = '.vi';
 
 resourcestring
-  // Message dialog box messages
+  // Message dialogue box messages
   sBadCompilerPath = 'The resource compiler specified for use with Version'#13
       + 'Information Expert does not exist. Do you wish to edit'#13
       + 'the compiler''s details?'
@@ -320,7 +328,7 @@ resourcestring
   sAnalysisErrTitle = 'Analysis Errors';
   sAnalysisErrDesc = 'List of errors found during analysis:';
 
-  // Dialog box titles
+  // Dialogue box titles
   sFile = 'File';
   sProduct = 'Product';
   sFileOS = 'File OS';
@@ -339,6 +347,11 @@ resourcestring
   sViewRCDesc = 'The resource file is:';  // dlg box descriptive text
   sUntitled = '[Untitled]'; // caption text when file is un-named
 
+const
+  // List View Group IDs of the different sections of the display
+  lvgiFixedFileInfo = 0;
+  lvgiTranslationInfo = 1;
+  lvgiStringInfo = 2;
 
 { Helper routines }
 
@@ -420,6 +433,117 @@ begin
   Params.WinClassName := 'DelphiDabbler.VIEd.Main';
 end;
 
+procedure TMainForm.DisplayListViewDblClick(Sender: TObject);
+var
+  MousePos: TPoint;
+  HitTestInfo: THitTests;
+begin
+  MousePos := DisplayListView.ScreenToClient(Mouse.CursorPos);
+  HitTestInfo := DisplayListView.GetHitTestInfoAt(MousePos.X, MousePos.Y);
+  if htNowhere in HitTestInfo then
+    Exit;
+  EditViItem(DisplayListView.ItemIndex);
+end;
+
+procedure TMainForm.DisplayVI;
+  {Displays version information.
+  }
+
+  // Adds a list view item in given group with given caption and text
+  procedure AddItem(AGroupID: Integer; const ACaption, AText: string);
+  var
+    LI: TListItem;
+  begin
+    LI := DisplayListView.Items.Add;
+    LI.Caption := ACaption;
+    LI.SubItems.Add(AText);
+    LI.GroupID := AGroupID;
+  end;
+
+resourcestring
+  sFileVersion = 'File Version #';
+  sProductVersion = 'Product Version #';
+  sFileOS = 'File OS';
+  sFileType = 'File Type';
+  sFileSubType = 'File Sub-type';
+  sFileFlagsMask = 'File Flags Mask';
+  sFileFlags = 'File Flags';
+  sLanguage = 'Language';
+  sCharSet = 'Character Set';
+var
+  I: TStrInfo;  // loop control for string info
+begin
+  // Ensure the VerUtils routines use Pascal Hex symbol for output
+  UsePasHexSymbol(True);
+  DisplayListView.Items.BeginUpdate;
+  try
+    DisplayListView.Clear;
+    // Add Fixed File Info items to list
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileVersion,
+      VersionNumberToStr(fVerInfo.FileVersionNumber)
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sProductVersion,
+      VersionNumberToStr(fVerInfo.ProductVersionNumber)
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileOS,
+      FileOSToStr(fVerInfo.FileOS)
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileType, FileTypeToStr(fVerInfo.FileType)
+    );
+    AddItem(
+      lvgiFixedFileInfo,
+      sFileSubType,
+      FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
+    );
+    if fVerInfo.DescribeFileFlags then
+    begin
+      AddItem(
+        lvgiFixedFileInfo,
+        sFileFlagsMask,
+        FileFlagSetToStr(fVerInfo.FileFlagsMask)
+      );
+      AddItem(
+        lvgiFixedFileInfo,
+        sFileFlags,
+        FileFlagSetToStr(fVerInfo.FileFlags)
+      );
+    end
+    else
+    begin
+      AddItem(
+        lvgiFixedFileInfo,
+        sFileFlagsMask,
+        HexSymbol + IntToHex(fVerInfo.FileFlagsMask, 2)
+      );
+      AddItem(
+        lvgiFixedFileInfo,
+        sFileFlags,
+        HexSymbol + IntToHex(fVerInfo.FileFlags, 2)
+      );
+    end;
+    // Add Variable Info to list
+    AddItem(
+      lvgiTranslationInfo, sLanguage, LangCodeToStr(fVerInfo.LanguageCode)
+    );
+    AddItem(
+      lvgiTranslationInfo, sCharSet, CharCodeToStr(fVerInfo.CharSetCode)
+    );
+    // Add String info to list
+    for I := Low(TStrInfo) to High(TStrInfo) do
+      AddItem(lvgiStringInfo, fVerInfo.StrDesc[I], fVerInfo.StrInfo[I]);
+  finally
+    DisplayListView.Items.EndUpdate;
+  end;
+end;
+
 procedure TMainForm.DoExportRC(const FName: string);
   {Exports a resource source file. Doesn't update save flag or caption.
     @param FName [in] Name of export file.
@@ -495,7 +619,7 @@ begin
     // Swallow any exception
   end;
   // Display result
-  fVerInfo.WriteToDisplay(DisplayListBox.Items);
+  DisplayVI;
   // New file is untitled and unchanged
   SetCurrentFile('');
   fChanged := False;
@@ -519,7 +643,7 @@ begin
       try
         // Read file into fVerInfo and display details
         fVerInfo.LoadFromFile(FName);
-        fVerInfo.WriteToDisplay(DisplayListBox.Items);
+        DisplayVI;
         // Set current file name to given name
         SetCurrentFile(FName);
         // Record that file hasn't been changed and that opened successfuly
@@ -572,6 +696,176 @@ begin
     MsgNoFileName
 end;
 
+procedure TMainForm.EditViItem(Index: Integer);
+  {Edits version information item at given index in list view.
+    @param Index [in] Index of list view item whose version information is to be
+      edited.
+  }
+const
+  // Map of list view item index to pre-defined string information items
+  cStrInfo: array[9..20] of TStrInfo =
+    (siComments, siCompanyName, siFileDescription, siFileVersion,
+    siInternalName, siLegalCopyright, siLegalTrademarks, siOriginalFileName,
+    siPrivateBuild, siProductName, siProductVersion, siSpecialBuild);
+var
+  StrList: TStringList;    // for holding drop down lists / list box items
+  StrList2: TStringList;   // for holding list box items
+  StrInfoId: TStrInfo;     // for holding string info id
+begin
+  // Create the string lists
+  StrList2 := nil;
+  StrList := TStringList.Create;
+  try
+    StrList2 := TStringList.Create;
+    // Act according to selected item in list box
+    case Index of
+      0: // File version number
+        fVerInfo.FileVersionNumber := GetVersionNumber(
+          sFile, fVerInfo.FileVersionNumber
+        );
+      1: // Product version number
+        fVerInfo.ProductVersionNumber := GetVersionNumber(
+          sProduct, fVerInfo.ProductVersionNumber
+        );
+      2: // File OS
+        try
+          fVerInfo.FileOS := StrToFileOS(
+            GetDropDownChoice(
+              sFileOS, FileOSCodeList(StrList), FileOSToStr(fVerInfo.FileOS)
+            )
+          );
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      3: // File Type
+        try
+          fVerInfo.FileType := StrToFileType(
+            GetDropDownChoice(
+              sFileType,
+              FileTypeCodeList(StrList),
+              FileTypeToStr(fVerInfo.FileType)
+            )
+          );
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      4: // File sub-type
+        try
+          case fVerInfo.FileType of
+            VFT_DRV:   // Driver type
+              fVerInfo.FileSubType := StrToFileSubType(
+                fVerInfo.FileType,
+                GetDropDownChoice(
+                  sDrvSubType,
+                  DriverSubTypeCodeList(StrList),
+                  FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
+                )
+              );
+            VFT_FONT:  // Font type
+              fVerInfo.FileSubType := StrToFileSubType(
+                fVerInfo.FileType,
+                GetDropDownChoice(
+                  sFontSubType,
+                  FontSubTypeCodeList(StrList),
+                  FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
+                )
+              );
+            VFT_VXD:   // Virtual device driver type
+              fVerInfo.FileSubType := GetHexNumber(
+                sVXDSubType, fVerInfo.FileSubType
+              );
+            else       // All other file types - don't have sub-types
+              MsgCantEditSubType(FileTypeToStr(fVerInfo.FileType));
+          end;
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      5:   // File flags mask
+        fVerInfo.FileFlagsMask := StrListToFileFlagSet(
+          GetStringList(
+            sFileFlagsMask,
+            FileFlagSetToStrList(fVerInfo.FileFlagsMask, StrList),
+            FileFlagSetToStrList(not fVerInfo.FileFlagsMask, StrList2)
+          )
+        );
+      6:   // File flags
+        fVerInfo.FileFlags := StrListToFileFlagSet(
+          GetStringList(
+            sFileFlags,
+            FileFlagSetToStrList(
+              fVerInfo.FileFlags and fVerInfo.FileFlagsMask,
+              StrList
+            ),
+            FileFlagSetToStrList(
+              (not fVerInfo.FileFlags) and fVerInfo.FileFlagsMask,
+              StrList2
+            )
+          )
+        );
+      7:   // Language
+        try
+          fVerInfo.LanguageCode := StrToLangCode(
+            GetDropDownChoice(
+              sLanguage,
+              LanguageStrList(StrList),
+              LangCodeToStr(fVerInfo.LanguageCode)
+            )
+          );
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      8:  // Character set
+        try
+          fVerInfo.CharSetCode := StrToCharCode(
+            GetDropDownChoice(
+              sCharSet,
+              CharSetStrList(StrList),
+              CharCodeToStr(fVerInfo.CharSetCode)
+            )
+          );
+        except
+          on E: EVersionError do
+            {nothing};
+        end;
+      9..20: // String Info items
+      begin
+        // find Id of string-info item
+        StrInfoId := cStrInfo[Index];
+        // build list of valid fields for the item
+        fVerInfo.ValidFields(StrInfoId, StrList);
+        // decide if we can enter a string
+        //   only if we're not validating *or*
+        //   we are validating and string is permitted
+        if (not fVerInfo.Validating) or fVerInfo.StrPermitted[StrInfoId] then
+          fVerInfo.StrInfo[StrInfoId] := GetString(
+            fVerInfo.StrDesc[StrInfoId],
+            fVerInfo.StrInfo[StrInfoId],
+            fVerInfo.StrRequired[StrInfoId] and fVerInfo.Validating,
+            StrList
+          )
+        else if fVerInfo.StrInfo[StrInfoId] = '' then
+          // string not permitted and there is no string - prevent edit
+          MsgNeedFileFlag(fVerInfo.StrDesc[StrInfoId])
+        else if MsgDeleteInvalidText(fVerInfo.StrDesc[StrInfoId]) then
+          // string not permitted, there is a value, user accepts deletion
+          fVerInfo.StrInfo[StrInfoId] := '';
+      end;
+      -1: // No item selected - error
+        MsgNoItemToEdit;
+    end;
+    // Re-display and select current item agian
+    DisplayVI;
+    DisplayListView.ItemIndex := Index;
+  finally
+    StrList2.Free;
+    StrList.Free;
+  end;
+end;
+
 procedure TMainForm.FileCatcherDropFiles(Sender: TObject);
   {Event handler for drop files component: opens the first file caught by the
   component.
@@ -609,12 +903,8 @@ begin
   // Create dynamic components
   CreateCommonDlgs;
 
-  // Set size of header sections and set list box tab stop
-  DisplayHeader.SectionWidth[0] := 140;
-  DisplayListBox.TabWidth :=
-    PixelsToDlgBaseUnits(DisplayHeader.SectionWidth[0]);
   // Deselect list box item
-  DisplayListBox.ItemIndex := -1;
+  DisplayListView.Selected := nil;
   // Create Version info-processor object
   fVerInfo := TVInfo.Create;
   // Set user options in version info processor
@@ -664,7 +954,38 @@ procedure TMainForm.FormShow(Sender: TObject);
   {Form show event handler: checks for presence of resource compiler.
     @param Sender [in] Not used.
   }
+
+  // Returns which if any scroll bars are displayed by the given window.
+  function WindowScrollbars(const Wnd: Windows.HWND): StdCtrls.TScrollStyle;
+  var
+    StyleFlags: Windows.DWORD;
+  begin
+    StyleFlags:= Windows.GetWindowLong(Wnd, Windows.GWL_STYLE) and
+      (Windows.WS_VSCROLL or Windows.WS_HSCROLL);
+    case StyleFlags of
+      0: Result := StdCtrls.ssNone;
+      Windows.WS_VSCROLL: Result := StdCtrls.ssVertical;
+      Windows.WS_HSCROLL: Result := StdCtrls.ssHorizontal;
+      else Result := StdCtrls.ssBoth;
+    end;
+  end;
+
+  // Returns the width of the given control's vertical scrollbar if displayed or
+  // 0 if not displayed.
+  function VScrollbarWidth(const Ctrl: TWinControl): Integer;
+  begin
+    if WindowScrollbars(Ctrl.Handle)
+      in [StdCtrls.ssVertical, StdCtrls.ssBoth] then
+      Result := Windows.GetSystemMetrics(Windows.SM_CYVSCROLL)
+    else
+      Result := 0;
+  end;
+
 begin
+  // Size the list box columns, allowing for scrollbar
+  DisplayListView.Column[1].Width := 140;
+  DisplayListView.Column[1].Width := DisplayListView.Width
+    - DisplayListView.Column[0].Width - 4 - VScrollbarWidth(DisplayListView);
   CheckCompiler;
 end;
 
@@ -898,172 +1219,8 @@ procedure TMainForm.MECurrentClick(Sender: TObject);
   {Edit | Current Item menu click event handler.
     @param Sender [in] Not used.
   }
-const
-  cStrInfo: array[12..23] of TStrInfo =
-    (siComments, siCompanyName, siFileDescription, siFileVersion,
-    siInternalName, siLegalCopyright, siLegalTrademarks, siOriginalFileName,
-    siPrivateBuild, siProductName, siProductVersion, siSpecialBuild);
-var
-  StrList: TStringList;    // for holding drop down lists / list box items
-  StrList2: TStringList;   // for holding list box items
-  Index: Integer;          // for holding current item index of display list
-  StrInfoId: TStrInfo;     // for holding string info id
 begin
-  // Create the string lists
-  StrList2 := nil;
-  StrList := TStringList.Create;
-  try
-    StrList2 := TStringList.Create;
-    // Act according to selected item in list box
-    Index := DisplayListBox.ItemIndex;
-    case Index of
-      0, 8, 11:  // Titles - error - can't be edited
-        MsgCantEditTitle(DisplayListBox.Items[DisplayListBox.ItemIndex]);
-      1: // File version number
-        fVerInfo.FileVersionNumber := GetVersionNumber(
-          sFile, fVerInfo.FileVersionNumber
-        );
-      2: // Product version number
-        fVerInfo.ProductVersionNumber := GetVersionNumber(
-          sProduct, fVerInfo.ProductVersionNumber
-        );
-      3: // File OS
-        try
-          fVerInfo.FileOS := StrToFileOS(
-            GetDropDownChoice(
-              sFileOS, FileOSCodeList(StrList), FileOSToStr(fVerInfo.FileOS)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      4: // File Type
-        try
-          fVerInfo.FileType := StrToFileType(
-            GetDropDownChoice(
-              sFileType,
-              FileTypeCodeList(StrList),
-              FileTypeToStr(fVerInfo.FileType)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      5: // File sub-type
-        try
-          case fVerInfo.FileType of
-            VFT_DRV:   // Driver type
-              fVerInfo.FileSubType := StrToFileSubType(
-                fVerInfo.FileType,
-                GetDropDownChoice(
-                  sDrvSubType,
-                  DriverSubTypeCodeList(StrList),
-                  FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
-                )
-              );
-            VFT_FONT:  // Font type
-              fVerInfo.FileSubType := StrToFileSubType(
-                fVerInfo.FileType,
-                GetDropDownChoice(
-                  sFontSubType,
-                  FontSubTypeCodeList(StrList),
-                  FileSubTypeToStr(fVerInfo.FileType, fVerInfo.FileSubType)
-                )
-              );
-            VFT_VXD:   // Virtual device driver type
-              fVerInfo.FileSubType := GetHexNumber(
-                sVXDSubType, fVerInfo.FileSubType
-              );
-            else       // All other file types - don't have sub-types
-              MsgCantEditSubType(FileTypeToStr(fVerInfo.FileType));
-          end;
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      6:   // File flags mask
-        fVerInfo.FileFlagsMask := StrListToFileFlagSet(
-          GetStringList(
-            sFileFlagsMask,
-            FileFlagSetToStrList(fVerInfo.FileFlagsMask, StrList),
-            FileFlagSetToStrList(not fVerInfo.FileFlagsMask, StrList2)
-          )
-        );
-      7:   // File flags
-        fVerInfo.FileFlags := StrListToFileFlagSet(
-          GetStringList(
-            sFileFlags,
-            FileFlagSetToStrList(
-              fVerInfo.FileFlags and fVerInfo.FileFlagsMask,
-              StrList
-            ),
-            FileFlagSetToStrList(
-              (not fVerInfo.FileFlags) and fVerInfo.FileFlagsMask,
-              StrList2
-            )
-          )
-        );
-      9:   // Language
-        try
-          fVerInfo.LanguageCode := StrToLangCode(
-            GetDropDownChoice(
-              sLanguage,
-              LanguageStrList(StrList),
-              LangCodeToStr(fVerInfo.LanguageCode)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      10:  // Character set
-        try
-          fVerInfo.CharSetCode := StrToCharCode(
-            GetDropDownChoice(
-              sCharSet,
-              CharSetStrList(StrList),
-              CharCodeToStr(fVerInfo.CharSetCode)
-            )
-          );
-        except
-          on E: EVersionError do
-            {nothing};
-        end;
-      12..23: // String Info items
-      begin
-        // find Id of string-info item
-        StrInfoId := cStrInfo[Index];
-        // build list of valid fields for the item
-        fVerInfo.ValidFields(StrInfoId, StrList);
-        // decide if we can enter a string
-        //   only if we're not validating *or*
-        //   we are validating and string is permitted
-        if (not fVerInfo.Validating) or fVerInfo.StrPermitted[StrInfoId] then
-          fVerInfo.StrInfo[StrInfoId] := GetString(
-            fVerInfo.StrDesc[StrInfoId],
-            fVerInfo.StrInfo[StrInfoId],
-            fVerInfo.StrRequired[StrInfoId] and fVerInfo.Validating,
-            StrList
-          )
-        else if fVerInfo.StrInfo[StrInfoId] = '' then
-          // string not permitted and there is no string - prevent edit
-          MsgNeedFileFlag(fVerInfo.StrDesc[StrInfoId])
-        else if MsgDeleteInvalidText(fVerInfo.StrDesc[StrInfoId]) then
-          // string not permitted, there is a value, user accepts deletion
-          fVerInfo.StrInfo[StrInfoId] := '';
-      end;
-      -1: // No item selected - error
-        MsgNoItemToEdit;
-    end;
-    // Re-display and select current item agian
-    fVerInfo.WriteToDisplay(DisplayListBox.Items);
-    DisplayListBox.ItemIndex := Index;
-  finally
-    StrList2.Free;
-    StrList.Free;
-  end;
+  EditViItem(DisplayListView.ItemIndex);
 end;
 
 procedure TMainForm.MEditClick(Sender: TObject);
@@ -1440,8 +1597,8 @@ begin
   MODescribeFileFlags.Checked := not MODescribeFileFlags.Checked;
   // Use menu option check mark to determine whether to describe file flags
   fVerInfo.DescribeFileFlags := MODescribeFileFlags.Checked;
-  // {Update display to reflect new choice
-  fVerInfo.WriteToDisplay(DisplayListBox.Items);
+  // Update display to reflect new choice
+  DisplayVI;
 end;
 
 procedure TMainForm.MOResCompilerClick(Sender: TObject);

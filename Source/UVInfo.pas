@@ -24,7 +24,7 @@
  * The Initial Developer of the Original Code is Peter Johnson
  * (http://www.delphidabbler.com/).
  *
- * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
+ * Portions created by the Initial Developer are Copyright (C) 1998-2014 Peter
  * Johnson. All Rights Reserved.
  *
  * Contributor(s):
@@ -172,12 +172,6 @@ type
       {Write access method for VIComments property.
         @param SL [in] String list containing new property value.
       }
-    function FileFlagsAsString(const FFlag: LongInt): string;
-      {Builds string describing file flags bit-set depending on whether file
-      flags are being fully described or are being shown as Hex values.
-        @param FFlag [in] File flags bit set.
-        @return Required description string.
-      }
     function EvaluateFields(StrInfoId: TStrInfo): string;
       {Replaces all fields in a string info item by their values.
         @param StrInfoId [in] String info item to be processed.
@@ -197,11 +191,6 @@ type
       }
     procedure Clear;
       {Clears version info in memory. Resets to default values.
-      }
-    procedure WriteToDisplay(const S: TStrings);
-      {Writes version information in format ready for display.
-        @param S [in] String list that receives version information in display
-          format.
       }
     procedure WriteAsRC(const SL: TStringList);
       {Writes resource file (.rc) format to a stringlist.
@@ -588,21 +577,6 @@ begin
     tkSPECIALBUILD: Result := EvaluateFields(siSpecialBuild);
     tkDELIMITER: Result := '<';
   end;
-end;
-
-function TVInfo.FileFlagsAsString(const FFlag: LongInt): string;
-  {Builds string describing file flags bit-set depending on whether file flags
-  are being fully described or are being shown as Hex values.
-    @param FFlag [in] File flags bit set.
-    @return Required description string.
-  }
-begin
-  if fDescribeFileFlags then
-    // Fully describe file flags as line of symbolic constants
-    Result := FileFlagSetToStr(FFlag)
-  else
-    // Describe file flags usingnhex notation
-    Result := HexSymbol + IntToHex(FFlag, 2);
 end;
 
 function TVInfo.GetStrDesc(AnId: TStrInfo): string;
@@ -1062,52 +1036,6 @@ begin
     [HexSymbol, fLanguageCode, fCharSetCode]));
   SL.Add(' }');
   SL.Add('}');
-end;
-
-procedure TVInfo.WriteToDisplay(const S: TStrings);
-  {Writes version information in format ready for display.
-    @param S [in] String list that receives version information in display
-      format.
-  }
-var
-  I: TStrInfo;  // loop control for string info
-resourcestring
-  sFFI = 'FIXED FILE INFO';
-  sFileVersion = 'File Version #';
-  sProductVersion = 'Product Version #';
-  sFileOS = 'File OS';
-  sFileType = 'File Type';
-  sFileSubType = 'File Sub-type';
-  sFileFlagsMask = 'File Flags Mask';
-  sFileFlags = 'File Flags';
-  sLanguage = 'Language';
-  sCharSet = 'Character Set';
-  sTransInfo = 'TRANSLATION INFO';
-  sStringInfo = 'STRING INFO';
-begin
-  // Ensure the VerUtils routines use Pascal Hex symbol for output
-  UsePasHexSymbol(True);
-  // Clear the given list
-  S.Clear;
-  // Add Fixed File Info items to list
-  S.Add(sFFI);
-  S.Add('   ' + sFileVersion + #9 + VersionNumberToStr(fFileVersionNumber));
-  S.Add(
-    '   ' + sProductVersion + #9 + VersionNumberToStr(fProductVersionNumber)
-  );
-  S.Add('   ' + sFileOS + #9 + FileOSToStr(fFileOS));
-  S.Add('   ' + sFileType + #9 + FileTypeToStr(fFileType));
-  S.Add('   ' + sFileSubType + #9 + FileSubTypeToStr(fFileType, fFileSubType));
-  S.Add('   ' + sFileFlagsMask + #9 + FileFlagsAsString(fFileFlagsMask));
-  S.Add('   ' + sFileFlags + #9 + FileFlagsAsString(fFileFlags));
-  // Add Variable Info to list
-  S.Add(sTransInfo);
-  S.Add('   ' + sLanguage + #9 + LangCodeToStr(fLanguageCode));
-  S.Add('   ' + sCharSet + #9 + CharCodeToStr(fCharSetCode));
-  // Add String info to list
-  S.Add(sStringInfo);
-  for I := Low(TStrInfo) to High(TStrInfo) do
-    S.Add('   ' + StrDesc[I] + #9 + StrInfo[I]);
 end;
 
 end.

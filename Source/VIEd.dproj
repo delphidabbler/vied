@@ -53,6 +53,9 @@
 			<DCCReference Include="FmResCompilerCheck.pas">
 				<Form>ResCompilerCheckDlg</Form>
 			</DCCReference>
+			<DCCReference Include="FmResOutputDir.pas">
+				<Form>ResOutputDirDlg</Form>
+			</DCCReference>
 			<DCCReference Include="FmSetEd.pas">
 				<Form>SetEditor</Form>
 			</DCCReference>
@@ -68,13 +71,11 @@
 			<DCCReference Include="FmVerNumEd.pas">
 				<Form>VerNumEditor</Form>
 			</DCCReference>
-			<DCCReference Include="FmResOutputDir.pas">
-				<Form>ResOutputDirDlg</Form>
-			</DCCReference>
 			<DCCReference Include="UCommonDlg.pas"/>
 			<DCCReference Include="UDlgParent.pas"/>
 			<DCCReference Include="UHelp.pas"/>
 			<DCCReference Include="UHTMLHelp.pas"/>
+			<DCCReference Include="UMemoCaretPosDisplayMgr.pas"/>
 			<DCCReference Include="UMsgDlgs.pas"/>
 			<DCCReference Include="UResCompiler.pas"/>
 			<DCCReference Include="USettings.pas"/>

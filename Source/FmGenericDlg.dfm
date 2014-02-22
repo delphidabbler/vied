@@ -2,41 +2,54 @@ object GenericDlg: TGenericDlg
   Left = 200
   Top = 108
   BorderStyle = bsDialog
-  ClientHeight = 335
-  ClientWidth = 498
+  ClientHeight = 412
+  ClientWidth = 613
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
   Position = poOwnerFormCenter
+  Scaled = False
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object bvlBottom: TBevel
-    Left = 8
-    Top = 296
-    Width = 377
-    Height = 2
+    Left = 10
+    Top = 364
+    Width = 464
+    Height = 3
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
     Shape = bsTopLine
   end
   object pnlBody: TPanel
-    Left = 8
-    Top = 8
-    Width = 377
-    Height = 281
+    Left = 10
+    Top = 10
+    Width = 464
+    Height = 346
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
     BevelOuter = bvNone
     TabOrder = 0
   end
   object btnHelp: TButton
-    Left = 312
-    Top = 304
+    Left = 384
+    Top = 374
     Width = 75
     Height = 25
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
     Caption = '&Help'
     TabOrder = 1
     OnClick = btnHelpClick
