@@ -43,8 +43,8 @@ how it was generated. If the file was generated from another source file then
 the generated file is covered by the same license as the originating source
 file, if any. Otherwise the file is placed in the public domain.
 
-Many files are licensed under the Mozilla Public License v2.0. A full copy of
-that license can be found in MPL.txt
+Most, if not all, files are licensed under the Mozilla Public License v2.0. A
+full copy of that license can be found in MPL.txt
 
 
 Image Files (.ico, .bmp, .gif)
@@ -72,4 +72,4 @@ base, unless explicit permission is given by the copyright holder.
 
 This means that if you modify an aspect of the Version Information Editor code
 base and publish your changes then you must remove the icon or replace it with
-your own.
+your own. (You must also remove any "DelphiDabbler" branding).
