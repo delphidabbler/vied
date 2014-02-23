@@ -40,6 +40,7 @@ You can make suggestions for features using the GitHub [issue tracker](https://g
 
 Contributions should be licensed under either the Mozilla Public License v2.0 (without a "Incompatible with Secondary Licenses" notice) or under some other compatible license, preferably one in common use. Note that the GPL and its cousins are not acceptable.
 
+
 Executable Code
 ---------------
 
