@@ -38,6 +38,8 @@ To contribute please fork the project and create a new branch off `develop` that
 
 You can make suggestions for features using the GitHub [issue tracker](https://github.com/delphidabbler/vied/issues) for this project.
 
+Contributions should be licensed under either the Mozilla Public License v2.0 (without a "Incompatible with Secondary Licenses" notice) or under some other compatible license, preferably one in common use. Note that the GPL and its cousins are not acceptable.
+
 
 Executable Code
 ---------------
@@ -66,6 +68,8 @@ An bug reports and feature requests via the project's issue tracker please on Gi
 License
 -------
 
-The original source code is licensed under the Mozilla Public License 2.0. Third party source uses the Mozilla Public License 2.0 and MIT license. See `Docs/SourceCodeLicenses.txt` for details.
+The executable program an the original source code are licensed under the terms of the Mozilla Public License 2.0.
 
-The executable code has its own custom permissive license. See `Docs/License.rtf` for full information.
+For full details of licensing, including that for 3rd party code and the program's images, see `Docs/SourceCodeLicenses.txt` for details.
+
+Note that versions prior to v2.13.0 had different licensing arrangements, so please check before using those versions.

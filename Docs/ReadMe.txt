@@ -42,7 +42,7 @@ read-me file.
 
 Extract the setup program from the zip file and double click it to run.
 
-Please note that administrator privileges are required to run the installer. On 
+Please note that administrator privileges are required to run the installer. On
 Vista and later the program may also require elevation.
 
 The setup program is a standard wizard based installer, with the following
@@ -77,7 +77,7 @@ DelphiDabbler Version Information Editor in the list of installed programs and
 click the remove button. The uninstaller will now run, asking you to confirm
 that you want to uninstall.
 
-Note that the uninstaller requires administrator privileges. On Vista and later 
+Note that the uninstaller requires administrator privileges. On Vista and later
 the uninstaller may also require elevation.
 
 
@@ -104,5 +104,5 @@ Tools Issue Tracker at http://delphidabbler.com/url/vied-issues
 
 The DelphiDabbler is Peter Johnson - a hobbyist Delphi programmer living in
 Ceredigion, Wales, UK. The DelphiDabbler website is at
-http://delphidabbler.com/ and contains all the Peter's open source programs,
+http://delphidabbler.com/ and contains all Peter's open source programs,
 Delphi library code, programming articles, hints and tips and other resources.
