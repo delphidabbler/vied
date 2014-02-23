@@ -6,8 +6,8 @@ inherited GenericOKDlg: TGenericOKDlg
     TabOrder = 3
   end
   object btnCancel: TButton
-    Left = 232
-    Top = 304
+    Left = 302
+    Top = 374
     Width = 75
     Height = 25
     Cancel = True
@@ -16,8 +16,8 @@ inherited GenericOKDlg: TGenericOKDlg
     TabOrder = 2
   end
   object btnOK: TButton
-    Left = 153
-    Top = 304
+    Left = 221
+    Top = 374
     Width = 75
     Height = 25
     Caption = 'OK'

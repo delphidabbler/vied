@@ -4,10 +4,10 @@ inherited ViewListDlg: TViewListDlg
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBody: TPanel
-    Width = 409
-    Height = 239
-    ExplicitWidth = 409
-    ExplicitHeight = 239
+    Width = 479
+    Height = 287
+    ExplicitWidth = 479
+    ExplicitHeight = 287
     object lblList: TLabel
       Left = 0
       Top = 0
@@ -17,10 +17,11 @@ inherited ViewListDlg: TViewListDlg
     end
     object edList: TMemo
       Left = 0
-      Top = 18
-      Width = 409
-      Height = 221
+      Top = 0
+      Width = 479
+      Height = 287
       TabStop = False
+      Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -12
@@ -31,6 +32,9 @@ inherited ViewListDlg: TViewListDlg
       ReadOnly = True
       ScrollBars = ssBoth
       TabOrder = 0
+      ExplicitTop = 18
+      ExplicitWidth = 409
+      ExplicitHeight = 223
     end
   end
 end

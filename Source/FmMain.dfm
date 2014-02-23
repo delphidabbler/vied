@@ -7,44 +7,67 @@ object MainForm: TMainForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clBlack
   Font.Height = -13
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Tahoma'
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = True
   Position = poDesigned
+  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
-  object DisplayHeader: THeader
+  object DisplayListView: TListView
     Left = 0
     Top = 0
     Width = 587
-    Height = 19
-    Align = alTop
-    AllowResize = False
-    BorderStyle = bsNone
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    Sections.Sections = (
-      #0'42'#0'Label'
-      #0'43'#0'Value')
-    TabOrder = 0
-  end
-  object DisplayListBox: TListBox
-    Left = 0
-    Top = 19
-    Width = 587
-    Height = 302
+    Height = 321
     Align = alClient
-    TabOrder = 1
-    OnDblClick = MECurrentClick
+    Columns = <
+      item
+        Caption = 'Label'
+        Width = 140
+      end
+      item
+        Caption = 'Value'
+        Width = 300
+      end>
+    Groups = <
+      item
+        Header = 'Fixed File Information'
+        GroupID = 0
+        State = [lgsNormal]
+        HeaderAlign = taLeftJustify
+        FooterAlign = taLeftJustify
+        TitleImage = -1
+        ExtendedImage = -1
+      end
+      item
+        Header = 'Translation Information'
+        GroupID = 1
+        State = [lgsNormal]
+        HeaderAlign = taLeftJustify
+        FooterAlign = taLeftJustify
+        TitleImage = -1
+        ExtendedImage = -1
+      end
+      item
+        Header = 'String Information'
+        GroupID = 2
+        State = [lgsNormal]
+        HeaderAlign = taLeftJustify
+        FooterAlign = taLeftJustify
+        TitleImage = -1
+        ExtendedImage = -1
+      end>
+    GroupView = True
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = DisplayListViewDblClick
   end
   object MainMenu: TMainMenu
     Left = 32
@@ -92,11 +115,18 @@ object MainForm: TMainForm
         Caption = 'Save As &Preferences'
         OnClick = MFPreferencesClick
       end
+      object MFClearPreferences: TMenuItem
+        Caption = 'Clear Preferences'
+        OnClick = MFClearPreferencesClick
+      end
+      object MFSpacer2: TMenuItem
+        Caption = '-'
+      end
       object MFViewRC: TMenuItem
         Caption = '&View RC Statements...'
         OnClick = MFViewRCClick
       end
-      object MFSpacer2: TMenuItem
+      object MFSpacer3: TMenuItem
         Caption = '-'
       end
       object MFExit: TMenuItem
@@ -108,9 +138,14 @@ object MainForm: TMainForm
       Caption = '&Edit'
       OnClick = MEditClick
       object MECurrent: TMenuItem
-        Caption = 'C&urrent Item...'
+        Caption = 'Edit C&urrent Item...'
         ShortCut = 113
         OnClick = MECurrentClick
+      end
+      object MEClearCurrent: TMenuItem
+        Caption = 'Cle&ar Current Item'
+        ShortCut = 16430
+        OnClick = MEClearCurrentClick
       end
       object MESpacer0: TMenuItem
         Caption = '-'
@@ -207,6 +242,11 @@ object MainForm: TMainForm
     VersionInfo = AboutVersionInfo
     Position = abpOwner
     UseOwnerAsParent = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
     Left = 32
     Top = 200
   end

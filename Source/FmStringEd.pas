@@ -1,36 +1,12 @@
 {
- * FmStringEd.pas
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/
  *
- * String editor dialog box. Allows user to enter multi or single line strings
+ * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ *
+ * String editor dialogue box. Allows user to enter multi or single line strings
  * and (optionally) to select required fields from a drop down list.
- *
- * $Rev$
- * $Date$
- *
- * ***** BEGIN LICENSE BLOCK *****
- *
- * Version: MPL 1.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- *
- * The Original Code is FmStringEd.pas.
- *
- * The Initial Developer of the Original Code is Peter Johnson
- * (http://www.delphidabbler.com/).
- *
- * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
- * Johnson. All Rights Reserved.
- *
- * Contributor(s):
- *   NONE
- *
- * ***** END LICENSE BLOCK *****
 }
 
 
@@ -44,7 +20,7 @@ uses
   // Delphi
   StdCtrls, Controls, ExtCtrls, Classes,
   // Project
-  FmGenericOKDlg;
+  FmGenericOKDlg, UMemoCaretPosDisplayMgr;
 
 
 type
@@ -61,28 +37,41 @@ type
     edStr: TMemo;
     cmbField: TComboBox;
     btnInsert: TButton;
+    lblCaretPos: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnInsertClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
-    fWrapLines: Boolean;
-      {Value of WrapLines property}
-    fCompulsory: Boolean;
-      {Value of Compulsory property}
-    fFixedWidthFont: Boolean;
-      {Value of FixedWidth Font property}
-    fMemoWidth: Integer;
-      {Value of MemoWidth property}
-    fMemoHeight: Integer;
-      {Value of MemoHeight property}
-    fText: string;
-      {Value of Text property}
-    fKind: string;
-      {Value of Kind property}
-    fDisplayFieldStuff: Boolean;
-      {Flag true if field related controls are being displayed in dlg box and
-      false if not}
+    const
+      // Default window dimensions
+      DefMemoWidth = 300;
+      DefMemoHeight = 200;
+      // Mininum window dimensions
+      MinWindowWidth = 320;
+      MinWindowHeight = 200;
+    var
+      fWrapLines: Boolean;
+        {Value of WrapLines property}
+      fCompulsory: Boolean;
+        {Value of Compulsory property}
+      fFixedWidthFont: Boolean;
+        {Value of FixedWidth Font property}
+      fMemoWidth: Integer;
+        {Value of MemoWidth property}
+      fMemoHeight: Integer;
+        {Value of MemoHeight property}
+      fText: string;
+        {Value of Text property}
+      fKind: string;
+        {Value of Kind property}
+      fDisplayFieldStuff: Boolean;
+        {Flag true if field related controls are being displayed in dlg box and
+        false if not}
+      fCaretDisplayMgr: TMemoCaretPosDisplayMgr;
+        {Manages display of caret position in memo control}
     function GetLines: TStrings;
       {Read access method for Lines property.
         @return Reference to lines of string editor control.
@@ -138,6 +127,10 @@ type
       {Arrange dialog box components and size according to whether fields are to
       be displayed.
       }
+    procedure UpdateCaretPosState;
+      {Displays or hides caret position label depending on if there is enough
+      room for it.
+      }
   public
     property HelpTopic;
       {Redeclared to make public}
@@ -172,8 +165,8 @@ type
       size is adjusted accordingly}
     property AllowEnter: Boolean write SetAllowEnter;
       {Flag which allows return to enter a new line when true and not when
-      false. Text property will usually be used when this falg is false and
-      Lines property will usually be used when the falg is true}
+      false. Text property will usually be used when this flag is false and
+      Lines property will usually be used when the flag is true}
   end;
 
 
@@ -182,7 +175,7 @@ implementation
 
 uses
   // Delphi
-  SysUtils,
+  SysUtils, Windows, Graphics, Types,
   // Project
   UHelp, UMsgDlgs;
 
@@ -204,6 +197,8 @@ begin
   edStr.Width := fMemoWidth;
   pnlBody.Width := fMemoWidth;
   lblStr.Width := fMemoWidth;
+  lblCaretPos.Top := lblStr.Top;
+  lblCaretPos.Left := fMemoWidth - lblCaretPos.Width;
   btnInsert.Left := pnlBody.Width - btnInsert.Width;
   cmbField.Width := pnlBody.Width - btnInsert.Width - 16;
   // Set component heights and vertical positions
@@ -224,6 +219,18 @@ begin
   end;
   // Call inherited method to arrange remaining controls
   ArrangeControls;
+  // Set anchors to permit controls to re-arrange as dialogue to be resized
+  pnlBody.Anchors := [akLeft, akRight, akTop, akBottom];
+  lblStr.Anchors := [akTop, akLeft];
+  lblCaretPos.Anchors := [akTop, akRight];
+  edStr.Anchors := [akLeft, akRight, akTop, akBottom];
+  lblField.Anchors := [akLeft, akBottom];
+  cmbField.Anchors := [akLeft, akRight, akBottom];
+  btnInsert.Anchors := [akRight, akBottom];
+  bvlBottom.Anchors := [akLeft, akRight, akBottom];
+  btnOK.Anchors := [akRight, akBottom];
+  btnCancel.Anchors := [akRight, akBottom];
+  btnHelp.Anchors := [akRight, akBottom];
 end;
 
 procedure TStringEditor.btnInsertClick(Sender: TObject);
@@ -328,9 +335,21 @@ procedure TStringEditor.FormCreate(Sender: TObject);
     @param Sender [in] Not used.
   }
 begin
-  fMemoWidth := 295;
-  fMemoHeight := 102;
+  fMemoWidth := DefMemoWidth;
+  fMemoHeight := DefMemoHeight;
   inherited;  // inherited last: we may want to use values to arrange controls
+end;
+
+procedure TStringEditor.FormDestroy(Sender: TObject);
+begin
+  fCaretDisplayMgr.Free;
+  inherited;
+end;
+
+procedure TStringEditor.FormResize(Sender: TObject);
+begin
+  inherited;
+  UpdateCaretPosState;
 end;
 
 procedure TStringEditor.FormShow(Sender: TObject);
@@ -361,6 +380,12 @@ begin
   cmbField.ItemIndex := 0;
   // Arrange dlg box according to whether field controls are being displayed
   Arrange;
+  // Constrain dlg box
+  Constraints.MinWidth := MinWindowWidth;
+  Constraints.MinHeight := MinWindowHeight;
+  // Manage caret: best to create this here rather than FormCreate to ensure
+  // initial caret state is captured
+  fCaretDisplayMgr := TMemoCaretPosDisplayMgr.Create(edStr, lblCaretPos);
 end;
 
 function TStringEditor.GetLines: TStrings;
@@ -490,6 +515,35 @@ begin
     edStr.WordWrap := False;
     edStr.ScrollBars := ssBoth;
   end;
+end;
+
+procedure TStringEditor.UpdateCaretPosState;
+
+  function StringExtent(const S: string; const Font: TFont): TSize;
+  var
+    Canvas: TCanvas; // canvas used to measure text extent
+  begin
+    Assert(Assigned(Font));
+    Canvas := TCanvas.Create;
+    try
+      Canvas.Handle := CreateDC('DISPLAY', nil, nil, nil);
+      try
+        Canvas.Font := Font;
+        Result := Canvas.TextExtent(S);
+      finally
+        DeleteDC(Canvas.Handle);
+        Canvas.Handle := 0;
+      end;
+    finally
+      Canvas.Free;
+    end;
+  end;
+
+var
+  EditorCaptionWidth: Integer;
+begin
+  EditorCaptionWidth := StringExtent(lblStr.Caption, lblStr.Font).cx;
+  lblCaretPos.Visible := lblStr.Left + EditorCaptionWidth < lblCaretPos.Left;
 end;
 
 end.

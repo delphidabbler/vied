@@ -1,36 +1,12 @@
 {
- * UVInfo.pas
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/
+ *
+ * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
  *
  * Engine of Version Information Editor program. Encapsulates version
  * information functionality in a class.
- *
- * $Rev$
- * $Date$
- *
- * ***** BEGIN LICENSE BLOCK *****
- * 
- * Version: MPL 1.1
- * 
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
- * 
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * 
- * The Original Code is UVInfo.pas.
- *
- * The Initial Developer of the Original Code is Peter Johnson
- * (http://www.delphidabbler.com/).
- *
- * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
- * Johnson. All Rights Reserved.
- *
- * Contributor(s):
- *   NONE
- *
- * ***** END LICENSE BLOCK *****
 }
 
 
@@ -42,7 +18,7 @@ interface
 
 uses
   // Delphi
-  SysUtils, Classes,
+  SysUtils, Classes, Windows,
   // PJSoft library
   PJVersionInfo;
 
@@ -172,12 +148,6 @@ type
       {Write access method for VIComments property.
         @param SL [in] String list containing new property value.
       }
-    function FileFlagsAsString(const FFlag: LongInt): string;
-      {Builds string describing file flags bit-set depending on whether file
-      flags are being fully described or are being shown as Hex values.
-        @param FFlag [in] File flags bit set.
-        @return Required description string.
-      }
     function EvaluateFields(StrInfoId: TStrInfo): string;
       {Replaces all fields in a string info item by their values.
         @param StrInfoId [in] String info item to be processed.
@@ -189,6 +159,18 @@ type
         @return Value of field.
       }
   public
+    const
+      // Default version information values
+      DefVersionNumber: TPJVersionNumber = (V1: 0; V2: 0; V3: 0; V4: 0);
+      DefFileOS = VOS__WINDOWS32;
+      DefFileType = VFT_APP;
+      DefFileFlagsMask = 0;
+      DefFileFlags = 0;
+      DefLanguageCode = $0809;
+      DefCharSetCode = 1252;
+      DefString = '';
+      DefIdentifier = 'VERINFO';
+  public
     constructor Create;
       {Class constructor. Sets up object.
       }
@@ -197,11 +179,6 @@ type
       }
     procedure Clear;
       {Clears version info in memory. Resets to default values.
-      }
-    procedure WriteToDisplay(const S: TStrings);
-      {Writes version information in format ready for display.
-        @param S [in] String list that receives version information in display
-          format.
       }
     procedure WriteAsRC(const SL: TStringList);
       {Writes resource file (.rc) format to a stringlist.
@@ -298,7 +275,7 @@ implementation
 
 uses
   // Delphi
-  IniFiles, ClipBrd, Windows,
+  IniFiles, ClipBrd,
   // Project
   UVerUtils, UUtils;
 
@@ -346,19 +323,6 @@ const
   cVarFile = 'Variable File Info';
   cStringFile = 'String File Info';
   cConfig = 'Configuration Details';
-
-  // Fixed file info default values
-  cDefVersionNumber: TPJVersionNumber = (V1: 0; V2: 0; V3: 0; V4: 0);
-  cDefFileOS = VOS__WINDOWS32;
-  cDefFileType = VFT_APP;
-  cDefFileFlagsMask = $3F;
-  cDefFileFlags = 0;
-  cDefLanguageCode = $0809;
-  cDefCharSetCode = 1252;
-  cDefString = '';
-  cDefIdentifier = 'VERINFO';
-
-
 
 resourcestring
   // Default VI and RC comments
@@ -448,21 +412,21 @@ var
   J: Integer;   // loop control for default comments
 begin
   // Reset Fixed File Info to default values
-  fFileVersionNumber := cDefVersionNumber;
-  fProductVersionNumber := cDefVersionNumber;
-  fFileOS := cDefFileOS;
-  fFileType := cDefFileType;
-  fFileSubType := DefaultFileSubType(cDefFileType);
-  fFileFlagsMask := cDefFileFlagsMask;
-  fFileFlags := cDefFileFlags;
+  fFileVersionNumber := DefVersionNumber;
+  fProductVersionNumber := DefVersionNumber;
+  fFileOS := DefFileOS;
+  fFileType := DefFileType;
+  fFileSubType := DefaultFileSubType(DefFileType);
+  fFileFlagsMask := DefFileFlagsMask;
+  fFileFlags := DefFileFlags;
   // Reset variable info to default values
-  fLanguageCode := cDefLanguageCode;
-  fCharSetCode := cDefCharSetCode;
+  fLanguageCode := DefLanguageCode;
+  fCharSetCode := DefCharSetCode;
   // Reset string info to default values
   for I := Low(TStrInfo) to High(TStrInfo) do
-    fStrInfo.Values[cStrNames[I]] := cDefString;
+    fStrInfo.Values[cStrNames[I]] := DefString;
   // Reset identifier
-  fIdentifier := cDefIdentifier;
+  fIdentifier := DefIdentifier;
   // Reset comment string lists to default values
   // vi comments
   fVIComments.Clear;
@@ -590,21 +554,6 @@ begin
   end;
 end;
 
-function TVInfo.FileFlagsAsString(const FFlag: LongInt): string;
-  {Builds string describing file flags bit-set depending on whether file flags
-  are being fully described or are being shown as Hex values.
-    @param FFlag [in] File flags bit set.
-    @return Required description string.
-  }
-begin
-  if fDescribeFileFlags then
-    // Fully describe file flags as line of symbolic constants
-    Result := FileFlagSetToStr(FFlag)
-  else
-    // Describe file flags usingnhex notation
-    Result := HexSymbol + IntToHex(FFlag, 2);
-end;
-
 function TVInfo.GetStrDesc(AnId: TStrInfo): string;
   {Read accessor for StrDesc property.
     @param AnId [in] String info item id.
@@ -723,26 +672,26 @@ begin
     // read in fixed file info
     FileVersionNumber := StrToVersionNumber(
         Ini.ReadString(cFixedFile, 'File Version #',
-        VersionNumberToStr(cDefVersionNumber)));
+        VersionNumberToStr(DefVersionNumber)));
     ProductVersionNumber := StrToVersionNumber(
         Ini.ReadString(cFixedFile, 'Product Version #',
-        VersionNumberToStr(cDefVersionNumber)));
-    FileOS := Ini.ReadInteger(cFixedFile, 'File OS', cDefFileOS);
-    FileType := Ini.ReadInteger(cFixedFile, 'File Type', cDefFileType);
+        VersionNumberToStr(DefVersionNumber)));
+    FileOS := Ini.ReadInteger(cFixedFile, 'File OS', DefFileOS);
+    FileType := Ini.ReadInteger(cFixedFile, 'File Type', DefFileType);
     FileSubType := Ini.ReadInteger(cFixedFile, 'File Sub-Type',
         DefaultFileSubType(FileType));
     FileFlagsMask := Ini.ReadInteger(cFixedFile, 'File Flags Mask',
-        cDefFileFlagsMask);
-    FileFlags := Ini.ReadInteger(cFixedFile, 'File Flags', cDefFileFlags);
+        DefFileFlagsMask);
+    FileFlags := Ini.ReadInteger(cFixedFile, 'File Flags', DefFileFlags);
     // read in variable file info
-    LanguageCode := Ini.ReadInteger(cVarFile, 'Language', cDefLanguageCode);
-    CharSetCode := Ini.ReadInteger(cVarFile, 'Character Set', cDefCharSetCode);
+    LanguageCode := Ini.ReadInteger(cVarFile, 'Language', DefLanguageCode);
+    CharSetCode := Ini.ReadInteger(cVarFile, 'Character Set', DefCharSetCode);
     // read in string info
     for I := Low(TStrInfo) to High(TStrInfo) do
-      StrInfo[I] := Ini.ReadString(cStringFile, StrDesc[I], cDefString);
+      StrInfo[I] := Ini.ReadString(cStringFile, StrDesc[I], DefString);
     // Read config section
     // read identifier
-    Identifier := Ini.ReadString(cConfig, 'Identifier', cDefIdentifier);
+    Identifier := Ini.ReadString(cConfig, 'Identifier', DefIdentifier);
     // read RC comments - stripping | characters (used to preserve indentation)
     fRCComments.Clear;
     for J := 0 to Ini.ReadInteger(cConfig, 'NumRCComments', 0) - 1 do
@@ -863,7 +812,7 @@ begin
   if (not Validating) or ValidCharCode(AValue) then
     fCharSetCode := AValue
   else
-    fCharSetCode := cDefCharSetCode;
+    fCharSetCode := DefCharSetCode;
 end;
 
 procedure TVInfo.SetFileFlags(AValue: LongInt);
@@ -897,7 +846,7 @@ begin
     fFileFlagsMask := AValue
   else
     // We are validating and value isn't OK - use default
-    fFileFlagsMask := cDefFileFlagsMask;
+    fFileFlagsMask := DefFileFlagsMask;
   // If validating ensure that FileFlags is a sub-set of new FileFlags mask
   if Validating then
     SetFileFlags(fFileFlags and fFileFlagsMask);
@@ -911,7 +860,7 @@ begin
   if (not Validating) or ValidFileOS(AValue) then
     fFileOS := AValue
   else
-    fFileOS := cDefFileOS;
+    fFileOS := DefFileOS;
 end;
 
 procedure TVInfo.SetFileSubType(AValue: LongInt);
@@ -935,7 +884,7 @@ begin
     fFileType := AValue
   else
     // We are validating and value isn't OK - use default
-    fFileType := cDefFileType;
+    fFileType := DefFileType;
   // If we're validating replace invalid sub types with default
   if Validating and not ValidFileSubType(fFileType, fFileSubType) then
     fFileSubType := DefaultFileSubType(fFileType);
@@ -949,7 +898,7 @@ begin
   if (not Validating) or ValidLangCode(AValue) then
     fLanguageCode := AValue
   else
-    fLanguageCode := cDefLanguageCode;
+    fLanguageCode := DefLanguageCode;
 end;
 
 procedure TVInfo.SetRCComments(SL: TStringList);
@@ -1062,52 +1011,6 @@ begin
     [HexSymbol, fLanguageCode, fCharSetCode]));
   SL.Add(' }');
   SL.Add('}');
-end;
-
-procedure TVInfo.WriteToDisplay(const S: TStrings);
-  {Writes version information in format ready for display.
-    @param S [in] String list that receives version information in display
-      format.
-  }
-var
-  I: TStrInfo;  // loop control for string info
-resourcestring
-  sFFI = 'FIXED FILE INFO';
-  sFileVersion = 'File Version #';
-  sProductVersion = 'Product Version #';
-  sFileOS = 'File OS';
-  sFileType = 'File Type';
-  sFileSubType = 'File Sub-type';
-  sFileFlagsMask = 'File Flags Mask';
-  sFileFlags = 'File Flags';
-  sLanguage = 'Language';
-  sCharSet = 'Character Set';
-  sTransInfo = 'TRANSLATION INFO';
-  sStringInfo = 'STRING INFO';
-begin
-  // Ensure the VerUtils routines use Pascal Hex symbol for output
-  UsePasHexSymbol(True);
-  // Clear the given list
-  S.Clear;
-  // Add Fixed File Info items to list
-  S.Add(sFFI);
-  S.Add('   ' + sFileVersion + #9 + VersionNumberToStr(fFileVersionNumber));
-  S.Add(
-    '   ' + sProductVersion + #9 + VersionNumberToStr(fProductVersionNumber)
-  );
-  S.Add('   ' + sFileOS + #9 + FileOSToStr(fFileOS));
-  S.Add('   ' + sFileType + #9 + FileTypeToStr(fFileType));
-  S.Add('   ' + sFileSubType + #9 + FileSubTypeToStr(fFileType, fFileSubType));
-  S.Add('   ' + sFileFlagsMask + #9 + FileFlagsAsString(fFileFlagsMask));
-  S.Add('   ' + sFileFlags + #9 + FileFlagsAsString(fFileFlags));
-  // Add Variable Info to list
-  S.Add(sTransInfo);
-  S.Add('   ' + sLanguage + #9 + LangCodeToStr(fLanguageCode));
-  S.Add('   ' + sCharSet + #9 + CharCodeToStr(fCharSetCode));
-  // Add String info to list
-  S.Add(sStringInfo);
-  for I := Low(TStrInfo) to High(TStrInfo) do
-    S.Add('   ' + StrDesc[I] + #9 + StrInfo[I]);
 end;
 
 end.

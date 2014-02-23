@@ -1,35 +1,11 @@
 {
- * FmVerNumEd.pas
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Version number editor dialog box.
+ * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
  *
- * $Rev$
- * $Date$
- *
- * ***** BEGIN LICENSE BLOCK *****
- * 
- * Version: MPL 1.1
- * 
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
- * 
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * 
- * The Original Code is FmVerNumEd.pas.
- * 
- * The Initial Developer of the Original Code is Peter Johnson
- * (http://www.delphidabbler.com/).
- * 
- * Portions created by the Initial Developer are Copyright (C) 1998-2011 Peter
- * Johnson. All Rights Reserved.
- * 
- * Contributor(s):
- *   NONE
- * 
- * ***** END LICENSE BLOCK *****
+ * Version number editor dialogue box.
 }
 
 
@@ -60,13 +36,22 @@ type
     edV2: TEdit;
     edV3: TEdit;
     edV4: TEdit;
+    btnPlus1V1: TButton;
+    btnPlus1V2: TButton;
+    btnPlus1V3: TButton;
+    btnPlus1V4: TButton;
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure VerEditKeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
-  private // properties
+    procedure btnPlus1V1Click(Sender: TObject);
+    procedure btnPlus1V2Click(Sender: TObject);
+    procedure btnPlus1V3Click(Sender: TObject);
+    procedure btnPlus1V4Click(Sender: TObject);
+  private
     fKind: string;
     fVersionNumber: TPJVersionNumber;
+    procedure BumpNumber(const Ed: TEdit);
   public
     property Kind: string write fKind;
       {Description of kind of version we are editing - write only}
@@ -92,6 +77,38 @@ begin
   fVersionNumber.V2 := StrToIntDef(edV2.Text, 0);
   fVersionNumber.V3 := StrToIntDef(edV3.Text, 0);
   fVersionNumber.V4 := StrToIntDef(edV4.Text, 0);
+end;
+
+procedure TVerNumEditor.btnPlus1V1Click(Sender: TObject);
+begin
+  BumpNumber(edV1);
+end;
+
+procedure TVerNumEditor.btnPlus1V2Click(Sender: TObject);
+begin
+  BumpNumber(edV2);
+end;
+
+procedure TVerNumEditor.btnPlus1V3Click(Sender: TObject);
+begin
+  BumpNumber(edV3);
+end;
+
+procedure TVerNumEditor.btnPlus1V4Click(Sender: TObject);
+begin
+  BumpNumber(edV4);
+end;
+
+procedure TVerNumEditor.BumpNumber(const Ed: TEdit);
+var
+  Value: Integer;
+begin
+  if Ed.Text <> '' then
+    Value := StrToInt(ed.Text)
+  else
+    Value := 0;
+  Inc(Value);
+  Ed.Text := IntToStr(Value);
 end;
 
 procedure TVerNumEditor.FormCreate(Sender: TObject);

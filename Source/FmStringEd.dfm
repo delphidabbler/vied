@@ -1,13 +1,20 @@
 inherited StringEditor: TStringEditor
+  BorderStyle = bsSizeable
   Caption = ''
+  ClientHeight = 402
+  ClientWidth = 603
+  OnDestroy = FormDestroy
+  OnResize = FormResize
   OnShow = FormShow
+  ExplicitWidth = 619
+  ExplicitHeight = 440
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBody: TPanel
     Width = 345
-    Height = 193
+    Height = 300
     ExplicitWidth = 345
-    ExplicitHeight = 193
+    ExplicitHeight = 300
     object lblStr: TLabel
       Left = 0
       Top = 0
@@ -19,10 +26,19 @@ inherited StringEditor: TStringEditor
     object lblField: TLabel
       Left = 0
       Top = 112
-      Width = 54
+      Width = 58
       Height = 13
       Caption = 'Insert &Field:'
       FocusControl = cmbField
+    end
+    object lblCaretPos: TLabel
+      Left = 285
+      Top = 0
+      Width = 60
+      Height = 13
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'lblCaretPos'
     end
     object edStr: TMemo
       Left = 0
@@ -57,8 +73,8 @@ inherited StringEditor: TStringEditor
     object btnInsert: TButton
       Left = 256
       Top = 127
-      Width = 89
-      Height = 27
+      Width = 75
+      Height = 25
       Caption = '&Insert'
       TabOrder = 2
       OnClick = btnInsertClick
