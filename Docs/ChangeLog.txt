@@ -2,7 +2,7 @@
 ; Change Log for Version Information Editor
 ; ------------------------------------------------------------------------------
 
-Release v2.13.0
+Release v2.13.0 of 23 February 2014
 + Gave GUI, especially main window, a refresh with a new font and a more attractive way of displaying version information [issue #12].
 + New commands:
   - User preferences can now be deleted via the new "File | Clear Preferences" menu option [issue #2].
