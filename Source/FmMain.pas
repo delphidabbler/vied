@@ -675,16 +675,6 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
   {Form creation event handler}
-
-  // ---------------------------------------------------------------------------
-  function PixelsToDlgBaseUnits(Pixels: Integer): Integer;
-    {Converts pixels to equivalent dialog base unit as used by TListBox TabWidth
-    property. This calculation assumes that the system font is being used}
-  begin
-    Result := (Pixels * 4) div LoWord(GetDialogBaseUnits);
-  end;
-  // ---------------------------------------------------------------------------
-
 begin
   UsePasHexSymbol(True);  // ensure that hex values are rendered as in pascal
   fVIItems := TList<TVIItem>.Create;
