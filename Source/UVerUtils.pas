@@ -249,6 +249,59 @@ uses
   // Project
   UUtils;
 
+{ --- Table lookup helpers --- }
+
+type
+  // Map of a code number to its string representation
+  TCodeStrMap = record
+    Code: LongInt;  // code number
+    Str: string;    // string representation of code
+  end;
+
+// Returns the string representation of the given code number in the given table
+// of code / string map records.
+function CodeToStr(const ACode: LongInt; const ATable: array of TCodeStrMap):
+  string;
+var
+  Row: TCodeStrMap; // each row in table
+begin
+  for Row in ATable do
+    if Row.Code = ACode then
+      Exit(Row.Str);
+  Result := '';
+end;
+
+// Adds the string representation of each row in the given table to the given
+// string list, which is first cleared. A reference to the string list is
+// returned.
+function BuildCodeList(const ATable: array of TCodeStrMap;
+  const SL: TStringList): TStringList;
+var
+  Row: TCodeStrMap; // each row in table
+begin
+  SL.Clear;
+  for Row in ATable do
+    SL.Add(Row.Str);
+  Result := SL;
+end;
+
+// Attempts to find the code associated with the given string in the given
+// table. If the code is found it is passed out in the ACode parameter and True
+// is returned. If the code is not found ACode is undefined and False is
+// returned.
+function TryStrToCode(const AStr: string; const ATable: array of TCodeStrMap;
+  out ACode: LongInt): Boolean;
+var
+  Row: TCodeStrMap; // each row in table
+begin
+  for Row in ATable do
+    if AnsiSameText(Row.Str, AStr) then
+    begin
+      ACode := Row.Code;
+      Exit(True);
+    end;
+  Result := False;
+end;
 
 { --- Error handling ---- }
 
@@ -305,21 +358,18 @@ var
   Nums: array[1..4] of LongInt; // array to hold numbers from string}
   I: Integer;                   // loop control variable}
 begin
-  // Start at first location in string
   Start := 1;
-  // Itereate for each version number there are four in string
-  for I := 1 to 4 do
+  // Iterate for each version number (there are four in string)
+  for I := Low(Nums) to High(Nums) do
   begin
-    // Copy first "field" in comma delimted string to NumStr and trim spaces
     NextField(Str, Start, NumStr, ',');
     NumStr := TrimSpaces(NumStr);
-    // Convert NumStr into the required number - deafult 0 if no valid value
+    // Convert NumStr into the required number - default 0 if no valid value
     if NumStr <> '' then
       Nums[I] := StrToIntDef(NumStr, 0)
     else
       Nums[I] := 0;
   end;
-  // Copy resulting numbers into TPJVersionInfo structure
   Result.V1 := Nums[1];
   Result.V2 := Nums[2];
   Result.V3 := Nums[3];
@@ -331,18 +381,14 @@ end;
 
 const
   // Array of OS codes to symbolic constants
-  cFileOS: array[0..6] of record
-    Code: LongInt;    // the FileOS code number
-    CodeStr: string;  // the symbolic constant as a string
-  end =
-  (
-    (Code: VOS_DOS;           CodeStr: 'VOS_DOS';           ),
-    (Code: VOS_NT;            CodeStr: 'VOS_NT';            ),
-    (Code: VOS__WINDOWS16;    CodeStr: 'VOS__WINDOWS16';    ),
-    (Code: VOS__WINDOWS32;    CodeStr: 'VOS__WINDOWS32';    ),
-    (Code: VOS_DOS_WINDOWS16; CodeStr: 'VOS_DOS_WINDOWS16'; ),
-    (Code: VOS_DOS_WINDOWS32; CodeStr: 'VOS_DOS_WINDOWS32'; ),
-    (Code: VOS_NT_WINDOWS32;  CodeStr: 'VOS_NT_WINDOWS32';  )
+  FileOSTable: array[0..6] of TCodeStrMap = (
+    (Code: VOS_DOS;           Str: 'VOS_DOS';           ),
+    (Code: VOS_NT;            Str: 'VOS_NT';            ),
+    (Code: VOS__WINDOWS16;    Str: 'VOS__WINDOWS16';    ),
+    (Code: VOS__WINDOWS32;    Str: 'VOS__WINDOWS32';    ),
+    (Code: VOS_DOS_WINDOWS16; Str: 'VOS_DOS_WINDOWS16'; ),
+    (Code: VOS_DOS_WINDOWS32; Str: 'VOS_DOS_WINDOWS32'; ),
+    (Code: VOS_NT_WINDOWS32;  Str: 'VOS_NT_WINDOWS32';  )
   );
 
 function FileOSToStr(const OS: LongInt): string;
@@ -350,19 +396,8 @@ function FileOSToStr(const OS: LongInt): string;
     @param OS [in] OS code.
     @return Matching symbolic constant or '' if OS is not recognised.
   }
-var
-  I: Integer; // loop control
 begin
-  // Set default '' result
-  Result := '';
-  // Scan array looking for given code
-  for I := 0 to 6 do
-    if cFileOS[I].Code = OS then
-    begin
-      // Found the code, record the symbolic constant name and stop looking
-      Result := cFileOS[I].CodeStr;
-      Break;
-    end;
+  Result := CodeToStr(OS, FileOSTable);
 end;
 
 function StrToFileOS(const Str: string): LongInt;
@@ -371,24 +406,8 @@ function StrToFileOS(const Str: string): LongInt;
     @return OS code of symbolic constant.
     @except EVersionError raised if Str is not a valid symbolic constant.
   }
-var
-  I: Integer;     // loop control
-  Found: Boolean; // flag true if symbolic constant found
 begin
-  // Set default "not found" result
-  Found := False;
-  Result := -1;
-  // Scan array looking for given symbolic constant string (case sensitive)
-  for I := 0 to 6 do
-    if cFileOS[I].CodeStr = Str then
-    begin
-      // Found symbolic constant - record FileOS code & leave loop
-      Result := cFileOS[I].Code;
-      Found := True;
-      Break;
-    end;
-  // Check if constant found and raise exception if not
-  if not Found then
+  if not TryStrToCode(Str, FileOSTable, Result) then
     Error(sErrOSCode, [Str]);
 end;
 
@@ -397,16 +416,8 @@ function FileOSCodeList(const SL: TStringList): TStringList;
     @param SL [in] Receives symbolic constant list.
     @return Reference to SL.
   }
-var
-  I: Integer; // loop control
 begin
-  // Clear the string list
-  SL.Clear;
-  // Iterate across all FileOS codes, adding symbolic constants to list
-  for I := 0 to 6 do
-    Sl.Add(cFileOS[I].CodeStr);
-  // Return a reference to the given list
-  Result := SL;
+  Result := BuildCodeList(FileOSTable, SL);
 end;
 
 function ValidFileOS(const OS: LongInt): Boolean;
@@ -424,18 +435,14 @@ end;
 
 const
   // Map of file type code to symbolic constants and descriptions.
-  cFileType: array[0..6] of record
-    Code: LongInt;    // FileType code
-    CodeStr: string;  // symbolic constant as a string
-  end =
-  (
-    (Code: VFT_UNKNOWN;     CodeStr: 'VFT_UNKNOWN';     ),
-    (Code: VFT_APP;         CodeStr: 'VFT_APP';         ),
-    (Code: VFT_DLL;         CodeStr: 'VFT_DLL';         ),
-    (Code: VFT_DRV;         CodeStr: 'VFT_DRV';         ),
-    (Code: VFT_FONT;        CodeStr: 'VFT_FONT';        ),
-    (Code: VFT_VXD;         CodeStr: 'VFT_VXD';         ),
-    (Code: VFT_STATIC_LIB;  CodeStr: 'VFT_STATIC_LIB';  )
+  FileTypeTable: array[0..6] of TCodeStrMap = (
+    (Code: VFT_UNKNOWN;     Str: 'VFT_UNKNOWN';     ),
+    (Code: VFT_APP;         Str: 'VFT_APP';         ),
+    (Code: VFT_DLL;         Str: 'VFT_DLL';         ),
+    (Code: VFT_DRV;         Str: 'VFT_DRV';         ),
+    (Code: VFT_FONT;        Str: 'VFT_FONT';        ),
+    (Code: VFT_VXD;         Str: 'VFT_VXD';         ),
+    (Code: VFT_STATIC_LIB;  Str: 'VFT_STATIC_LIB';  )
   );
 
 function FileTypeToStr(const FType: LongInt): string;
@@ -443,19 +450,8 @@ function FileTypeToStr(const FType: LongInt): string;
     @param FType [in] File type code.
     @return Symbolic constant or '' if FType not recognised.
   }
-var
-  I: Integer; // loop control
 begin
-  // Set default result to empty string
-  Result := '';
-  // Iterate across all table of FileType codes
-  for I := 0 to 6 do
-    if cFileType[I].Code = FType then
-    begin
-      // Found code - record symbolic constant string and leave loop
-      Result := cFileType[I].CodeStr;
-      Break;
-    end;
+  Result := CodeToStr(FType, FileTypeTable);
 end;
 
 function StrToFileType(const Str: string): LongInt;
@@ -464,24 +460,8 @@ function StrToFileType(const Str: string): LongInt;
     @return Code associated with symbolic constant.
     @except EVersionError raised if symbolic constant not recognised.
   }
-var
-  I: Integer;     // loop control
-  Found: Boolean; // flag true if symbolic constant found
 begin
-  // Set default "not found" result
-  Found := False;
-  Result := -1;
-  // Scan through FileType table doing case sensitve search
-  for I := 0 to 6 do
-    if cFileType[I].CodeStr = Str then
-    begin
-      // Found the symbolic constant - record and leave loop
-      Result := cFileType[I].Code;
-      Found := True;
-      Break;
-    end;
-  if not Found then
-    // Raise execption since constant not found
+  if not TryStrToCode(Str, FileTypeTable, Result) then
     Error(sErrFileType, [Str]);
 end;
 
@@ -490,16 +470,8 @@ function FileTypeCodeList(const SL: TStringList): TStringList;
     @param SL [in] Receives list of symbolic constants.
     @return Reference to SL.
   }
-var
-  I: Integer; // loop control
 begin
-  // Clear the list
-  SL.Clear;
-  // Iterate across table putting all symbolic constant names in list
-  for I := 0 to 6 do
-    Sl.Add(cFileType[I].CodeStr);
-  // Return reference to list
-  Result := SL;
+  Result := BuildCodeList(FileTypeTable, SL);
 end;
 
 function FileTypeHasSubType(const FType: LongInt): Boolean;
@@ -620,22 +592,18 @@ end;
 
 const
   // Maps driver sub-type code to symbolic constants.
-  cDrvSubType: array[0..10] of record
-    Code: LongInt;    // driver sub-type code
-    CodeStr: string;  // symbolic constant for code
-  end =
-  (
-    (Code: VFT2_UNKNOWN;          CodeStr: 'VFT2_UNKNOWN';          ),
-    (Code: VFT2_DRV_COMM;         CodeStr: 'VFT2_DRV_COMM';         ),
-    (Code: VFT2_DRV_PRINTER;      CodeStr: 'VFT2_DRV_PRINTER';      ),
-    (Code: VFT2_DRV_KEYBOARD;     CodeStr: 'VFT2_DRV_KEYBOARD';     ),
-    (Code: VFT2_DRV_LANGUAGE;     CodeStr: 'VFT2_DRV_LANGUAGE';     ),
-    (Code: VFT2_DRV_DISPLAY;      CodeStr: 'VFT2_DRV_DISPLAY';      ),
-    (Code: VFT2_DRV_MOUSE;        CodeStr: 'VFT2_DRV_MOUSE';        ),
-    (Code: VFT2_DRV_NETWORK;      CodeStr: 'VFT2_DRV_NETWORK';      ),
-    (Code: VFT2_DRV_SYSTEM;       CodeStr: 'VFT2_DRV_SYSTEM';       ),
-    (Code: VFT2_DRV_INSTALLABLE;  CodeStr: 'VFT2_DRV_INSTALLABLE';  ),
-    (Code: VFT2_DRV_SOUND;        CodeStr: 'VFT2_DRV_SOUND';        )
+  DriverSubTypeTable: array[0..10] of TCodeStrMap = (
+    (Code: VFT2_UNKNOWN;          Str: 'VFT2_UNKNOWN';          ),
+    (Code: VFT2_DRV_COMM;         Str: 'VFT2_DRV_COMM';         ),
+    (Code: VFT2_DRV_PRINTER;      Str: 'VFT2_DRV_PRINTER';      ),
+    (Code: VFT2_DRV_KEYBOARD;     Str: 'VFT2_DRV_KEYBOARD';     ),
+    (Code: VFT2_DRV_LANGUAGE;     Str: 'VFT2_DRV_LANGUAGE';     ),
+    (Code: VFT2_DRV_DISPLAY;      Str: 'VFT2_DRV_DISPLAY';      ),
+    (Code: VFT2_DRV_MOUSE;        Str: 'VFT2_DRV_MOUSE';        ),
+    (Code: VFT2_DRV_NETWORK;      Str: 'VFT2_DRV_NETWORK';      ),
+    (Code: VFT2_DRV_SYSTEM;       Str: 'VFT2_DRV_SYSTEM';       ),
+    (Code: VFT2_DRV_INSTALLABLE;  Str: 'VFT2_DRV_INSTALLABLE';  ),
+    (Code: VFT2_DRV_SOUND;        Str: 'VFT2_DRV_SOUND';        )
   );
 
 function PvtDriveSubTypeToStr(const FSType: LongInt): string;
@@ -643,19 +611,8 @@ function PvtDriveSubTypeToStr(const FSType: LongInt): string;
     @param FSType [in] Driver sub-type code.
     @return Related symbolic constant or '' if FSType is not recognised.
   }
-var
-  I: Integer; // loop control
 begin
-  // Set default result
-  Result := '';
-  // Iterate over table of driver sub-types
-  for I := 0 to 10 do
-    if cDrvSubType[I].Code = FSType then
-    begin
-      // Found the code record symbolic constant and exit loop
-      Result := cDrvSubType[I].CodeStr;
-      Break;
-    end;
+  Result := CodeToStr(FSType, DriverSubTypeTable);
 end;
 
 function PvtStrToDriveSubType(const Str: string): LongInt;
@@ -664,24 +621,8 @@ function PvtStrToDriveSubType(const Str: string): LongInt;
     @return Equivalent driver sub-type code.
     @except EVersionError raised if Str is not a valid symbolic constant.
   }
-var
-  I: Integer;     // loop control
-  Found: Boolean; // flag showing if symbolic constant is found is table
 begin
-  // Set default "not found" result
-  Found := False;
-  Result := -1;
-  // Iterate over table of driver codes doing case sensitive search
-  for I := 0 to 10 do
-    if cDrvSubType[I].CodeStr = Str then
-    begin
-      // Found symbolic constant - resorde it and that found and leave loop
-      Result := cDrvSubType[I].Code;
-      Found := True;
-      Break;
-    end;
-  if not Found then
-    // Raise execption because symbolic constant not in table
+  if not TryStrToCode(Str, DriverSubTypeTable, Result) then
     Error(sErrDriverSubType, [Str]);
 end;
 
@@ -690,16 +631,8 @@ function DriverSubTypeCodeList(const SL: TStringList): TStringList;
     @param SL [in] Receives list of symbolic constants.
     @return Reference to SL.
   }
-var
-  I: Integer; // loop control
 begin
-  // Clear the list
-  SL.Clear;
-  // Add all symbolic constant names to the list
-  for I := 0 to 10 do
-    SL.Add(cDrvSubType[I].CodeStr);
-  // Return a reference to the list
-  Result := SL;
+  Result := BuildCodeList(DriverSubTypeTable, SL);
 end;
 
 
@@ -707,16 +640,11 @@ end;
 
 const
   // Map of Font Sub-Type codes to their symbolic constants
-  cFontSubType: array[0..3] of record
-    Code: LongInt;    // the font sub-type code
-    CodeStr: string;  // symbolic constants for the sub-type code
-    Desc: string;     // (UNUSED v1.0) description of the sub-type code
-  end =
-  (
-    (Code: VFT2_UNKNOWN;        CodeStr: 'VFT2_UNKNOWN';        ),
-    (Code: VFT2_FONT_RASTER;    CodeStr: 'VFT2_FONT_RASTER';    ),
-    (Code: VFT2_FONT_VECTOR;    CodeStr: 'VFT2_FONT_VECTOR';    ),
-    (Code: VFT2_FONT_TRUETYPE;  CodeStr: 'VFT2_FONT_TRUETYPE';  )
+  FontSubTypeTable: array[0..3] of TCodeStrMap = (
+    (Code: VFT2_UNKNOWN;        Str: 'VFT2_UNKNOWN';        ),
+    (Code: VFT2_FONT_RASTER;    Str: 'VFT2_FONT_RASTER';    ),
+    (Code: VFT2_FONT_VECTOR;    Str: 'VFT2_FONT_VECTOR';    ),
+    (Code: VFT2_FONT_TRUETYPE;  Str: 'VFT2_FONT_TRUETYPE';  )
   );
 
 function PvtFontSubTypeToStr(const FSType: LongInt): string;
@@ -724,19 +652,8 @@ function PvtFontSubTypeToStr(const FSType: LongInt): string;
     @param FSType [in] Font sub-type code.
     @return Associated symbolic constant or '' if FSType is not recognised.
   }
-var
-  I: Integer; // loop control
 begin
-  // Record default '' result
-  Result := '';
-  // Itereate across table searching for code
-  for I := 0 to 3 do
-    if cFontSubType[I].Code = FSType then
-    begin
-      // Found code - record symbolic constant end exit loop
-      Result := cFontSubType[I].CodeStr;
-      Break;
-    end;
+  Result := CodeToStr(FSType, FontSubTypeTable);
 end;
 
 function PvtStrToFontSubType(const Str: string): LongInt;
@@ -745,24 +662,8 @@ function PvtStrToFontSubType(const Str: string): LongInt;
     @return Code matching symbolic constant.
     @except EVersionError raised if Str is not a valid symbolic constant.
   }
-var
-  I: Integer;     // loop contol
-  Found: Boolean; // flag recording if symbolic constant found
 begin
-  // Set default "not found" result
-  Found := False;
-  Result := -1;
-  // Iterate across table doing case-sensitive search for symbolic constant
-  for I := 0 to 3 do
-    if cFontSubType[I].CodeStr = Str then
-    begin
-      // Found symbolic constant - record code and that found and leave loop
-      Result := cFontSubType[I].Code;
-      Found := True;
-      Break;
-    end;
-  if not Found then
-    // Raise exception because symbolic constnat not found
+  if not TryStrToCode(Str, FontSubTypeTable, Result) then
     Error(sErrDriverSubType, [Str]);
 end;
 
@@ -771,16 +672,8 @@ function FontSubTypeCodeList(const SL: TStringList): TStringList;
     @param SL [in] Receives list of sub-types.
     @return Reference to SL.
   }
-var
-  I: Integer; // loop control
 begin
-  // Clear the list
-  SL.Clear;
-  // Scan table adding symbolic constant names to list
-  for I := 0 to 3 do
-    Sl.Add(cFontSubType[I].CodeStr);
-  // Return reference to the list
-  Result := SL;
+  Result := BuildCodeList(FontSubTypeTable, SL);
 end;
 
 
@@ -788,17 +681,13 @@ end;
 
 const
   // Map of file flag codes to the equivalent symbolic constants
-  cFileFlags: array[0..5] of record
-    Code: LongInt;    // File Flags codes
-    CodeStr: string;  // Symbolic constants for File Flags codes
-  end =
-  (
-    (Code: vs_FF_Debug;         CodeStr: 'VS_FF_DEBUG'        ),
-    (Code: vs_FF_Prerelease;    CodeStr: 'VS_FF_PRERELEASE'   ),
-    (Code: vs_FF_Patched;       CodeStr: 'VS_FF_PATCHED'      ),
-    (Code: vs_FF_PrivateBuild;  CodeStr: 'VS_FF_PRIVATEBUILD' ),
-    (Code: vs_FF_InfoInferred;  CodeStr: 'VS_FF_INFOINFERRED' ),
-    (Code: vs_FF_SpecialBuild;  CodeStr: 'VS_FF_SPECIALBUILD' )
+  FileFlagTable: array[0..5] of TCodeStrMap = (
+    (Code: VS_FF_DEBUG;         Str: 'VS_FF_DEBUG'        ),
+    (Code: VS_FF_PRERELEASE;    Str: 'VS_FF_PRERELEASE'   ),
+    (Code: VS_FF_PATCHED;       Str: 'VS_FF_PATCHED'      ),
+    (Code: VS_FF_PRIVATEBUILD;  Str: 'VS_FF_PRIVATEBUILD' ),
+    (Code: VS_FF_INFOINFERRED;  Str: 'VS_FF_INFOINFERRED' ),
+    (Code: VS_FF_SPECIALBUILD;  Str: 'VS_FF_SPECIALBUILD' )
   );
 
 function FileFlagSetToStr(const FFlags: LongInt): string;
@@ -808,25 +697,19 @@ function FileFlagSetToStr(const FFlags: LongInt): string;
     @return Required list of symbolic constants.
   }
 var
-  I: Integer;     // loop control
-  Count: Integer; // count of number of flags in set to date
+  Row: TCodeStrMap; // each row in table
+  Count: Integer;   // count of number of flags in set to date
 begin
-  // Set default "empty set" result
   Result := '';
-  // Record that no file flags inset to date
   Count := 0;
-  // Iterate across file flags table looking for codes
-  for I := 0 to 5 do
-    if (cFileFlags[I].Code and FFlags) = cFileFlags[i].Code then
+  for Row in FileFlagTable do
+    if (Row.Code and FFlags) = Row.Code then
     begin
-      // Found a code
-      // increment counter and add symbolic constant to string
-      // preceed code by delimiter if code not the first
       Inc(Count);
       if Count = 1 then
-        Result := cFileFlags[I].CodeStr
+        Result := Row.Str
       else
-        Result := Result + ' + ' + cFileFlags[I].CodeStr;
+        Result := Result + ' + ' + Row.Str;
     end;
 end;
 
@@ -836,24 +719,8 @@ function StrToFileFlag(const Str: string): LongInt;
     @return Associated file flag.
     @except EVersionError raised if Str is not a valid symbolic constant.
   }
-var
-  I: Integer;     // loop control
-  Found: Boolean; // flag true if symbolic constant found
 begin
-  // Set default "not found" result
-  Found := False;
-  Result := -1;
-  // Iterate across all table doing case sensitive search for symbolic constant
-  for I := 0 to 5 do
-    if cFileFlags[I].CodeStr = Str then
-    begin
-      // Found it - record code and that found and skip from loop
-      Result := cFileFlags[I].Code;
-      Found := True;
-      Break;
-    end;
-  if not Found then
-    // Not found so raise exception
+  if not TryStrToCode(Str, FileFlagTable, Result) then
     Error(sErrFileFlag, [Str]);
 end;
 
@@ -866,16 +733,12 @@ function FileFlagSetToStrList(const FFlags: LongInt;
     @return Reference to SL.
   }
 var
-  I: Integer; // loop control
+  Row: TCodeStrMap; // each row in table
 begin
-  // Clear the list
   SL.Clear;
-  // Itereate over all table looking for codes in bit-set
-  for I := 0 to 5 do
-    if (cFileFlags[I].Code and FFlags) = cFileFlags[i].Code then
-      // The code's in the bit-set - add symbolic constant to list
-      SL.Add(cFileFlags[I].CodeStr);
-  // Return reference to list
+  for Row in FileFlagTable do
+    if (Row.Code and FFlags) = Row.Code then
+      SL.Add(Row.Str);
   Result := SL;
 end;
 
@@ -885,13 +748,11 @@ function StrListToFileFlagSet(const SL: TStringList): LongInt;
     @return Equivalent bitmask.
   }
 var
-  I: Integer; // loop control
+  Str: string;  // each string constant in list
 begin
-  // Set default result - empty set
   Result := 0;
-  // Itereate across list including code for each symbolic constant in bit-set
-  for I := 0 to SL.Count - 1 do
-    Result := Result or StrToFileFlag(SL[I]);
+  for Str in SL do
+    Result := Result or StrToFileFlag(Str);
 end;
 
 function ValidFileFlagsMask(const Mask: LongInt): Boolean;
@@ -901,8 +762,8 @@ function ValidFileFlagsMask(const Mask: LongInt): Boolean;
   }
 const
   // Bit-set of all valid codes
-  AllFlags: LongInt = vs_FF_Debug or vs_FF_Prerelease or vs_FF_Patched or
-    vs_FF_PrivateBuild or vs_FF_InfoInferred or vs_FF_SpecialBuild;
+  AllFlags: LongInt = VS_FF_DEBUG or VS_FF_PRERELEASE or VS_FF_PATCHED or
+    VS_FF_PRIVATEBUILD or VS_FF_INFOINFERRED or VS_FF_SPECIALBUILD;
 begin
   // Given Mask anded with complement of set comprising all valid flags should
   // be zero - if it's not then Mask must contain an invalid file flag code
@@ -927,55 +788,52 @@ end;
 
 const
   // Map of language codes and their descriptions
-  cLanguages: array[0..44] of record
-    Code: Word;   // the language code
-    Desc: string; // the description
-  end = (
-    (Code: $0401; Desc: 'Arabic'                    ),
-    (Code: $0402; Desc: 'Bulgarian'                 ),
-    (Code: $0403; Desc: 'Catalan'                   ),
-    (Code: $0404; Desc: 'Traditional Chinese'       ),
-    (Code: $0405; Desc: 'Czech'                     ),
-    (Code: $0406; Desc: 'Danish'                    ),
-    (Code: $0407; Desc: 'German'                    ),
-    (Code: $0408; Desc: 'Greek'                     ),
-    (Code: $0409; Desc: 'U.S. English'              ),
-    (Code: $040A; Desc: 'Castilian Spanish'         ),
-    (Code: $040B; Desc: 'Finnish'                   ),
-    (Code: $040C; Desc: 'French'                    ),
-    (Code: $040D; Desc: 'Hebrew'                    ),
-    (Code: $040E; Desc: 'Hungarian'                 ),
-    (Code: $040F; Desc: 'Icelandic'                 ),
-    (Code: $0410; Desc: 'Italian'                   ),
-    (Code: $0411; Desc: 'Japanese'                  ),
-    (Code: $0412; Desc: 'Korean'                    ),
-    (Code: $0413; Desc: 'Dutch'                     ),
-    (Code: $0414; Desc: 'Norwegian - Bokmål'        ),
-    (Code: $0415; Desc: 'Polish'                    ),
-    (Code: $0416; Desc: 'Brazilian Portuguese'      ),
-    (Code: $0417; Desc: 'Rhaeto-Romanic'            ),
-    (Code: $0418; Desc: 'Romanian'                  ),
-    (Code: $0419; Desc: 'Russian'                   ),
-    (Code: $041A; Desc: 'Croato-Serbian (Latin)'    ),
-    (Code: $041B; Desc: 'Slovak'                    ),
-    (Code: $041C; Desc: 'Albanian'                  ),
-    (Code: $041D; Desc: 'Swedish'                   ),
-    (Code: $041E; Desc: 'Thai'                      ),
-    (Code: $041F; Desc: 'Turkish'                   ),
-    (Code: $0420; Desc: 'Urdu'                      ),
-    (Code: $0421; Desc: 'Bahasa'                    ),
-    (Code: $0804; Desc: 'Simplified Chinese'        ),
-    (Code: $0807; Desc: 'Swiss German'              ),
-    (Code: $0809; Desc: 'U.K. English'              ),
-    (Code: $080A; Desc: 'Mexican Spanish'           ),
-    (Code: $080C; Desc: 'Belgian French'            ),
-    (Code: $0810; Desc: 'Swiss Italian'             ),
-    (Code: $0813; Desc: 'Belgian Dutch'             ),
-    (Code: $0814; Desc: 'Norwegian - Nynorsk'       ),
-    (Code: $0816; Desc: 'Portuguese'                ),
-    (Code: $081A; Desc: 'Serbo-Croatian (Cyrillic)' ),
-    (Code: $0C0C; Desc: 'Canadian French'           ),
-    (Code: $100C; Desc: 'Swiss French'              )
+  LanguageTable: array[0..44] of TCodeStrMap = (
+    (Code: $0401; Str: 'Arabic'                    ),
+    (Code: $0402; Str: 'Bulgarian'                 ),
+    (Code: $0403; Str: 'Catalan'                   ),
+    (Code: $0404; Str: 'Traditional Chinese'       ),
+    (Code: $0405; Str: 'Czech'                     ),
+    (Code: $0406; Str: 'Danish'                    ),
+    (Code: $0407; Str: 'German'                    ),
+    (Code: $0408; Str: 'Greek'                     ),
+    (Code: $0409; Str: 'U.S. English'              ),
+    (Code: $040A; Str: 'Castilian Spanish'         ),
+    (Code: $040B; Str: 'Finnish'                   ),
+    (Code: $040C; Str: 'French'                    ),
+    (Code: $040D; Str: 'Hebrew'                    ),
+    (Code: $040E; Str: 'Hungarian'                 ),
+    (Code: $040F; Str: 'Icelandic'                 ),
+    (Code: $0410; Str: 'Italian'                   ),
+    (Code: $0411; Str: 'Japanese'                  ),
+    (Code: $0412; Str: 'Korean'                    ),
+    (Code: $0413; Str: 'Dutch'                     ),
+    (Code: $0414; Str: 'Norwegian - Bokmål'        ),
+    (Code: $0415; Str: 'Polish'                    ),
+    (Code: $0416; Str: 'Brazilian Portuguese'      ),
+    (Code: $0417; Str: 'Rhaeto-Romanic'            ),
+    (Code: $0418; Str: 'Romanian'                  ),
+    (Code: $0419; Str: 'Russian'                   ),
+    (Code: $041A; Str: 'Croato-Serbian (Latin)'    ),
+    (Code: $041B; Str: 'Slovak'                    ),
+    (Code: $041C; Str: 'Albanian'                  ),
+    (Code: $041D; Str: 'Swedish'                   ),
+    (Code: $041E; Str: 'Thai'                      ),
+    (Code: $041F; Str: 'Turkish'                   ),
+    (Code: $0420; Str: 'Urdu'                      ),
+    (Code: $0421; Str: 'Bahasa'                    ),
+    (Code: $0804; Str: 'Simplified Chinese'        ),
+    (Code: $0807; Str: 'Swiss German'              ),
+    (Code: $0809; Str: 'U.K. English'              ),
+    (Code: $080A; Str: 'Mexican Spanish'           ),
+    (Code: $080C; Str: 'Belgian French'            ),
+    (Code: $0810; Str: 'Swiss Italian'             ),
+    (Code: $0813; Str: 'Belgian Dutch'             ),
+    (Code: $0814; Str: 'Norwegian - Nynorsk'       ),
+    (Code: $0816; Str: 'Portuguese'                ),
+    (Code: $081A; Str: 'Serbo-Croatian (Cyrillic)' ),
+    (Code: $0C0C; Str: 'Canadian French'           ),
+    (Code: $100C; Str: 'Swiss French'              )
   );
 
 function LangCodeToStr(const LangCode: Word): string;
@@ -983,19 +841,8 @@ function LangCodeToStr(const LangCode: Word): string;
     @param LangCode [in] Language code.
     @return Description of LangCode or '' if no matching description.
   }
-var
-  I: Integer; // loop control
 begin
-  // Set default empty string result
-  Result := '';
-  // Iterate across entire table searching for language code
-  for I := 0 to 44 do
-    if cLanguages[I].Code = LangCode then
-    begin
-      // Found the code - record description and break from loop
-      Result := cLanguages[I].Desc;
-      Break;
-    end;
+  Result := CodeToStr(LangCode, LanguageTable);
 end;
 
 function StrToLangCode(const Str: string): Word;
@@ -1005,24 +852,11 @@ function StrToLangCode(const Str: string): Word;
     @except EVersionError raised if language description doesn't exist.
   }
 var
-  I: Integer;     // loop control
-  Found: Boolean; // flag true if description found in table
+  ResInt: LongInt;  // result code as long int
 begin
-  // Set default "not found" result
-  Found := False;
-  Result := $FFFF;
-  // Iterate across table looking for description in non-case sensitive search
-  for I := 0 to 44 do
-    if CompareText(cLanguages[I].Desc, Str) = 0 then
-    begin
-      // We've found description - record related code
-      Result := cLanguages[I].Code;
-      Found := True;
-      Break;
-    end;
-  if not Found then
-    // We didn't find the description - raise exception
+  if not TryStrToCode(Str, LanguageTable, ResInt) then
     Error(sErrLanguage, [Str]);
+  Result := Word(ResInt);
 end;
 
 function LanguageStrList(const SL: TStringList): TStringList;
@@ -1030,16 +864,8 @@ function LanguageStrList(const SL: TStringList): TStringList;
     @param SL [in] Receives language descriptions.
     @return Reference to SL.
   }
-var
-  I: Integer; // loop control
 begin
-  // Clear the list
-  SL.Clear;
-  // Iterate through table adding descriptions to list
-  for I := 0 to 44 do
-    Sl.Add(cLanguages[I].Desc);
-  // Return a reference to the list
-  Result := SL;
+  Result := BuildCodeList(LanguageTable, SL);
 end;
 
 function ValidLangCode(const LangCode: Word): Boolean;
@@ -1058,22 +884,19 @@ end;
 
 const
   // Map of character set codes to the descriptions of the codes
-  cCharSets: array[0..11] of record
-    Code: Word;   // the character set code
-    Desc: string; // the description of the code
-  end = (
-    (Code: 0;     Desc: '7-bit ASCII'                         ),
-    (Code: 932;   Desc: 'Windows, Japan (Shift - JIS X-0208)' ),
-    (Code: 949;   Desc: 'Windows, Korea (Shift - KSC 5601)'   ),
-    (Code: 950;	  Desc: 'Windows, Taiwan (GB5)'               ),
-    (Code: 1200;	Desc: 'Unicode'                             ),
-    (Code: 1250;	Desc: 'Windows, Latin-2 (Eastern European)' ),
-    (Code: 1251;	Desc: 'Windows, Cyrillic'                   ),
-    (Code: 1252;	Desc: 'Windows, Multilingual'               ),
-    (Code: 1253;	Desc: 'Windows, Greek'                      ),
-    (Code: 1254;	Desc: 'Windows, Turkish'                    ),
-    (Code: 1255;	Desc: 'Windows, Hebrew'                     ),
-    (Code: 1256;  Desc: 'Windows, Arabic'                     )
+  CharSetTable: array[0..11] of TCodeStrMap = (
+    (Code: 0;     Str: '7-bit ASCII'                         ),
+    (Code: 932;   Str: 'Windows, Japan (Shift - JIS X-0208)' ),
+    (Code: 949;   Str: 'Windows, Korea (Shift - KSC 5601)'   ),
+    (Code: 950;	  Str: 'Windows, Taiwan (GB5)'               ),
+    (Code: 1200;	Str: 'Unicode'                             ),
+    (Code: 1250;	Str: 'Windows, Latin-2 (Eastern European)' ),
+    (Code: 1251;	Str: 'Windows, Cyrillic'                   ),
+    (Code: 1252;	Str: 'Windows, Multilingual'               ),
+    (Code: 1253;	Str: 'Windows, Greek'                      ),
+    (Code: 1254;	Str: 'Windows, Turkish'                    ),
+    (Code: 1255;	Str: 'Windows, Hebrew'                     ),
+    (Code: 1256;  Str: 'Windows, Arabic'                     )
   );
 
 function CharCodeToStr(const CharCode: Word): string;
@@ -1081,19 +904,8 @@ function CharCodeToStr(const CharCode: Word): string;
     @param CharCode [in] Character code for which description required.
     @return Required description or '' if no description found.
   }
-var
-  I: Integer; // loop control
 begin
-  // Set default '' result
-  Result := '';
-  // Iterate across table looking for code
-  for I := 0 to 11 do
-    if cCharSets[I].Code = CharCode then
-    begin
-      // Found it - record code and break from loop
-      Result := cCharSets[I].Desc;
-      Break;
-    end;
+  Result := CodeToStr(CharCode, CharSetTable);
 end;
 
 function StrToCharCode(const Str: string): Word;
@@ -1103,24 +915,11 @@ function StrToCharCode(const Str: string): Word;
     @except EVersionError raised if description doesn't exist.
   }
 var
-  I: Integer;     // loop control
-  Found: Boolean; // flag true when description found in table
+  ResInt: LongInt;  // result code as long int
 begin
-  // Set default "not found" flag
-  Found := False;
-  Result := $FFFF;
-  // Itereate across table doing non-case sensitive serch for description
-  for I := 0 to 11 do
-    if CompareText(cCharSets[I].Desc, Str) = 0 then
-    begin
-      // Found description - record code and that found and break from loop
-      Result := cCharSets[I].Code;
-      Found := True;
-      Break;
-    end;
-  if not Found then
-    // We didn't find description so raise exception
+  if not TryStrToCode(Str, CharSetTable, ResInt) then
     Error(sErrCharSet, [Str]);
+  Result := Word(ResInt);
 end;
 
 function CharSetStrList(const SL: TStringList): TStringList;
@@ -1128,16 +927,8 @@ function CharSetStrList(const SL: TStringList): TStringList;
     @param SL [in] Receives character set descriptions.
     @return Reference to SL.
   }
-var
-  I: Integer; // loop control
 begin
-  // Clear the list
-  SL.Clear;
-  // Itereate across table adding each description to the list
-  for I := 0 to 11 do
-    Sl.Add(cCharSets[I].Desc);
-  // Return a reference to the list
-  Result := SL;
+  Result := BuildCodeList(CharSetTable, SL);
 end;
 
 function ValidCharCode(const CharCode: Word): Boolean;
