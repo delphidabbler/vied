@@ -282,21 +282,21 @@ uses
 
 const
 
-  cStrNames: array[TStrInfo] of string = (
+  StringInfoNames: array[TStrInfo] of string = (
     // Names of all string file info strings   ** do not localise
     'Comments', 'CompanyName', 'FileDescription', 'FileVersion',
     'InternalName', 'LegalCopyright', 'LegalTrademarks', 'OriginalFileName',
     'PrivateBuild', 'ProductName', 'ProductVersion', 'SpecialBuild'
   );
 
-  cStrDesc: array[TStrInfo] of string = (
+  StringInfoDescs: array[TStrInfo] of string = (
     // Description of all string info strings  ** do not localise
     'Comments', 'Company Name', 'File Description', 'File Version',
     'Internal Name','Legal Copyright', 'Legal Trademark', 'Original File Name',
     'Private Build', 'Product Name', 'Product Version', 'Special Build'
   );
 
-  cExcludeFields: array[TStrInfo] of set of TTokens = (
+  ExcludeFields: array[TStrInfo] of set of TTokens = (
     // Those fields not permitted in info strings
     [],               // Comments
     [],               // CompanyName
@@ -312,17 +312,32 @@ const
     [tkSPECIALBUILD]  // SpecialBuild
   );
 
-  cFields: array[TTokens] of string = (
+  Fields: array[TTokens] of string = (
     // List of field names
     '<#F1>', '<#F2>', '<#F3>', '<#F4>', '<#P1>', '<#P2>', '<#P3>', '<#P4>',
     '<YEAR>', '<SHORTFNAME>', '<PRODUCTNAME>', '<SPECIALBUILD>', '<<>'
   );
 
-  // Section names for use in version information (.vi) files
-  cFixedFile = 'Fixed File Info';
-  cVarFile = 'Variable File Info';
-  cStringFile = 'String File Info';
-  cConfig = 'Configuration Details';
+  // Names used in version information (.vi) files
+  // section names
+  FixedFileInfoSection = 'Fixed File Info';
+  VarFileInfoSection = 'Variable File Info';
+  StringFileInfoSection = 'String File Info';
+  ConfigSection = 'Configuration Details';
+  // value names
+  FileVersionNumberName = 'File Version #';
+  ProductVersionNumberName = 'Product Version #';
+  FileOSName = 'File OS';
+  FileTypeName = 'File Type';
+  FileSubTypeName = 'File Sub-Type';
+  FileFlagsMaskName = 'File Flags Mask';
+  FileFlagsName = 'File Flags';
+  LanguageName = 'Language';
+  CharacterSetName = 'Character Set';
+  IdentifierName = 'Identifier';
+  NumRCCommentsName = 'NumRCComments';
+  RCCommentLineNameFmt = 'RC Comment Line %d';
+  ResOutputDirName = 'ResOutputDir';
 
 resourcestring
   // Default VI and RC comments
@@ -333,8 +348,8 @@ resourcestring
 
 const
   // Record default VI and RC comments
-  cDefVIComments: array[0..1] of string = (sVIComment1, sVIComment2);
-  cDefRCComments: array[0..1] of string = (sRCComment1, sRCComment2);
+  DefaultVIComments: array[0..1] of string = (sVIComment1, sVIComment2);
+  DefaultRCComments: array[0..1] of string = (sRCComment1, sRCComment2);
 
 
 { TVInfo }
@@ -424,18 +439,18 @@ begin
   fCharSetCode := DefCharSetCode;
   // Reset string info to default values
   for I := Low(TStrInfo) to High(TStrInfo) do
-    fStrInfo.Values[cStrNames[I]] := DefString;
+    fStrInfo.Values[StringInfoNames[I]] := DefString;
   // Reset identifier
   fIdentifier := DefIdentifier;
   // Reset comment string lists to default values
   // vi comments
   fVIComments.Clear;
-  for J := Low(cDefVIComments) to High(cDefVIComments) do
-    fVIComments.Add(cDefVIComments[J]);
+  for J := Low(DefaultVIComments) to High(DefaultVIComments) do
+    fVIComments.Add(DefaultVIComments[J]);
   // rc comments
   fRCComments.Clear;
-  for J := Low(cDefRCComments) to High(cDefRCComments) do
-    fRCComments.Add(cDefRCComments[J]);
+  for J := Low(DefaultRCComments) to High(DefaultRCComments) do
+    fRCComments.Add(DefaultRCComments[J]);
   // default .res file folder
   fResOutputDir := '';
 end;
@@ -523,10 +538,10 @@ begin
     // instances have been replaced by value
     repeat
       // Check if field token is in result string
-      TokenIdx := Pos(cFields[I], Result);
+      TokenIdx := Pos(Fields[I], Result);
       // There is a field token, replace it by its value
       if TokenIdx > 0 then
-        Replace(cFields[I], FieldValue(I), Result);
+        Replace(Fields[I], FieldValue(I), Result);
     until TokenIdx = 0;
 end;
 
@@ -560,7 +575,7 @@ function TVInfo.GetStrDesc(AnId: TStrInfo): string;
     @return Value of property for AnId.
   }
 begin
-  Result := cStrDesc[AnId];
+  Result := StringInfoDescs[AnId];
 end;
 
 function TVInfo.GetStrInfo(AnId: TStrInfo): string;
@@ -569,7 +584,7 @@ function TVInfo.GetStrInfo(AnId: TStrInfo): string;
     @return Value of property for AnId.
   }
 begin
-  Result := fStrInfo.Values[cStrNames[AnId]];
+  Result := fStrInfo.Values[StringInfoNames[AnId]];
 end;
 
 function TVInfo.GetStrName(AnId: TStrInfo): string;
@@ -578,7 +593,7 @@ function TVInfo.GetStrName(AnId: TStrInfo): string;
     @return Value of property for AnId.
   }
 begin
-  Result := cStrNames[AnId];
+  Result := StringInfoNames[AnId];
 end;
 
 function TVInfo.GetStrPermitted(AnId: TStrInfo): Boolean;
@@ -671,38 +686,60 @@ begin
     // Read version info stuff into properties: this automatically verifies data
     // read in fixed file info
     FileVersionNumber := StrToVersionNumber(
-        Ini.ReadString(cFixedFile, 'File Version #',
-        VersionNumberToStr(DefVersionNumber)));
+      Ini.ReadString(
+        FixedFileInfoSection,
+        FileVersionNumberName,
+        VersionNumberToStr(DefVersionNumber)
+      )
+    );
     ProductVersionNumber := StrToVersionNumber(
-        Ini.ReadString(cFixedFile, 'Product Version #',
-        VersionNumberToStr(DefVersionNumber)));
-    FileOS := Ini.ReadInteger(cFixedFile, 'File OS', DefFileOS);
-    FileType := Ini.ReadInteger(cFixedFile, 'File Type', DefFileType);
-    FileSubType := Ini.ReadInteger(cFixedFile, 'File Sub-Type',
-        DefaultFileSubType(FileType));
-    FileFlagsMask := Ini.ReadInteger(cFixedFile, 'File Flags Mask',
-        DefFileFlagsMask);
-    FileFlags := Ini.ReadInteger(cFixedFile, 'File Flags', DefFileFlags);
+      Ini.ReadString(
+        FixedFileInfoSection,
+        ProductVersionNumberName,
+        VersionNumberToStr(DefVersionNumber)
+      )
+    );
+    FileOS := Ini.ReadInteger(FixedFileInfoSection, FileOSName, DefFileOS);
+    FileType := Ini.ReadInteger(
+      FixedFileInfoSection, FileTypeName, DefFileType
+    );
+    FileSubType := Ini.ReadInteger(
+      FixedFileInfoSection, FileSubTypeName, DefaultFileSubType(FileType)
+    );
+    FileFlagsMask := Ini.ReadInteger(
+      FixedFileInfoSection, FileFlagsMaskName, DefFileFlagsMask
+    );
+    FileFlags := Ini.ReadInteger(
+      FixedFileInfoSection, FileFlagsName, DefFileFlags
+    );
     // read in variable file info
-    LanguageCode := Ini.ReadInteger(cVarFile, 'Language', DefLanguageCode);
-    CharSetCode := Ini.ReadInteger(cVarFile, 'Character Set', DefCharSetCode);
+    LanguageCode := Ini.ReadInteger(
+      VarFileInfoSection, LanguageName, DefLanguageCode
+    );
+    CharSetCode := Ini.ReadInteger(
+      VarFileInfoSection, CharacterSetName, DefCharSetCode
+    );
     // read in string info
     for I := Low(TStrInfo) to High(TStrInfo) do
-      StrInfo[I] := Ini.ReadString(cStringFile, StrDesc[I], DefString);
+      StrInfo[I] := Ini.ReadString(
+        StringFileInfoSection, StrDesc[I], DefString
+      );
     // Read config section
     // read identifier
-    Identifier := Ini.ReadString(cConfig, 'Identifier', DefIdentifier);
+    Identifier := Ini.ReadString(ConfigSection, IdentifierName, DefIdentifier);
     // read RC comments - stripping | characters (used to preserve indentation)
     fRCComments.Clear;
-    for J := 0 to Ini.ReadInteger(cConfig, 'NumRCComments', 0) - 1 do
+    for J := 0 to Ini.ReadInteger(ConfigSection, NumRCCommentsName, 0) - 1 do
     begin
-      Line := Ini.ReadString(cConfig, Format('RC Comment Line %d', [J]), '');
+      Line := Ini.ReadString(
+        ConfigSection, Format(RCCommentLineNameFmt, [J]), ''
+      );
       if (Length(Line) > 0) and (Line[1] = '|') then
         Line := Copy(Line, 2, Length(Line) -1);
       fRCComments.Add(Line);
     end;
     // read default .res file output folder
-    fResOutputDir := Ini.ReadString(cConfig, 'ResOutputDir', '');
+    fResOutputDir := Ini.ReadString(ConfigSection, ResOutputDirName, '');
   finally
     // Free the instance of the ini file
     Ini.Free;
@@ -741,33 +778,40 @@ begin
   try
     // Write version information
     // write fixed file info
-    Ini.WriteString(cFixedFile, 'File Version #',
-        VersionNumberToStr(FileVersionNumber));
-    Ini.WriteString(cFixedFile, 'Product Version #',
-        VersionNumberToStr(ProductVersionNumber));
-    Ini.WriteInteger(cFixedFile, 'File OS', FileOS);
-    Ini.WriteInteger(cFixedFile, 'File Type', FileType);
-    Ini.WriteInteger(cFixedFile, 'File Sub-Type', FileSubType);
-    Ini.WriteInteger(cFixedFile, 'File Flags Mask', FileFlagsMask);
-    Ini.WriteInteger(cFixedFile, 'File Flags', FileFlags);
+    Ini.WriteString(
+      FixedFileInfoSection,
+      FileVersionNumberName,
+      VersionNumberToStr(FileVersionNumber)
+    );
+    Ini.WriteString(
+      FixedFileInfoSection,
+      ProductVersionNumberName,
+      VersionNumberToStr(ProductVersionNumber)
+    );
+    Ini.WriteInteger(FixedFileInfoSection, FileOSName, FileOS);
+    Ini.WriteInteger(FixedFileInfoSection, FileTypeName, FileType);
+    Ini.WriteInteger(FixedFileInfoSection, FileSubTypeName, FileSubType);
+    Ini.WriteInteger(FixedFileInfoSection, FileFlagsMaskName, FileFlagsMask);
+    Ini.WriteInteger(FixedFileInfoSection, FileFlagsName, FileFlags);
     // write variable file info
-    Ini.WriteInteger(cVarFile, 'Language', LanguageCode);
-    Ini.WriteInteger(cVarFile, 'Character Set', CharSetCode);
+    Ini.WriteInteger(VarFileInfoSection, LanguageName, LanguageCode);
+    Ini.WriteInteger(VarFileInfoSection, CharacterSetName, CharSetCode);
     // write string info
     for I := Low(TStrInfo) to High(TStrInfo) do
-      Ini.WriteString(cStringFile, StrDesc[I], StrInfo[I]);
+      Ini.WriteString(StringFileInfoSection, StrDesc[I], StrInfo[I]);
     // Write config section
     // write identifier
-    Ini.WriteString(cConfig, 'Identifier', Identifier);
+    Ini.WriteString(ConfigSection, IdentifierName, Identifier);
     // write RC comments: first # of lines then write lines preceded by |
-    Ini.WriteInteger(cConfig, 'NumRCComments', fRCComments.Count);
+    Ini.WriteInteger(ConfigSection, NumRCCommentsName, fRCComments.Count);
     for J := 0 to fRCComments.Count - 1 do
     begin
-      Ini.WriteString(cConfig, Format('RC Comment Line %d', [J]),
-          '|' + fRCComments[J]);
+      Ini.WriteString(
+        ConfigSection, Format(RCCommentLineNameFmt, [J]), '|' + fRCComments[J]
+      );
     end;
     // write .res file default output folder
-    Ini.WriteString(cConfig, 'ResOutputDir', fResOutputDir);
+    Ini.WriteString(ConfigSection, ResOutputDirName, fResOutputDir);
   finally
     // Free the ini file instance
     Ini.Free;
@@ -916,9 +960,9 @@ procedure TVInfo.SetStrInfo(AnId: TStrInfo; AStr: string);
   }
 begin
   if (not Validating) or StrPermitted[AnId] then
-    fStrInfo.Values[cStrNames[AnId]] := AStr
+    fStrInfo.Values[StringInfoNames[AnId]] := AStr
   else
-    fStrInfo.Values[cStrNames[AnId]] := '';
+    fStrInfo.Values[StringInfoNames[AnId]] := '';
 end;
 
 procedure TVInfo.SetVIComments(SL: TStringList);
@@ -941,8 +985,8 @@ begin
   SL.Clear;
   // Add non-excluded field tokens to list
   for I := Low(TTokens) to High(TTokens) do
-    if not (I in cExcludeFields[Id]) then
-      SL.Add(cFields[I]);
+    if not (I in ExcludeFields[Id]) then
+      SL.Add(Fields[I]);
 end;
 
 procedure TVInfo.WriteAsRC(const SL: TStringList);
