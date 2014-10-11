@@ -23,17 +23,11 @@ uses
   PJVersionInfo;
 
 
-{ --- Output format routines --- }
+{ --- Styles of hex symbols that can be used --- }
 
-procedure UsePasHexSymbol(AValue: Boolean);
-  {Sets current hex symbol.
-    @param AValue [in] True to use Pascal style symbol or false to use C style
-      symbol.
-  }
-function HexSymbol: string;
-  {Gets hex symbol currently in use.
-    @return Current hex symbol.
-  }
+const
+  PascalHexSymbol = '$';
+  CHexSymbol = '0x';
 
 
 { --- Version number routines --- }
@@ -109,10 +103,12 @@ function FileTypeHasSubType(const FType: LongInt): Boolean;
 
 { --- File Sub-Type routines --- }
 
-function FileSubTypeToStr(const FType, FSType: LongInt): string;
+function FileSubTypeToStr(const FType, FSType: LongInt;
+  const AHexSymbol: string): string;
   {Get the symbolic constant representing a file sub type within a file type.
     @param FType [in] File type.
     @param FSType [in] File sub-type for which symbolic constant required.
+    @param AHexSymbol [in] Hex symbol to be used when a hex value is returned.
     @return Required symbolic constant, or hex string.
   }
 function ValidFileSubType(const FType, FSubType: LongInt): Boolean;
@@ -254,14 +250,6 @@ uses
   UUtils;
 
 
-const
-  cHexSymbols: array[Boolean] of string = ('0x', '$');
-    {Possible symbols to use to indicate hex strings - 'C' and 'Pascal' styles}
-var
-  pvtUsePasHexSymbol: Boolean = True;
-    {Flag true if Pascal style hex symbols being used - false if C style}
-
-
 { --- Error handling ---- }
 
 resourcestring
@@ -290,27 +278,6 @@ procedure Error(const Msg: string; const Args: array of const); overload;
   }
 begin
   Error(Format(Msg, Args));
-end;
-
-
-{ --- Output format routines --- }
-
-procedure UsePasHexSymbol(AValue: Boolean);
-  {Sets current hex symbol.
-    @param AValue [in] True to use Pascal style symbol or false to use C style
-      symbol.
-  }
-begin
-  // Update symbol flag
-  pvtUsePasHexSymbol := AValue;
-end;
-
-function HexSymbol: string;
-  {Gets hex symbol currently in use.
-    @return Current hex symbol.
-  }
-begin
-  Result := cHexSymbols[pvtUsePasHexSymbol];
 end;
 
 
@@ -569,17 +536,19 @@ function PvtFontSubTypeToStr(const FSType: LongInt): string; forward;
     @return Associated symbolic constant or '' if FSType is not recognised.
   }
 
-function FileSubTypeToStr(const FType, FSType: LongInt): string;
+function FileSubTypeToStr(const FType, FSType: LongInt;
+  const AHexSymbol: string): string;
   {Get the symbolic constant representing a file sub type within a file type.
     @param FType [in] File type.
     @param FSType [in] File sub-type for which symbolic constant required.
+    @param AHexSymbol [in] Hex symbol to be used when a hex value is returned.
     @return Required symbolic constant, or hex string.
   }
 begin
   case FType of
     VFT_DRV: Result := PvtDriveSubTypeToStr(FSType);
     VFT_FONT: Result := PvtFontSubTypeToStr(FSType);
-    else Result := HexSymbol + IntToHex(FSType, 4);
+    else Result := AHexSymbol + IntToHex(FSType, 4);
   end;
 end;
 

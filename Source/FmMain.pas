@@ -676,7 +676,6 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
   {Form creation event handler}
 begin
-  UsePasHexSymbol(True);  // ensure that hex values are rendered as in pascal
   fVIItems := TList<TVIItem>.Create;
   Init;
   // Create dynamic components
@@ -1147,7 +1146,9 @@ begin
                   GetDropDownChoice(
                     sDrvSubType,
                     DriverSubTypeCodeList(StrList),
-                    FileSubTypeToStr(VI.FileType, VI.FileSubType)
+                    FileSubTypeToStr(
+                      VI.FileType, VI.FileSubType, PascalHexSymbol
+                    )
                   )
                 );
               VFT_FONT:  // Font type
@@ -1156,7 +1157,9 @@ begin
                   GetDropDownChoice(
                     sFontSubType,
                     FontSubTypeCodeList(StrList),
-                    FileSubTypeToStr(VI.FileType, VI.FileSubType)
+                    FileSubTypeToStr(
+                      VI.FileType, VI.FileSubType, PascalHexSymbol
+                    )
                   )
                 );
               VFT_VXD:   // Virtual device driver type
@@ -1180,7 +1183,9 @@ begin
       end,
       function (const VI: TVInfo): string
       begin
-        Result := FileSubTypeToStr(VI.FileType, VI.FileSubType);
+        Result := FileSubTypeToStr(
+          VI.FileType, VI.FileSubType, PascalHexSymbol
+        );
       end
     );
     AddItem(
@@ -1216,7 +1221,7 @@ begin
         if VI.DescribeFileFlags then
           Result := FileFlagSetToStr(VI.FileFlagsMask)
         else
-          Result := HexSymbol + IntToHex(VI.FileFlagsMask, 2);
+          Result := PascalHexSymbol + IntToHex(VI.FileFlagsMask, 2);
       end
     );
     AddItem(
@@ -1263,7 +1268,7 @@ begin
         if VI.DescribeFileFlags then
           Result := FileFlagSetToStr(VI.FileFlags)
         else
-          Result := HexSymbol + IntToHex(VI.FileFlags, 2);
+          Result := PascalHexSymbol + IntToHex(VI.FileFlags, 2);
       end
     );
     // Add Variable Info to list

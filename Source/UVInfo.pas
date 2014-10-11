@@ -954,8 +954,6 @@ var
   J: Integer;   // loop control for comments
 begin
   // ** Do not localise any string literals in this method
-  // Ensure the VerInfo routines use C format hex symbol
-  UsePasHexSymbol(False);
   // Clear the list
   SL.Clear;
   // Write out C-style comments if required
@@ -980,7 +978,7 @@ begin
   SL.Add('FILEVERSION ' + VersionNumberToStr(FileVersionNumber));
   SL.Add('PRODUCTVERSION ' + VersionNumberToStr(ProductVersionNumber));
   // write File Flags Mask in hex format
-  SL.Add('FILEFLAGSMASK ' + HexSymbol + IntToHex(FileFlagsMask, 2));
+  SL.Add('FILEFLAGSMASK ' + CHexSymbol + IntToHex(FileFlagsMask, 2));
   if FileFlagSetToStr(FileFlags) <> '' then
     // there is a non-empty File Flags bit set: write using symbolic constants
     SL.Add('FILEFLAGS ' + FileFlagSetToStr(FileFlags));
@@ -988,7 +986,9 @@ begin
   SL.Add('FILETYPE ' + FileTypeToStr(FileType));
   if FileTypeHasSubType(FileType) then
     // file type has a sub-type - write it out
-    SL.Add('FILESUBTYPE ' + FileSubTypeToStr(FileType, FileSubType));
+    SL.Add(
+      'FILESUBTYPE ' + FileSubTypeToStr(FileType, FileSubType, CHexSymbol)
+    );
   // Write out string file info block
   SL.Add('{');
   SL.Add(' BLOCK "StringFileInfo"');
@@ -1008,7 +1008,7 @@ begin
   SL.Add(' BLOCK "VarFileInfo"');
   SL.Add(' {');
   SL.Add(Format('  VALUE "Translation", %s%4.4x, %d',
-    [HexSymbol, fLanguageCode, fCharSetCode]));
+    [CHexSymbol, fLanguageCode, fCharSetCode]));
   SL.Add(' }');
   SL.Add('}');
 end;
