@@ -222,9 +222,7 @@ setup:
 # Create release files (.zip)
 OUTFILE = Release\$(RELEASEFILENAME).zip
 release:
-  @echo.
-  @echo Creating Release File
-  @echo ---------------------
+  @echo +++ Creating Release File $(OUTFILE) +++
   @cd ..
   -@if exist $(OUTFILE) del $(OUTFILE)
   @$(ZIP) -j -9 $(OUTFILE) Exe\VIEd-Setup-*.exe Docs\ReadMe.txt
