@@ -10,8 +10,9 @@ Contents
 3. Installation - instructions on how to install the program
 4. Uninstalling - instructions on how to uninstall the program
 5. Updates - details of where to check for program updates
-6. Getting in Touch - how to contact DelphiDabbler
-7. About DelphiDabbler
+6. Source Code
+7. Getting in Touch - how to contact DelphiDabbler
+8. About DelphiDabbler
 
 
 1) License and Copyright
@@ -88,7 +89,23 @@ Check the Version Information Editor web page at
 http://delphidabbler.com/software/vied for program updates.
 
 
-6) Getting in Touch
+6) Source Code
+--------------
+
+Version Information Editor's source code is maintained in the delphidabbler/vied
+Git repository on GitHub at https://github.com/delphidabbler/vied
+
+Source code of all releases back to v2.11.2 are available from the GitHub
+repository's releases page. Choose the release you want from those listed and
+download an archive containing the required source code. Alternatively you can
+select a release tag or a branch and fork the repo.
+
+Notes on how to compile Version Information Editor from source code can be found
+in the file Build.html in the root of the repository in either the master branch
+or for the release you are interested in.
+
+
+7) Getting in Touch
 -------------------
 
 Please get in touch if you have any comments, suggestions or if you find any
@@ -99,7 +116,7 @@ However bugs and feature requests should be made via the Version Information
 Tools Issue Tracker at http://delphidabbler.com/url/vied-issues
 
 
-7) About DelphiDabbler
+8) About DelphiDabbler
 ----------------------
 
 The DelphiDabbler is Peter Johnson - a hobbyist Delphi programmer living in

@@ -2,7 +2,13 @@
 ; Change Log for Version Information Editor
 ; ------------------------------------------------------------------------------
 
-Release v2.13.0
+Release v2.13.1 of 14 October 2014
++ Fixed bug [issue #21] where symbol used to indicate a hex value in main window was inconsistent: the Pascal '$' symbol is now always used in preference to the C style '0x'.
++ Documentation changes:
+  - Added source code section to read-me file [issue #19]
+  - Corrected error in change log [issue #20].
+
+Release v2.13.0 of 23 February 2014
 + Gave GUI, especially main window, a refresh with a new font and a more attractive way of displaying version information [issue #12].
 + New commands:
   - User preferences can now be deleted via the new "File | Clear Preferences" menu option [issue #2].
