@@ -2,7 +2,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at http://mozilla.org/MPL/2.0/
 #
-# Copyright (C) 2011-2022, Peter Johnson (https://delphidabbler.com).
+# Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
 #
 # Project makefile.
 
@@ -16,18 +16,20 @@
 #   Must be defined to address the directory that is to receive .res and .dcu
 #   output files. This macro is defined in this makefile.
 #
-# DELPHIROOT
+# DELPHIROOT (or DELPHI2010)
 #   DELPHIROOT must address the installation directory of the required Delphi
-#   compiler (Delphi 2010 as a minimum).
+#   compiler (Delphi 2010 as a minimum). If Delphi 2010 is to be used the
+#   DELPHI2010 macro can be defined to address the Delphi 2010 installation
+#   directory. When DELPHI2010 is defined any existing value of DELPHIROOT is
+#   ignored and the value of DELPHI2010 is used instead.
 #
-# DELPHIDABLIB_U
-#    DELPHIDABLIB_U addresses the directory where the DelphiDabbler library
-#    components .dcu files are installed for the required Delphi compiler.
-#
-# DELPHIDABLIB_R
-#    DELPHIDABLIB_R addresses the directory where the DelphiDabbler library
-#    components resource (including .dfm) files are installed for the required
-#    Delphi compiler.
+# DELPHIDABLIB (or DELPHIDABLIBD2010)
+#    DELPHIDABLIB address the directory where the DelphiDabbler library
+#    components are installed for the required Delphi compiler. If Delphi 2010
+#    is to be used the DELPHIDABLIBD2010 macro can be defined to address the
+#    directory where the required components are installed for Delphi 2010. When
+#    DELPHIDABLIBD2010 is defined and existing value of DELPHIDABLIB is ignored
+#    and the value of DELPHIDABLIBD2010 is used instead.
 #
 # Optional macros
 # ---------------
@@ -102,16 +104,23 @@
 # Set bin path
 BIN = ..\Bin
 
+# Check for DELPHI2010 macro and use it for DELPHIROOT if set.
+
+!ifdef DELPHI2010
+DELPHIROOT = $(DELPHI2010)
+!endif
+
+!ifdef DELPHIDABLIBD2010
+DELPHIDABLIB = $(DELPHIDABLIBD2010)
+!endif
+
 # Check for required macros
 
 !ifndef DELPHIROOT
 !error DELPHIROOT environment variable required.
 !endif
-!ifndef DELPHIDABLIB_U
-!error DELPHIDABLIB_U environment variable required.
-!endif
-!ifndef DELPHIDABLIB_R
-!error DELPHIDABLIB_R environment variable required.
+!ifndef DELPHIDABLIB
+!error DELPHIDABLIB environment variable required.
 !endif
 !ifndef BIN
 !error BIN macro must be defined in calling script.
@@ -159,7 +168,7 @@ RELEASEFILENAME = dd-vied
 # locations in the project options .cfg file.
 .dpr.exe:
   @echo +++ Compiling Delphi Project $< +++
-  @$(DCC32) $< -B -U"$(DELPHIDABLIB_U)" -R"$(DELPHIDABLIB_R)"
+  @$(DCC32) $< -B -U"$(DELPHIDABLIB)"
 
 # Resource files are compiled to the directory specified by BIN macro.
 .rc.res:
@@ -213,7 +222,9 @@ setup:
 # Create release files (.zip)
 OUTFILE = Release\$(RELEASEFILENAME).zip
 release:
-  @echo +++ Creating Release File $(OUTFILE) +++
+  @echo.
+  @echo Creating Release File
+  @echo ---------------------
   @cd ..
   -@if exist $(OUTFILE) del $(OUTFILE)
   @$(ZIP) -j -9 $(OUTFILE) Exe\VIEd-Setup-*.exe Docs\ReadMe.txt
