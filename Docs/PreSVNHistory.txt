@@ -4,9 +4,8 @@ VIEd: Historical update information from v1.0 to Release 2.11.2
 
 ================================================================================
 
-This file records known changes to files in VIEd from v1.0 to v2.11.2 before the
-project was placed under version control with Subversion. Bugs fixed before
-moving the project to SVN and the  Google Code Issue Tracker are also noted.
+This file records known changes to files in VIEd from v1.0 to v2.11.2 before the project was placed under version control with Subversion. Bugs fixed before
+moving the project to SVN / Google Code Issue Tracker are also noted.
 
 There are three sections:
 
@@ -19,7 +18,7 @@ There are three sections:
   3: Bug fixes: Lists all recorded bug fixes up to and including v2.11.2.
 
 ================================================================================
-1: RELEASES
+2: RELEASES
 ================================================================================
 
 For details of changes made at each release see the change log.
@@ -948,7 +947,6 @@ Src\Rc\ResSrc16.rc
 ================================================================================
 3: BUG FIXES
 ================================================================================
-
 32bit version of program is treating ProductVersion resource string as not being
 permitted whenever supplied and, quite rightly, treating it as a required string
 when not present!

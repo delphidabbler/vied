@@ -88,8 +88,8 @@
 
 <p>
   <em>Version Information Editor</em> is written in Object Pascal and is
-  targeted at Delphi XE. The Delphi IDE can be used to modify the source and
-  to perform test builds. Final builds should be done using the provided
+  targeted at Delphi 2010. The Delphi IDE can be used to modify the source and
+  to perform test builds. Final builds should be built using the provided
   makefile, but you can get away with using the IDE if you don't change any
   resources.
 </p>
@@ -99,34 +99,34 @@
 </h2>
 
 <p>
-  Several DelphiDabbler libraries and components are required to compile
+  Several DelphiDabbler libraries and components are required in to compile
   <em>Version Information Editor</em>. They are:
 </p>
 
 <ul class="spaced">
   <li>
     <a
-      href="https://delphidabbler.com/software/verinfo"
+      href="http://www.delphidabbler.com/software/verinfo"
     >Version Information Component</a> v3.3 or later.
   </li>
   <li>
     <a
-      href="https://delphidabbler.com/software/aboutbox"
+      href="http://www.delphidabbler.com/software/aboutbox"
     >About Box Component</a> v3.5.1 or later.
   </li>
   <li>
     <a
-      href="https://delphidabbler.com/software/dropfiles"
+      href="http://www.delphidabbler.com/software/dropfiles"
     >Drop Files Components</a> v5.0.2 or later.
   </li>
   <li>
     <a
-      href="https://delphidabbler.com/software/wdwstate"
+      href="http://www.delphidabbler.com/software/wdwstate"
     >Window State Components</a> v5.3.1 or later.
   </li>
   <li>
     <a
-      href="https://delphidabbler.com/software/shellfolders"
+      href="http://www.delphidabbler.com/software/shellfolders"
     >Shell Folders Unit</a> v2.3 or later.
   </li>
 </ul>
@@ -157,7 +157,7 @@
 </h3>
 
 <p>
-  A copy of the Delphi XE command line compiler is required to build the
+  A copy of the Delphi 2010 command line compiler is required to build the
   object Pascal code from the provided makefile.
 </p>
 
@@ -195,12 +195,21 @@
 
 <dl>
   <dt class="spaced">
-    <code>DELPHIROOT</code> - required.
+    <code>DELPHIROOT</code> - required unless <code>DELPHI2010</code> is set.
   </dt>
   <dd>
     Should be set to the install directory of the version of Delphi being
     used. <code>DCC32</code> and <code>BRCC32</code> are expected to be in the
     <code>Bin</code> sub-directory of <code>DELPHIROOT</code>.
+  </dd>
+
+  <dt class="spaced">
+    <code>DELPHI2010</code> - optional
+  </dt>
+  <dd>
+    This environment variable can be set to the Delphi 2010 install directory.
+    When <code>DELPHI2010</code> is defined <code>DELPHIROOT</code> will be set
+    to the value of <code>DELPHI2010</code>.
   </dd>
 </dl>
 
@@ -219,13 +228,13 @@
 
 <p>
   Yes, you need an executable version of the tool you are going to build! Use an
-  existing stable version from v2.11.2. This tool is used to compile
+  existing stable version from v2.11.2. This tool is used to compile version
   the program's version information (<code>.vi</code>) files into intermediate
   resource source (<code>.rc</code>) files. You can get the latest stable
   version from
   <a
-    href="https://delphidabbler.com/software/vied"
-  >https://delphidabbler.com/software/vied</a>.
+    href="http://www.delphidabbler.com/software/vied"
+  >http://www.delphidabbler.com/software/vied</a>.
 </p>
 
 <p>
@@ -240,10 +249,10 @@
 
 <p>
   The Unicode version of the Inno setup command line compiler is needed to
-  create <em>CodeSnip</em>'s install program. Any v5 release from v5.4.0 (u)
-  is required as is a compatible version of the ISPP pre-processor. v6 is
-  not suitable. You can get Inno Setup with ISPP at <a
-    href="https://www.jrsoftware.org/isinfo.php"
+  create <em>CodeSnip</em>'s install program. v5.4.0 (u) or later is required as
+  is a compatible version of the ISPP pre-processor. You can get Inno Setup with
+  ISPP at <a
+    href="http://www.jrsoftware.org/isinfo.php"
   >http://www.jrsoftware.org/isinfo.php</a>. Choose the Unicode version. If you
   already have the ANSI version the Unicode version can be installed alongside
   it - just use a different install directory and program group name.
@@ -317,33 +326,27 @@
 </p>
 
 <dl class="spaced">
-  
   <dt>
-    <code>DELPHIROOT</code> (required)
+    <code>DELPHIROOT</code> or <code>DELPHI2010</code> (one or the other is
+    required)
   </dt>
   <dd>
     <code>DELPHIROOT</code> must be set to the install directory of the version
-    of Delphi being used.
+    of Delphi being used. If you are using Delphi 2010 you can set
+    <code>DELPHI2010</code> to its install directory. If set
+    <code>DELPHI2010</code> will be used in preference to
+    <code>DELPHIROOT</code>.
   </dd>
-  
   <dt>
-    <code>DELPHIDABLIB_U</code> (required)
+    <code>DELPHIDABLIB</code> or <code>DELPHIDABLIBD2010</code> (one or the
+    other is required)
   </dt>
   <dd>
-    <code>DELPHIDABLIB_U</code> must be set to the directory where the required
-    DelphiDabbler components .dcu files are installed in the version of
-    Delphi to be used.
+    <code>DELPHIDABLIB</code> must be set to the directory where the required
+    DelphiDabbler components and library files are installed in the version of
+    Delphi to be used. If you are using Delphi 2010 you can set
+    <code>DELPHIDABLIBD2010</code> instead and it will be used is preference.
   </dd>
-  
-  <dt>
-    <code>DELPHIDABLIB_R</code> (required)
-  </dt>
-  <dd>
-    <code>DELPHIDABLIB_R</code> must be set to the directory where the required
-    DelphiDabbler components .res &amp; .dfm files are installed in the version of
-    Delphi to be used.
-  </dd>
-  
   <dt>
     <code>INNOSETUP</code>
   </dt>
@@ -351,7 +354,6 @@
     Set to the install directory of Inno Setup 5. If not set Inno Setup must be
     on the system path.
   </dd>
-  
   <dt>
     <code>VIEDROOT</code>
   </dt>
@@ -359,7 +361,6 @@
     Set to the path where the DelphiDabbler Version Information Editor (VIEd) is
     installed. If not set VIEd must be on the system path.
   </dd>
-  
   <dt>
     <code>HHCROOT</code>
   </dt>
@@ -367,7 +368,6 @@
     Set to the path where the Microsoft HTML Help Compiler is installed. If not
     set the compiler must be on the system path.
   </dd>
-  
   <dt>
     <code>ZIPROOT</code>
   </dt>
@@ -375,7 +375,6 @@
     Set to the path where Zip.exe is installed. If not set Zip.exe must be on
     the system path.
   </dd>
-  
   <dt>
     <code>RELEASEFILENAME</code>
   </dt>
@@ -574,7 +573,9 @@
 
 <p class="note">
   <strong>Note:</strong> If the <code>make</code> command fails to run you may
-  need to use <code>%DELPHIROOT%\Bin\Make</code>.
+  need to use <code>%DELPHIROOT%\Bin\Make</code> or
+  <code>%DELPHI2010%\Bin\Make</code> depending on which environment variable you
+  have set.
 </p>
 
 <h2>

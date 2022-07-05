@@ -2,14 +2,15 @@ Source Code Licensing
 =====================
 
 This document reviews the relevant licenses governing the Version Information
-Editor source code available from DelphiDabbler.com and the Git repository at
-https://github.com/delphidabbler/vied.
+Editor source code available from DelphiDabbler.com and the Subversion
+repository on Google Code at
+http://code.google.com/p/verinfo-tools/source/browse/.
 
 The source code includes:
 
 + Original Source Code - see below.
 
-+ A .gitignore file based on Delphi.gitignore from
++ A .gitignore file based on Based on Delphi.gitignore from
   https://github.com/github/gitignore (MIT license Copyright (c) 2014 GitHub,
   Inc.)
 
@@ -21,10 +22,10 @@ Information Editor. Explicitly it doesn't include:
 + Source files from the Delphi VCL. You must have Delphi in order to access
   these files.
 
-+ Various DelphiDabbler library components and units. A list of these can be
-  found, along with download information, in the Build.html in the root of the
-  Git repository. All current versions are licensed under the Mozilla Public
-  License v2.0.
++ DelphiDabbler library components and units. These are all available from
+  http://www.delphidabbler.com/software/vied/download. The latest versions are
+  all covered by the Mozilla Public License v2.0. Earlier versions may be
+  licensed under the Mozilla Public License v1.1.
 
 
 Original Source Code
@@ -63,8 +64,7 @@ restriction.
 
 ### Exceptions
 
-The file "Source\Assets\VIEd.ico" is copyright (C) 2009 Peter Johnson
-(https://delphidabbler.com).
+The file "Source\Assets\VIEd.ico" is copyright (C) 2009 Peter Johnson (www.delphidabbler.com).
 
 This file may not be altered in any way and may not be used in any other
 programs, including programs derived from the Version Information Editor code
@@ -72,4 +72,4 @@ base, unless explicit permission is given by the copyright holder.
 
 This means that if you modify an aspect of the Version Information Editor code
 base and publish your changes then you must remove the icon or replace it with
-your own. You must also remove any "DelphiDabbler" branding.
+your own. (You must also remove any "DelphiDabbler" branding).
