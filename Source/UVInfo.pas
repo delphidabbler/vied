@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
  *
  * Engine of Version Information Editor program. Encapsulates version
  * information functionality in a class.
@@ -78,6 +78,10 @@ type
       {Value of RCComments property}
     fVIComments: TStringList;
       {Value of VIComments property}
+    // Resolved macros
+    fResolvedMacros: TStringList;
+    // Value of Macros property (macros are unresolved)
+    fMacros: TStringList;
     fResOutputDir: string;
       {Value of ResOutputDir property}
     procedure SetFileOS(AValue: LongInt);
@@ -148,6 +152,9 @@ type
       {Write access method for VIComments property.
         @param SL [in] String list containing new property value.
       }
+    procedure SetMacros(SL: TStringList);
+    function ProcessMacros(const S: string): string;
+    procedure ResolveMacros(const IniFileName: string);
     function EvaluateFields(StrInfoId: TStrInfo): string;
       {Replaces all fields in a string info item by their values.
         @param StrInfoId [in] String info item to be processed.
@@ -257,6 +264,12 @@ type
     property VIComments: TStringList read fVIComments write SetVIComments;
       {Lines of comments (excluding leading ';' characters) which should be
       written to a version information file}
+    ///  <summary>List of macro field definitions.</summary>
+    ///  <remarks>Macros are custom fields referenced using &lt;%xxx&gt; fields
+    ///  where xxx is the name of the macro. Macros maps a macro name to a
+    ///  value. The Macros string list stores macros in Key=Value format. Macros
+    ///  are evaluated before other fields.</remarks>
+    property Macros: TStringList read fMacros write SetMacros;
     property Validating: Boolean read fValidating write fValidating;
       {Flag true when assignments to version information properties should be
       validated and False if not}
@@ -275,7 +288,7 @@ implementation
 
 uses
   // Delphi
-  IniFiles, ClipBrd,
+  ClipBrd, IniFiles, StrUtils, IOUtils, Types,
   // Project
   UVerUtils, UUtils;
 
@@ -324,6 +337,7 @@ const
   VarFileInfoSection = 'Variable File Info';
   StringFileInfoSection = 'String File Info';
   ConfigSection = 'Configuration Details';
+  MacrosSection = 'Macros';
   // value names
   FileVersionNumberName = 'File Version #';
   ProductVersionNumberName = 'Product Version #';
@@ -507,6 +521,8 @@ begin
   fStrInfo := TStringList.Create;
   fRCComments := TStringList.Create;
   fVIComments := TStringList.Create;
+  fMacros := TStringList.Create;
+  fResolvedMacros := TStringList.Create;
   // Set defaults
   Clear;
 end;
@@ -515,6 +531,8 @@ destructor TVInfo.Destroy;
   {Class destructor. Tears down object.
   }
 begin
+  fResolvedMacros.Free;
+  fMacros.Free;
   fVIComments.Free;
   fRCComments.Free;
   fStrInfo.Free;
@@ -532,6 +550,8 @@ var
 begin
   // Copy string info item value to result
   Result := StrInfo[StrInfoId];
+  // Process macros
+  Result := ProcessMacros(Result);
   // Scan through all tokens, searching for each one in string turn
   for I := Low(TTokens) to High(TTokens) do
     // Repeatedly check output string for presence of a field's token until all
@@ -657,6 +677,8 @@ var
   J: Integer;     // loop control for comments
   Line: string;   // line to receive comments
   Done: Boolean;  // flag set true when done reading comments
+  MacroNames: TStringList;
+  MacroName: string;
 begin
   // ** Do not localise any string literals in this message
   // Read VI comments from file
@@ -683,6 +705,19 @@ begin
   // Create instance of ini file to use to write ini file style data
   Ini := TIniFile.Create(FileName);
   try
+    // Read macros
+    fMacros.Clear;
+    MacroNames := TStringList.Create;
+    try
+      Ini.ReadSection(MacrosSection, MacroNames);
+      for MacroName in MacroNames do
+        fMacros.Add(
+          MacroName + '=' + Ini.ReadString(MacrosSection, MacroName, '')
+        );
+    finally
+      MacroNames.Free;
+    end;
+    ResolveMacros(FileName);
     // Read version info stuff into properties: this automatically verifies data
     // read in fixed file info
     FileVersionNumber := StrToVersionNumber(
@@ -746,6 +781,143 @@ begin
   end;
 end;
 
+function TVInfo.ProcessMacros(const S: string): string;
+var
+  MValue: string;
+  MField: string;
+  NameIdx: Integer;
+  MacroIdx: Integer;
+begin
+  Result := S;
+  for NameIdx := 0 to Pred(fResolvedMacros.Count) do
+  begin
+    MField := fResolvedMacros.Names[NameIdx];
+    MValue := fResolvedMacros.ValueFromIndex[NameIdx];
+    repeat
+      // Check if macro is in result string
+      MacroIdx := Pos(MField, Result);
+      // There is a macro, replace it by its value
+      if MacroIdx > 0 then
+        Replace(MField, MValue, Result);
+    until MacroIdx = 0;
+  end;
+end;
+
+procedure TVInfo.ResolveMacros(const IniFileName: string);
+var
+  MacroIdx: Integer;
+  FullName: string;
+  FullValue: string;
+  IncFile: string;
+  FileContent: TBytes;
+  FileLines: TStringList;
+  FileIdx: Integer;
+  FileEncoding: TEncoding;
+const
+  DefineCmd = 'Define:';
+  ExternalCmd = 'External:';
+  ImportCmd = 'Import:';
+
+  function StripCmdFromName(const Cmd, Name: string): string;
+  begin
+    Result := RightStr(Name, Length(Name) - Length(Cmd));
+  end;
+
+  procedure StoreResolvedMacro(const Name, Value: string);
+  begin
+    fResolvedMacros.Add('<%' + Name + '>=' + Value);
+  end;
+
+  function FirstNonEmptyLine(const S: string): string;
+  var
+    SA: TStringDynArray;
+    Str: string;
+  begin
+    SA := SplitString(S, sLineBreak);
+    for Str in SA do
+      if Str <> '' then
+        Exit(Str);
+    Result := '';
+  end;
+
+begin
+  {
+    Macros have three forms in the ini file:
+    1) Define - Define:Name=Value
+       resolve by stripping "Def:" from the name and storing Name & Value
+    2) External - External:Name=FileName
+       resolve by stripping "Inc:" from the name, and storing Name & contents of
+       first non blank line of FileName
+    3) Import - Import:Name=FileName
+       resolve by reading contents of FileName (Name is sored as a macro name,
+       but doesn't itself resolve to a resolved macro name). FileName must have
+       lines in format Name=Value) and a new resolved macro is created for
+       each Name/Value pair
+    All macro names must be unique after stripping the prefix. For Define &
+    External macros the macro name in the ini file is that used in the program.
+    For Import macros the macro names available to the program are those
+    imported from the specified file.
+  }
+  fResolvedMacros.Clear;
+  for MacroIdx := 0 to Pred(fMacros.Count) do
+  begin
+    FullName := fMacros.Names[MacroIdx];
+    FullValue := fMacros.ValueFromIndex[MacroIdx];
+    if StartsStr(DefineCmd, FullName) then
+    begin
+      StoreResolvedMacro(StripCmdFromName(DefineCmd, FullName), FullValue);
+    end
+    else if StartsStr(ExternalCmd, FullName) then
+    begin
+      IncFile := FullValue;
+      if not TPath.IsPathRooted(IncFile) then
+        // File not rooted: must be relative to file being read
+        IncFile := TPath.Combine(TPath.GetDirectoryName(IniFileName), IncFile);
+      try
+        FileContent := TFile.ReadAllBytes(IncFile);
+        TEncoding.GetBufferEncoding(FileContent, FileEncoding, TEncoding.UTF8);
+        StoreResolvedMacro(
+          StripCmdFromName(ExternalCmd, FullName),
+          FirstNonEmptyLine(FileEncoding.GetString(FileContent))
+        );
+      except
+        // Swallow exception & ignore command
+      end
+    end
+    else if StartsStr(ImportCmd, FullName) then
+    begin
+      IncFile := FullValue;
+      if not TPath.IsPathRooted(IncFile) then
+        // File not rooted: must be relative to file being read
+        IncFile := TPath.Combine(TPath.GetDirectoryName(IniFileName), IncFile);
+      try
+        FileContent := TFile.ReadAllBytes(IncFile);
+        TEncoding.GetBufferEncoding(FileContent, FileEncoding, TEncoding.UTF8);
+        FileLines := TStringList.Create;
+        try
+          FileLines.Text := FileEncoding.GetString(FileContent);
+          for FileIdx := Pred(FileLines.Count) downto 0 do
+          begin
+            if not ContainsStr(FileLines[FileIdx], '=') then
+              FileLines.Delete(FileIdx);
+          end;
+          for FileIdx := 0 to Pred(FileLines.Count) do
+          begin
+            StoreResolvedMacro(
+              FileLines.Names[FileIdx], FileLines.ValueFromIndex[FileIdx]
+            );
+          end;
+        finally
+          FileLines.Free;
+        end;
+      except
+        // Swallow exception & ignore command
+      end
+    end;
+    // We simply ignore any unreognised commands
+  end;
+end;
+
 procedure TVInfo.SaveToFile(const FileName: string);
   {Saves version information to a version information (.vi) file.
     @param FileName [in] Name of saved file.
@@ -755,6 +927,7 @@ var
   F: TextFile;    // file identifier used to read VI comments
   I: TStrInfo;    // loop control for string info
   J: Integer;     // loop control for comments
+  M: Integer;     // loop control for macros
 begin
   // ** Do not localise any string literals in this message
   // Read VI comments from file if there are any
@@ -776,6 +949,11 @@ begin
   // Create an instance of the ini file class using the required file name
   Ini := TIniFile.Create(FileName);
   try
+    // Write macros
+    for M := 0 to Pred(fMacros.Count) do
+      Ini.WriteString(
+        MacrosSection, fMacros.Names[M], fMacros.ValueFromIndex[M]
+      );
     // Write version information
     // write fixed file info
     Ini.WriteString(
@@ -945,6 +1123,11 @@ begin
     fLanguageCode := DefLanguageCode;
 end;
 
+procedure TVInfo.SetMacros(SL: TStringList);
+begin
+  fMacros.Assign(SL);
+end;
+
 procedure TVInfo.SetRCComments(SL: TStringList);
   {Write access method for RCComments property.
     @param SL [in] String list containing new property value.
@@ -980,6 +1163,7 @@ procedure TVInfo.ValidFields(const Id: TStrInfo; const SL: TStringList);
   }
 var
   I: TTokens; // loop control
+  MacroIdx: Integer;
 begin
   // Clear the list
   SL.Clear;
@@ -987,6 +1171,9 @@ begin
   for I := Low(TTokens) to High(TTokens) do
     if not (I in ExcludeFields[Id]) then
       SL.Add(Fields[I]);
+  // Add macros
+  for MacroIdx := 0 to Pred(fResolvedMacros.Count) do
+    SL.Add(fResolvedMacros.Names[MacroIdx]);
 end;
 
 procedure TVInfo.WriteAsRC(const SL: TStringList);
