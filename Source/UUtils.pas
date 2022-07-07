@@ -31,6 +31,12 @@ function NextField(TextLine: string; var StringStart: Integer;
     @return True if a field was found, False if no more fields.
   }
 
+///  <summary>Splits string S at the first occurence of delimiter string Delim.
+///  S1 is set to to the sub-string of S before Delim and S2 to the remainder of
+///  S after Delim. If Delim is not found then S1 is set to S and S2 to the
+///  empty string. Returns True if S contains Delim or False if not.</summary>
+function SplitStr(const S, Delim: string; out S1, S2: string): Boolean;
+
 procedure Replace(DelStr, InsStr: string; var S: string);
   {Replaces first occurence of a substring in a string with another string.
     @param DelStr [in] String to be replaced.
@@ -134,6 +140,28 @@ begin
     StringStart := StringEnd + 1;
     // Succesful result
     Result := True;
+  end;
+end;
+
+function SplitStr(const S, Delim: string; out S1, S2: string): Boolean;
+var
+  DelimPos: Integer;  // position of delimiter in source string
+begin
+  // Find position of first occurence of delimiter in string
+  DelimPos := SysUtils.AnsiPos(Delim, S);
+  if DelimPos > 0 then
+  begin
+    // Delimiter found: split and return True
+    S1 := Copy(S, 1, DelimPos - 1);
+    S2 := Copy(S, DelimPos + Length(Delim), MaxInt);
+    Result := True;
+  end
+  else
+  begin
+    // Delimiter not found: return false and set S1 to whole string
+    S1 := S;
+    S2 := '';
+    Result := False;
   end;
 end;
 
