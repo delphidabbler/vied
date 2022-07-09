@@ -42,7 +42,6 @@ object MainForm: TMainForm
         HeaderAlign = taLeftJustify
         FooterAlign = taLeftJustify
         TitleImage = -1
-        ExtendedImage = -1
       end
       item
         Header = 'Translation Information'
@@ -51,7 +50,6 @@ object MainForm: TMainForm
         HeaderAlign = taLeftJustify
         FooterAlign = taLeftJustify
         TitleImage = -1
-        ExtendedImage = -1
       end
       item
         Header = 'String Information'
@@ -60,7 +58,6 @@ object MainForm: TMainForm
         HeaderAlign = taLeftJustify
         FooterAlign = taLeftJustify
         TitleImage = -1
-        ExtendedImage = -1
       end>
     GroupView = True
     ReadOnly = True
@@ -161,6 +158,10 @@ object MainForm: TMainForm
       object MEVIComments: TMenuItem
         Caption = '&VI Comments...'
         OnClick = MEVICommentsClick
+      end
+      object MEMacros: TMenuItem
+        Caption = 'Macros...'
+        OnClick = MEMacrosClick
       end
       object MECompOut: TMenuItem
         Caption = 'Compiler &Output Folder...'

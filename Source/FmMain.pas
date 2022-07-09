@@ -86,6 +86,7 @@ type
     MFSpacer3: TMenuItem;
     MFClearPreferences: TMenuItem;
     MEClearCurrent: TMenuItem;
+    MEMacros: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -122,6 +123,7 @@ type
     procedure DisplayListViewDblClick(Sender: TObject);
     procedure MFClearPreferencesClick(Sender: TObject);
     procedure MEClearCurrentClick(Sender: TObject);
+    procedure MEMacrosClick(Sender: TObject);
   strict private
     type
       TVIItemUpdateCallback = reference to procedure(const VI: TVInfo);
@@ -311,7 +313,8 @@ uses
   // Project units
   UHelp, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
   FmDropDownListEd, FmIdEd, FmNumberEd, FmResCompiler, FmResCompilerCheck,
-  FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd, FmResOutputDir;
+  FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd, FmResOutputDir,
+  FmMacroEd;
 
 {$R *.DFM}
 
@@ -1440,6 +1443,29 @@ procedure TMainForm.MEditClick(Sender: TObject);
 begin
   // Compiler out folder item only enabled if an external compiler is specified
   MECompOut.Enabled := HaveCompiler;
+end;
+
+procedure TMainForm.MEMacrosClick(Sender: TObject);
+var
+  Ed: TMacroEditor;
+resourcestring
+  sMacrosNotAvailable =
+    'Macros will not be available until the file has been saved';
+begin
+  Ed := TMacroEditor.Create(Self);
+  try
+    Ed.Macros := fVerInfo.Macros;
+    Ed.RelativeFilePath := fVerInfo.RelativeMacroFilePath;
+    if Ed.ShowModal = mrOK then
+    begin
+      fVerInfo.Macros := Ed.Macros;
+      fChanged := True;
+      if not fVerInfo.HasBeenSaved and (fVerInfo.Macros.Count > 0) then
+        Display(sMacrosNotAvailable, mtWarning, [mbOK]);
+    end;
+  finally
+    Ed.Free;
+  end;
 end;
 
 procedure TMainForm.MERCCommentsClick(Sender: TObject);
