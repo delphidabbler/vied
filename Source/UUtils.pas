@@ -311,7 +311,7 @@ function EnsureExtension(const FileName, Filters: string;
       while BarPos > 0 do
       begin
         // strip away description (up to first bar)
-        Filter := Copy(Filter, BarPos + 1, $FFFF);
+        Filter := Copy(Filter, BarPos + 1, MaxInt);
         // find any bar following extension
         BarPos := AnsiPos('|', Filter);
         if BarPos > 0 then
@@ -320,7 +320,7 @@ function EnsureExtension(const FileName, Filters: string;
           // .. copy out extension and add to list
           List.Add(Copy(Filter, 1, BarPos - 1));
           // .. delete extension and move to start of next filter
-          Filter := Copy(Filter, BarPos + 1, $FFFF);
+          Filter := Copy(Filter, BarPos + 1, MaxInt);
           BarPos := AnsiPos('|', Filter);
         end
         else if Filter <> '' then
@@ -335,7 +335,7 @@ function EnsureExtension(const FileName, Filters: string;
         // Get hold of selected extension and strip off any leading '*.'
         Result := List[Index];
         if AnsiPos('*.', Result) > 0 then
-          Result := Copy(Result, 2, $FFFF);
+          Result := Copy(Result, 2, MaxInt);
       end
       else
         // Index out of range: return empty string

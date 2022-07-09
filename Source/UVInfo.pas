@@ -749,7 +749,7 @@ begin
       ReadLn(F, Line);
       // if line is comment, record it, else gone past end of comments
       if Pos(';', Line) = 1 then
-        fVIComments.Add(Copy(Line, 2, $FF))
+        fVIComments.Add(Copy(Line, 2, MaxInt))
       else
         Done := Pos('[', Line) = 1;
     end;
