@@ -17,10 +17,21 @@ interface
 
 uses
   // Delphi
-  Classes;
+  Dialogs, Classes;
 
 
-///  <summary>Displays dialog that warns that a file has changed and gets user's
+///  <summary>Displays a customised message dialog box.</summary>
+///  <param name="Msg">string [in] Message displayed in dialog box.</param>
+///  <param name="MsgType">TMsgDlgType [in] Type of dialog box. Must not be
+///  mtCustom.</param>
+///  <param name="Buttons">TMsgDlgButtons [in] Set of buttons to display in
+///  dialog box.</param>
+///  <returns>Word. Value indicating which button was pressed to close the
+///  dialog box.</returns>
+function Display(const Msg: string; const MsgType: TMsgDlgType;
+  const Buttons: TMsgDlgButtons): Word;
+
+  ///  <summary>Displays dialog that warns that a file has changed and gets user's
 ///  response.</summary>
 ///  <param name="FileName">string [in] Name of file that has changed.</param>
 ///  <returns>Word. mrYes to save file, mrNo to abandon file or mrCancel to
@@ -105,7 +116,7 @@ implementation
 
 uses
   // Delphi
-  SysUtils, Controls, Dialogs, Forms,
+  SysUtils, Controls, Forms,
   // Project
   UHelp;
 
@@ -136,14 +147,6 @@ resourcestring
   sNoFileName = 'No file name was specified.';
   sUntitled = 'Untitled';
 
-///  <summary>Displays a customised message dialog box.</summary>
-///  <param name="Msg">string [in] Message displayed in dialog box.</param>
-///  <param name="MsgType">TMsgDlgType [in] Type of dialog box. Must not be
-///  mtCustom.</param>
-///  <param name="Buttons">TMsgDlgButtons [in] Set of buttons to display in
-///  dialog box.</param>
-///  <returns>Word. Value indicating which button was pressed to close the
-///  dialog box.</returns>
 function Display(const Msg: string; const MsgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons): Word;
 var
