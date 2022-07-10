@@ -2028,6 +2028,11 @@ begin
     // Load input file
     try
       fVerInfo.LoadFromFile(InFile);
+      if fVerInfo.HasBadMacroFileReferences then
+      begin
+        ExitCode := 4;
+        Exit;
+      end;
     except
       ExitCode := 2;  // error 2 => exception on loading file
       Exit;
