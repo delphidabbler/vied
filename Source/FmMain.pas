@@ -87,6 +87,7 @@ type
     MFClearPreferences: TMenuItem;
     MEClearCurrent: TMenuItem;
     MEMacros: TMenuItem;
+    MFViewMacros: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -124,6 +125,7 @@ type
     procedure MFClearPreferencesClick(Sender: TObject);
     procedure MEClearCurrentClick(Sender: TObject);
     procedure MEMacrosClick(Sender: TObject);
+    procedure MFViewMacrosClick(Sender: TObject);
   strict private
     type
       TVIItemUpdateCallback = reference to procedure(const VI: TVInfo);
@@ -309,7 +311,7 @@ implementation
 
 uses
   // Delphi
-  SysUtils, ShellAPI,
+  SysUtils, ShellAPI, Math, IOUtils,
   // Project units
   UHelp, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
   FmDropDownListEd, FmIdEd, FmNumberEd, FmResCompiler, FmResCompilerCheck,
@@ -362,6 +364,7 @@ resourcestring
   sRCCommentsTitle = 'RC File Comments';
   sVICommentsTitle = 'VI File Comments';
   sViewRCTitle = 'View RC Statements';
+  sViewResMacrosTitle = 'View Macro Values';
   // Other
   sViewRCDesc = 'The resource file is:';  // dlg box descriptive text
   sUntitled = '[Untitled]'; // caption text when file is un-named
@@ -1735,6 +1738,132 @@ procedure TMainForm.MFSaveClick(Sender: TObject);
   }
 begin
   SaveFile;
+end;
+
+procedure TMainForm.MFViewMacrosClick(Sender: TObject);
+var
+  DBox: TViewListDlg;             // dialogue box instance
+  Report: TStringList;            // report to be displayed in dialogue box
+  Idx: Integer;                   // loops through resolved macros
+  Macro: TVInfo.TMacro;           // enumerates macros as entered
+  Macros: TArray<TVInfo.TMacro>;  // array of macros as entered
+  NameColWidth: Integer;
+  ValueColWidth: Integer;
+  Ruling: string;
+  BadFiles: TStringList;
+  BadFile: string;
+resourcestring
+  sNoMacros = 'No macros defined';
+  sNotSaved = '** Macros not available until the file has been saved';
+  sResolvedMacroFmt = '%0:s = "%1:s"';
+  sNameColHeader = 'Name';
+  sValueColHeader = 'Value';
+  sBadFilesPrefix = '!! Warning !!'#13#10#13#10
+    + 'The externally referenced files listed below '#13#10
+    + 'cannot be found:'#13#10;
+  sBadFilesSuffix = 'This means that the macros are either incomplete'#13#10
+    + 'or are wrong.'#13#10#13#10
+    + 'You can edit the macros using the Edit | Macros'#13#10
+    + 'menu option.';
+
+const
+  ColumnFmt = '| %-*s | %-*s |';  // do not localise
+
+  {****
+     This is quick and dirty code - it really needs pulling out into a separate
+     form unit
+  ****}
+
+begin
+  // Create report
+  Report := TStringList.Create;
+  try
+    if fVerInfo.Macros.Count = 0 then
+      Report.Add(sNoMacros)
+    else if not fVerInfo.HasBeenSaved then
+      Report.Add(sNotSaved)
+    else
+    begin
+      // Calculate width of table columns & rulings required
+      NameColWidth := Length(sNameColHeader);
+      ValueColWidth := Length(sValueColheader);
+      for Idx := 0 to Pred(fVerInfo.ResolvedMacros.Count) do
+      begin
+        NameColWidth := Max(
+          Length(fVerInfo.ResolvedMacros.Names[Idx]), NameColWidth
+        );
+        ValueColWidth := Max(
+          Length(fVerInfo.ResolvedMacros.ValueFromIndex[Idx]), ValueColWidth
+        );
+      end;
+      Ruling := '|' + StringOfChar('-', NameColWidth + 2) + '|'
+        + StringOfChar('-', ValueColWidth + 2) + '|';
+
+      // Add table header
+      Report.Add(
+        Format(
+          ColumnFmt,
+          [NameColWidth, sNameColHeader, ValueColWidth, sValueColHeader]
+        )
+      );
+      Report.Add(Ruling);
+
+      // Add details of resolved macros
+      for Idx := 0 to Pred(fVerInfo.ResolvedMacros.Count) do
+        Report.Add(
+          Format(
+            ColumnFmt,
+            [
+              NameColWidth,
+              fVerInfo.ResolvedMacros.Names[Idx],
+              ValueColWidth,
+              fVerInfo.ResolvedMacros.ValueFromIndex[Idx]
+            ]
+          )
+        );
+
+      // Add table footer
+      Report.Add(Ruling);
+    end;
+
+    BadFiles := TStringList.Create;
+    try
+      Macros := fVerInfo.CrackMacros(fVerInfo.Macros);
+      for Macro in Macros do
+      begin
+        if Macro.Cmd in [mcExternal, mcImport] then
+        begin
+          if not TFile.Exists(fVerInfo.AdjustFilePath(Macro.Value)) then
+            BadFiles.Add(Macro.Value);
+        end;
+      end;
+      if BadFiles.Count > 0 then
+      begin
+        Report.Add('');
+        Report.Add(sBadFilesPrefix);
+        for BadFile in BadFiles do
+          Report.Add('  • ' + BadFile);
+        Report.Add('');
+        Report.Add(sBadFilesSuffix);
+      end;
+    finally
+      BadFiles.Free;
+    end;
+
+    // Display report in dialogue box
+    DBox := TViewListDlg.Create(Self);
+    try
+      DBox.List := Report;
+      DBox.Title := sViewResMacrosTitle;
+      { TODO: Add menu item help topic }
+      DBox.HelpTopic := '';
+      DBox.ShowModal;
+    finally
+      DBox.Free;
+    end;
+  finally
+    Report.Free;
+  end;
 end;
 
 procedure TMainForm.MFViewRCClick(Sender: TObject);

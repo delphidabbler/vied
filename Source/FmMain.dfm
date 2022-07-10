@@ -123,6 +123,10 @@ object MainForm: TMainForm
         Caption = '&View RC Statements...'
         OnClick = MFViewRCClick
       end
+      object MFViewMacros: TMenuItem
+        Caption = 'View Macro Values...'
+        OnClick = MFViewMacrosClick
+      end
       object MFSpacer3: TMenuItem
         Caption = '-'
       end
