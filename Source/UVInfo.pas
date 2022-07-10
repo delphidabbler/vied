@@ -77,7 +77,7 @@ type
       {Value of RCComments property}
     fVIComments: TStringList;
       {Value of VIComments property}
-    // Resolved macros
+    // Value of ResolvedMacros
     fResolvedMacros: TStringList;
     // Value of Macros property (macros are unresolved)
     fMacros: TStrings;
@@ -312,6 +312,10 @@ type
     ///  value. The Macros string list stores macros in Key=Value format. Macros
     ///  are evaluated before other fields.</remarks>
     property Macros: TStrings read fMacros write SetMacros;
+    ///  <summary>List of resolved macros.</summary>
+    ///  <remarks>This are the macros available for use in the program.
+    ///  </remarks>
+    property ResolvedMacros: TStringList read fResolvedMacros;
     property Validating: Boolean read fValidating write fValidating;
       {Flag true when assignments to version information properties should be
       validated and False if not}
