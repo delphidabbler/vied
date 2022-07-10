@@ -205,6 +205,7 @@ type
     function RelativeMacroFilePath: string;
     function AdjustFilePath(const FilePath: string): string;
     function HasUndefinedMacros: Boolean;
+    function HasBadMacroFileReferences: Boolean;
   public
     constructor Create;
       {Class constructor. Sets up object.
@@ -834,6 +835,24 @@ begin
     else
       raise Exception.Create('TVInfo.GetStrRequired: Unknown TStrInfo value');
   end;
+end;
+
+function TVInfo.HasBadMacroFileReferences: Boolean;
+var
+  Macro: TMacro;
+  Macros: TArray<TMacro>;
+begin
+  Assert(HasBeenSaved, 'TVInfo.HasBadMacroFileReferences: file never saved');
+  Macros := CrackMacros(fMacros);
+  for Macro in Macros do
+  begin
+    if Macro.Cmd in [mcExternal, mcImport] then
+    begin
+      if not TFile.Exists(AdjustFilePath(Macro.Value)) then
+        Exit(True);
+    end;
+  end;
+  Result := False;
 end;
 
 function TVInfo.HasBeenSaved: Boolean;
