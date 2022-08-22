@@ -72,6 +72,7 @@ type
     procedure BumpNumber(const Ed: TEdit);
     procedure UpdateEntryPanes;
     procedure UpdateVerNumControls;
+    function AreMacrosValid: Boolean;
     function VerNumControlsToVerNum: string;
     function IsMacroInUse(const Text: string): Boolean;
     function GetValidMacros: TStrings;
@@ -92,11 +93,55 @@ implementation
 
 uses
   // Delphi
-  SysUtils, StrUtils, Math,
+  SysUtils, StrUtils, Math, Dialogs,
   // Project
-  UVerUtils, UVInfo;
+  UMsgDlgs, UVerUtils, UVInfo;
 
 {$R *.DFM}
+
+function TVerNumEditor.AreMacrosValid: Boolean;
+var
+  Str: string;    // string used to hold text to be checked
+  Tok: string;    // the current field being examined
+  Posn: Integer;  // position of start of field in Str
+  Stop: Integer;  // position of end of field in Str
+resourcestring
+  sBadMacro = 'Macro "%s" is not valid';
+begin
+  // ** Copied and tweaked from TStringEditor.FieldsValid method
+  //    There should be a cleaner way to do this - perhaps a method of TVInfo
+  //    to extract fields / macros from text?
+  // Assume all OK
+  Result := True;
+  // Record memo text
+  Str := edMacros.Text;
+  // Record position of first macro (if any) in Str
+  Posn := Pos('<%', Str);
+  // Iterate for as long as there are more fields in Str
+  while Posn > 0 do
+  begin
+    // Find end of field - it's a '>' character (or end of string)
+    Stop := Posn + 1;
+    while (Stop < Length(Str)) and (Str[Stop] <> '>') do
+      Inc(Stop);
+    // Record field in Tok
+    Tok := Copy(Str, Posn, Stop - Posn + 1);
+    // Find if macro is in macro combo box - it's valid if it is
+    if cmbField.Items.IndexOf(Tok) = -1 then
+    begin
+      // Error - token not in combo box: highlight error and return false
+      Result := False;
+      edMacros.SelStart := Pos(Tok, edMacros.Text) - 1;
+      edMacros.SelLength := Length(Tok);
+      Display(Format(sBadMacro, [Tok]), mtError, [mbOK]);
+      Exit;
+    end;
+    // Record part of string to be examined: i.e. all string after current field
+    Str := Copy(Str, Stop + 1, MaxInt);
+    // Find start of next field if any
+    Posn := Pos('<', Str);
+  end;
+end;
 
 procedure TVerNumEditor.ArrangeControls;
 begin
@@ -142,8 +187,15 @@ begin
         StrToIntDef(edV3.Text, 0), StrToIntDef(edV4.Text, 0)
       ]
     )
+  else if AreMacrosValid then
+    fVersionNumberCode := Trim(edMacros.Text)
   else
-    fVersionNumberCode := Trim(edMacros.Text);
+  begin
+    // Some invalid macros are present - return to memo control
+    ModalResult := mrNone;
+    rbMacros.Checked := True;
+    edMacros.SetFocus;
+  end;
 end;
 
 procedure TVerNumEditor.btnPlus1V1Click(Sender: TObject);
