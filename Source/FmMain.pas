@@ -1855,8 +1855,7 @@ begin
     try
       DBox.List := Report;
       DBox.Title := sViewResMacrosTitle;
-      { TODO: Add menu item help topic }
-      DBox.HelpTopic := '';
+      DBox.HelpTopic := 'dlg-viewmacros';
       DBox.ShowModal;
     finally
       DBox.Free;
