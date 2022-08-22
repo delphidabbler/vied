@@ -48,10 +48,9 @@ type
   }
   TVInfo = class(TObject)
   private
-    fFileVersionNumber: TPJVersionNumber;
-      {Value of FileVersionNumber property}
-    fProductVersionNumber: TPJVersionNumber;
-      {Value of ProductVersionNumber property}
+    // Property values
+    fFileVersionNumberCode: string;
+    fProductVersionNumberCode: string;
     fFileOS: LongInt;
       {Value of FileOS property}
     fFileType: LongInt;
@@ -155,6 +154,8 @@ type
     procedure SetMacros(SL: TStringList);
     function ProcessMacros(const S: string): string;
     procedure ResolveMacros(const IniFileName: string);
+    function RenderVersionNumberFromCode(const Code: string): TPJVersionNumber;
+
     function EvaluateFields(StrInfoId: TStrInfo): string;
       {Replaces all fields in a string info item by their values.
         @param StrInfoId [in] String info item to be processed.
@@ -217,14 +218,18 @@ type
         @param Id [in] Id of string info item.
         @param SL [in] Receives list of permitted fields for string info item.
       }
+    ///  <summary>Appends any macros to the given string list.</summary>
+    procedure AddMacros(const SL: TStringList);
 
-    {Fixed File Info properties}
-    property FileVersionNumber: TPJVersionNumber read fFileVersionNumber
-      write fFileVersionNumber;
-      {File version number}
-    property ProductVersionNumber: TPJVersionNumber read fProductVersionNumber
-      write fProductVersionNumber;
-      {Product version number}
+    // Fixed File Info properties
+
+    // file version number code (includes any macros)
+    property FileVersionNumberCode: string read fFileVersionNumberCode
+      write fFileVersionNumberCode;
+    // product version number code (includes any macros)
+    property ProductVersionNumberCode: string read fProductVersionNumberCode
+      write fProductVersionNumberCode;
+
     property FileOS: LongInt read fFileOS write SetFileOS;
       {Identifies operating system}
     property FileType: LongInt read fFileType write SetFileType;
@@ -237,13 +242,15 @@ type
     property FileFlags: LongInt read fFileFlags write SetFileFlags;
       {Bitmask of file flags}
 
-    {Variable File Info properties}
+    // Variable File Info properties
+
     property LanguageCode: Word read fLanguageCode write SetLanguageCode;
       {Identifies language of version information}
     property CharSetCode: Word read fCharSetCode write SetCharSetCode;
       {Identifies character set of version information}
 
-    {String Info properties}
+    // String Info properties
+
     property StrName[AnId: TStrInfo]: string read GetStrName;
       {Names of string info items}
     property StrDesc[AnId: TStrInfo]: string read GetStrDesc;
@@ -255,7 +262,8 @@ type
     property StrInfo[AnId: TStrInfo]: string read GetStrInfo write SetStrInfo;
       {Value of string info items}
 
-    {Other properties}
+    // Other properties
+
     property Identifier: string read fIdentifier write fIdentifier;
       {Identifier used in the VERSIONINFO resource statement}
     property RCComments: TStringList read fRCComments write SetRCComments;
@@ -280,6 +288,7 @@ type
     property ResOutputDir: string read fResOutputDir write fResOutputDir;
       {Default output directory of .res files: can be relative to .vi file
       folder}
+    class function ContainsMacro(const Code: string): Boolean;
   end;
 
 
@@ -325,11 +334,27 @@ const
     [tkSPECIALBUILD]  // SpecialBuild
   );
 
+  FieldOpener = '<';
+  FieldCloser = '>';
+
   Fields: array[TTokens] of string = (
     // List of field names
-    '<#F1>', '<#F2>', '<#F3>', '<#F4>', '<#P1>', '<#P2>', '<#P3>', '<#P4>',
-    '<YEAR>', '<SHORTFNAME>', '<PRODUCTNAME>', '<SPECIALBUILD>', '<<>'
+    FieldOpener + '#F1' + FieldCloser,
+    FieldOpener + '#F2' + FieldCloser,
+    FieldOpener + '#F3' + FieldCloser,
+    FieldOpener + '#F4' + FieldCloser,
+    FieldOpener + '#P1' + FieldCloser,
+    FieldOpener + '#P2' + FieldCloser,
+    FieldOpener + '#P3' + FieldCloser,
+    FieldOpener + '#P4' + FieldCloser,
+    FieldOpener + 'YEAR' + FieldCloser,
+    FieldOpener + 'SHORTFNAME' + FieldCloser,
+    FieldOpener + 'PRODUCTNAME' + FieldCloser,
+    FieldOpener + 'SPECIALBUILD' + FieldCloser,
+    FieldOpener + FieldOpener + FieldCloser
   );
+
+  MacroOpener = FieldOpener + '%';
 
   // Names used in version information (.vi) files
   // section names
@@ -367,6 +392,14 @@ const
 
 
 { TVInfo }
+
+procedure TVInfo.AddMacros(const SL: TStringList);
+var
+  MacroIdx: Integer;
+begin
+  for MacroIdx := 0 to Pred(fResolvedMacros.Count) do
+    SL.Add(fResolvedMacros.Names[MacroIdx]);
+end;
 
 function TVInfo.Analyse(const ErrList: TStringList): Boolean;
   {Analyses current version information in memory and checks its validity.
@@ -441,8 +474,8 @@ var
   J: Integer;   // loop control for default comments
 begin
   // Reset Fixed File Info to default values
-  fFileVersionNumber := DefVersionNumber;
-  fProductVersionNumber := DefVersionNumber;
+  fFileVersionNumberCode := DefVersionNumber;
+  fProductVersionNumberCode := DefVersionNumber;
   fFileOS := DefFileOS;
   fFileType := DefFileType;
   fFileSubType := DefaultFileSubType(DefFileType);
@@ -467,6 +500,11 @@ begin
     fRCComments.Add(DefaultRCComments[J]);
   // default .res file folder
   fResOutputDir := '';
+end;
+
+class function TVInfo.ContainsMacro(const Code: string): Boolean;
+begin
+  Result := ContainsStr(Code, MacroOpener);
 end;
 
 procedure TVInfo.CopyToClipBoard;
@@ -566,26 +604,43 @@ begin
 end;
 
 function TVInfo.FieldValue(I: TTokens): string;
-  {Gets value of a field.
-    @param I [in] Field identifier.
-    @return Value of field.
-  }
+
+  function ParseVersionField(const Code: string; FieldNum: Byte): string;
+  var
+    VerNum: TPJVersionNumber;
+    FieldValue: Word;
+  begin
+    Assert(FieldNum in [1..4]);
+    // convert to version number
+    VerNum := StrToVersionNumber(ProcessMacros(Code));
+    // pick required field
+    case FieldNum of
+      1: FieldValue := VerNum.V1;
+      2: FieldValue := VerNum.V2;
+      3: FieldValue := VerNum.V3;
+      4: FieldValue := VerNum.V4;
+      else FieldValue := 0;   // avoid compiler hint
+    end;
+    // convert to string
+    Result := IntToStr(FieldValue);
+  end;
+
 begin
   // Return result dependant on token
   case I of
-    tkF1: Result := IntToStr(FileVersionNumber.V1);
-    tkF2: Result := IntToStr(FileVersionNumber.V2);
-    tkF3: Result := IntToStr(FileVersionNumber.V3);
-    tkF4: Result := IntToStr(FileVersionNumber.V4);
-    tkP1: Result := IntToStr(ProductVersionNumber.V1);
-    tkP2: Result := IntToStr(ProductVersionNumber.V2);
-    tkP3: Result := IntToStr(ProductVersionNumber.V3);
-    tkP4: Result := IntToStr(ProductVersionNumber.V4);
+    tkF1: Result := ParseVersionField(fFileVersionNumberCode, 1);
+    tkF2: Result := ParseVersionField(fFileVersionNumberCode, 2);
+    tkF3: Result := ParseVersionField(fFileVersionNumberCode, 3);
+    tkF4: Result := ParseVersionField(fFileVersionNumberCode, 4);
+    tkP1: Result := ParseVersionField(fProductVersionNumberCode, 1);
+    tkP2: Result := ParseVersionField(fProductVersionNumberCode, 2);
+    tkP3: Result := ParseVersionField(fProductVersionNumberCode, 3);
+    tkP4: Result := ParseVersionField(fProductVersionNumberCode, 4);
     tkYEAR: Result := YearToStr(Date, True);
     tkSHORTFNAME: Result := RemoveExtension(StrInfo[siOriginalFileName]);
     tkPRODUCTNAME: Result := EvaluateFields(siProductName);
     tkSPECIALBUILD: Result := EvaluateFields(siSpecialBuild);
-    tkDELIMITER: Result := '<';
+    tkDELIMITER: Result := FieldOpener;
   end;
 end;
 
@@ -720,19 +775,15 @@ begin
     ResolveMacros(FileName);
     // Read version info stuff into properties: this automatically verifies data
     // read in fixed file info
-    FileVersionNumber := StrToVersionNumber(
-      Ini.ReadString(
-        FixedFileInfoSection,
-        FileVersionNumberName,
-        VersionNumberToStr(DefVersionNumber)
-      )
+    FileVersionNumberCode := Ini.ReadString(
+      FixedFileInfoSection,
+      FileVersionNumberName,
+      VersionNumberToStr(DefVersionNumber)
     );
-    ProductVersionNumber := StrToVersionNumber(
-      Ini.ReadString(
-        FixedFileInfoSection,
-        ProductVersionNumberName,
-        VersionNumberToStr(DefVersionNumber)
-      )
+    ProductVersionNumberCode := Ini.ReadString(
+      FixedFileInfoSection,
+      ProductVersionNumberName,
+      VersionNumberToStr(DefVersionNumber)
     );
     FileOS := Ini.ReadInteger(FixedFileInfoSection, FileOSName, DefFileOS);
     FileType := Ini.ReadInteger(
@@ -803,6 +854,12 @@ begin
   end;
 end;
 
+function TVInfo.RenderVersionNumberFromCode(const Code: string):
+  TPJVersionNumber;
+begin
+  Result := StrToVersionNumber(ProcessMacros(Code));
+end;
+
 procedure TVInfo.ResolveMacros(const IniFileName: string);
 var
   MacroIdx: Integer;
@@ -825,7 +882,7 @@ const
 
   procedure StoreResolvedMacro(const Name, Value: string);
   begin
-    fResolvedMacros.Add('<%' + Name + '>=' + Value);
+    fResolvedMacros.Add(MacroOpener + Name + FieldCloser + '=' + Value);
   end;
 
   function FirstNonEmptyLine(const S: string): string;
@@ -957,14 +1014,10 @@ begin
     // Write version information
     // write fixed file info
     Ini.WriteString(
-      FixedFileInfoSection,
-      FileVersionNumberName,
-      VersionNumberToStr(FileVersionNumber)
+      FixedFileInfoSection, FileVersionNumberName, FileVersionNumberCode
     );
     Ini.WriteString(
-      FixedFileInfoSection,
-      ProductVersionNumberName,
-      VersionNumberToStr(ProductVersionNumber)
+      FixedFileInfoSection, ProductVersionNumberName, ProductVersionNumberCode
     );
     Ini.WriteInteger(FixedFileInfoSection, FileOSName, FileOS);
     Ini.WriteInteger(FixedFileInfoSection, FileTypeName, FileType);
@@ -1007,8 +1060,8 @@ var
 begin
   // Create string list to hold resource text and write contents of file to it
   RCList := TStringList.Create;
-  WriteAsRC(RCList);
   try
+    WriteAsRC(RCList);
     // Open file for writing
     AssignFile(F, FileName);
     try
@@ -1163,7 +1216,6 @@ procedure TVInfo.ValidFields(const Id: TStrInfo; const SL: TStringList);
   }
 var
   I: TTokens; // loop control
-  MacroIdx: Integer;
 begin
   // Clear the list
   SL.Clear;
@@ -1172,8 +1224,7 @@ begin
     if not (I in ExcludeFields[Id]) then
       SL.Add(Fields[I]);
   // Add macros
-  for MacroIdx := 0 to Pred(fResolvedMacros.Count) do
-    SL.Add(fResolvedMacros.Names[MacroIdx]);
+  AddMacros(SL);
 end;
 
 procedure TVInfo.WriteAsRC(const SL: TStringList);
@@ -1206,8 +1257,14 @@ begin
   else
     SL.Add('1 VERSIONINFO');
   // Write Fixed File Info
-  SL.Add('FILEVERSION ' + VersionNumberToStr(FileVersionNumber));
-  SL.Add('PRODUCTVERSION ' + VersionNumberToStr(ProductVersionNumber));
+  SL.Add(
+    'FILEVERSION ' +
+    VersionNumberToStr(RenderVersionNumberFromCode(FileVersionNumberCode))
+  );
+  SL.Add(
+    'PRODUCTVERSION ' +
+    VersionNumberToStr(RenderVersionNumberFromCode(ProductVersionNumberCode))
+  );
   // write File Flags Mask in hex format
   SL.Add('FILEFLAGSMASK ' + CHexSymbol + IntToHex(FileFlagsMask, 2));
   if FileFlagSetToStr(FileFlags) <> '' then
