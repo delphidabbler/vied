@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
  *
  * Version number editor dialogue box.
 }
@@ -22,24 +22,39 @@ uses
   FmGenericOKDlg;
 
 type
+  TVerNumRenderer = reference to function(const CodeStr: string):
+    TPJVersionNumber;
+
+type
   {
   TVerNumEditor:
     Class implements a dialog box where version numbers can be edited.
   }
   TVerNumEditor = class(TGenericOKDlg)
-    lblPrompt: TLabel;
+    pnlLiteralNumbers: TPanel;
     lblV: TLabel;
-    lblDot1: TLabel;
-    lblDot2: TLabel;
-    lblDot3: TLabel;
     edV1: TEdit;
     edV2: TEdit;
+    lblDot1: TLabel;
+    lblDot2: TLabel;
     edV3: TEdit;
+    lblDot3: TLabel;
     edV4: TEdit;
     btnPlus1V1: TButton;
     btnPlus1V2: TButton;
     btnPlus1V3: TButton;
     btnPlus1V4: TButton;
+    lblPrompt: TLabel;
+    pnlMacros: TPanel;
+    lblField: TLabel;
+    cmbField: TComboBox;
+    btnInsert: TButton;
+    lblMacros: TLabel;
+    edMacros: TEdit;
+    pnlRadios: TPanel;
+    rbUseVersionNumbers: TRadioButton;
+    rbMacros: TRadioButton;
+    lbMacroInstructions: TLabel;
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure VerEditKeyPress(Sender: TObject; var Key: Char);
@@ -48,35 +63,87 @@ type
     procedure btnPlus1V2Click(Sender: TObject);
     procedure btnPlus1V3Click(Sender: TObject);
     procedure btnPlus1V4Click(Sender: TObject);
+    procedure EntryTypeRadioBtnClick(Sender: TObject);
+    procedure edMacrosChange(Sender: TObject);
+    procedure btnInsertClick(Sender: TObject);
   private
     fKind: string;
-    fVersionNumber: TPJVersionNumber;
+    fVersionNumberCode: string;
     procedure BumpNumber(const Ed: TEdit);
+    procedure UpdateEntryPanes;
+    procedure UpdateVerNumControls;
+    function VerNumControlsToVerNum: string;
+    function IsMacroInUse(const Text: string): Boolean;
+    function GetValidMacros: TStrings;
+    procedure SetValidMacros(Macros: TStrings);
+  strict protected
+    procedure ArrangeControls; override;
   public
-    property Kind: string write fKind;
+    property Kind: string read fKind write fKind;
       {Description of kind of version we are editing - write only}
-    property VersionNumber: TPJVersionNumber read fVersionNumber
-        write fVersionNumber;
+    property VersionNumberCode: string read fVersionNumberCode
+        write fVersionNumberCode;
       {The version number to be edited, along with result}
+    ///  <summary>List of valid macros for use in Macros combo box.</summary>
+    property ValidMacros: TStrings read GetValidMacros write SetValidMacros;
   end;
 
 implementation
 
 uses
   // Delphi
-  SysUtils;
+  SysUtils, StrUtils, Math,
+  // Project
+  UVerUtils, UVInfo;
 
 {$R *.DFM}
+
+procedure TVerNumEditor.ArrangeControls;
+begin
+  // Arrange controls
+  pnlBody.Height := pnlRadios.Height
+    + Max(pnlMacros.Height, pnlLiteralNumbers.Height)
+    + Max(pnlMacros.Margins.Top, pnlLiteralNumbers.Margins.Top);
+  inherited;
+end;
+
+procedure TVerNumEditor.btnInsertClick(Sender: TObject);
+var
+  TheText: string;  // text of the memo
+  Start: Integer;   // current position of the text cursor in memo
+begin
+  inherited;
+  // Record memo text and cursor position
+  TheText := edMacros.Text;
+  Start := edMacros.SelStart;
+  // If some text selected delete it - field over-writes selected text
+  if edMacros.SelLength > 0 then
+    Delete(TheText, Start+1, edMacros.SelLength);
+  // Add field at current position in text
+  Insert(cmbField.Text, TheText, Start+1);
+  // Copy revised text to memo, preserving caret position
+  edMacros.Text := TheText;
+  // Give the memo the focus for further editing
+  edMacros.SetFocus;
+  edMacros.SelLength := 0;
+  edMacros.SelStart := Start + Length(cmbField.Text);
+end;
 
 procedure TVerNumEditor.btnOKClick(Sender: TObject);
   {OK button click event: accept changes}
 begin
   inherited;
   // Write version number from edit boxes to property: '' => 0
-  fVersionNumber.V1 := StrToIntDef(edV1.Text, 0);
-  fVersionNumber.V2 := StrToIntDef(edV2.Text, 0);
-  fVersionNumber.V3 := StrToIntDef(edV3.Text, 0);
-  fVersionNumber.V4 := StrToIntDef(edV4.Text, 0);
+  if rbUseVersionNumbers.Checked and not IsMacroInUse(edMacros.Text) then
+    fVersionNumberCode := Format(
+      '%d.%d.%d.%d',
+      [
+        StrToIntDef(edV1.Text, 0), StrToIntDef(edV2.Text, 0),
+        StrToIntDef(edV3.Text, 0), StrToIntDef(edV4.Text, 0)
+      ]
+    )
+  else
+    fVersionNumberCode := Trim(edMacros.Text);
 end;
 
 procedure TVerNumEditor.btnPlus1V1Click(Sender: TObject);
@@ -111,6 +178,11 @@ begin
   Ed.Text := IntToStr(Value);
 end;
 
+procedure TVerNumEditor.edMacrosChange(Sender: TObject);
+begin
+  rbUseVersionNumbers.Enabled := not IsMacroInUse(edMacros.Text);
+end;
+
 procedure TVerNumEditor.FormCreate(Sender: TObject);
   {Form creation event handler. Sets help topic}
 begin
@@ -122,15 +194,45 @@ procedure TVerNumEditor.FormShow(Sender: TObject);
   {Event handler called when form is shown: intialises controls}
 begin
   inherited;
-  // Put name of required kind of version number in caption
   Caption := 'Edit ' + fKind + ' Version Number';
-  // Put existing version numbers in edit boxes
-  edV1.Text := IntToStr(fVersionNumber.V1);
-  edV2.Text := IntToStr(fVersionNumber.V2);
-  edV3.Text := IntToStr(fVersionNumber.V3);
-  edV4.Text := IntToStr(fVersionNumber.V4);
+  edMacros.Text := fVersionNumberCode;
+  UpdateVerNumControls;
   // Set focus on first edit box
-  edV1.SetFocus;
+  if pnlLiteralNumbers.Visible then
+    edV1.SetFocus
+  else
+  begin
+    edMacros.SetFocus;
+    edMacros.SelLength := 0;
+  end;
+  // Make required data entry panel visible
+  UpdateEntryPanes;
+end;
+
+function TVerNumEditor.GetValidMacros: TStrings;
+begin
+  Result := cmbField.Items;
+end;
+
+function TVerNumEditor.IsMacroInUse(const Text: string): Boolean;
+begin
+  Result := TVInfo.ContainsMacro(Text);
+end;
+
+procedure TVerNumEditor.SetValidMacros(Macros: TStrings);
+begin
+  cmbField.Enabled := Assigned(Macros);
+  if cmbField.Enabled then
+    cmbField.Items := Macros;
+end;
+
+procedure TVerNumEditor.EntryTypeRadioBtnClick(Sender: TObject);
+begin
+  if pnlMacros.Visible then
+    UpdateVerNumControls
+  else if pnlLiteralNumbers.Visible then
+    edMacros.Text := VerNumControlsToVerNum;
+  UpdateEntryPanes;
 end;
 
 procedure TVerNumEditor.VerEditKeyPress(Sender: TObject; var Key: Char);
@@ -140,6 +242,46 @@ begin
   inherited;
   if not CharInSet(Key, [#8, '0'..'9']) then
     Key := #0;
+end;
+
+function TVerNumEditor.VerNumControlsToVerNum: string;
+begin
+  Result := Format(
+    '%d.%d.%d.%d',
+    [
+      StrToIntDef(edV1.Text, 0), StrToIntDef(edV2.Text, 0),
+      StrToIntDef(edV3.Text, 0), StrToIntDef(edV4.Text, 0)
+    ]
+  );
+end;
+
+procedure TVerNumEditor.UpdateEntryPanes;
+begin
+  pnlLiteralNumbers.Visible := rbUseVersionNumbers.Checked;
+  pnlMacros.Visible := not rbUseVersionNumbers.Checked;
+end;
+
+procedure TVerNumEditor.UpdateVerNumControls;
+var
+  VerNum: TPJVersionNumber;
+begin
+  if not IsMacroInUse(edMacros.Text) then
+  begin
+    VerNum := StrToVersionNumber(Trim(edMacros.Text));
+    edV1.Text := IntToStr(VerNum.V1);
+    edV2.Text := IntToStr(VerNum.V2);
+    edV3.Text := IntToStr(VerNum.V3);
+    edV4.Text := IntToStr(VerNum.V4);
+    rbUseVersionNumbers.Checked := True;
+  end
+  else
+  begin
+    edV1.Text := '';
+    edV2.Text := '';
+    edV3.Text := '';
+    edV4.Text := '';
+    rbMacros.Checked := True;
+  end;
 end;
 
 end.

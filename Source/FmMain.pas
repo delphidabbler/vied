@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
  *
  * Main user interface and program logic for Version Information Editor.
 }
@@ -167,13 +167,10 @@ type
       complete.
         @param Msg [in/out] Not used.
       }
-    function GetVersionNumber(const VKind: string;
-      const Value: TPJVersionNumber): TPJVersionNumber;
-      {Gets a version number from user via a dialog box
-        @param VKind [in] Type of version information required.
-        @param Value [in] Default version number. Used if user cancels.
-        @return Edited version number or Value if users cancels.
-      }
+    ///  <summary>Get version number code from dialogue box</summary>
+    ///  <remarks>VKind [in] Type of version information required.</remarks>
+    function GetVersionNumber(const VKind: string; const Current: string):
+      string;
     function GetDropDownChoice(const AKind: string;
       const AList: TStringList; const DefChoice: string): string;
       {Gets a string from user from amongst a list of possible choices displayed
@@ -890,7 +887,7 @@ begin
 end;
 
 function TMainForm.GetVersionNumber(const VKind: string;
-  const Value: TPJVersionNumber): TPJVersionNumber;
+  const Current: string): string;
   {Gets a version number from user via a dialog box
     @param VKind [in] Type of version information required.
     @param Value [in] Default version number. Used if user cancels.
@@ -898,19 +895,24 @@ function TMainForm.GetVersionNumber(const VKind: string;
   }
 var
   Ed: TVerNumEditor;  // instance of version number editor dlg box
+  Macros: TStringList;
 begin
-  // Create instance of dlg box
+  Macros := nil;
   Ed := TVerNumEditor.Create(Self);
   try
+    Macros := TStringList.Create;
+    fVerInfo.AddMacros(Macros);
     // Set required properties
     Ed.Kind := VKind;               // info for title
-    Ed.VersionNumber := Value;      // default version number for editing
+    Ed.VersionNumberCode := Current;      // default version number for editing
+    Ed.ValidMacros := Macros;
     // Display dlg and respond to user input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return new version number (will be unchanged if user pressed cancel)
-    Result := Ed.VersionNumber;
+    Result := Ed.VersionNumberCode;
   finally
     Ed.Free;
+    Macros.Free;
   end;
 end;
 
@@ -1028,17 +1030,17 @@ begin
       sFileVersion,
       procedure (const VI: TVInfo)
       begin
-        VI.FileVersionNumber := GetVersionNumber(
-          sFile, VI.FileVersionNumber
+        VI.FileVersionNumberCode := GetVersionNumber(
+          sFile, VI.FileVersionNumberCode
         );
       end,
       procedure (const VI: TVInfo)
       begin
-        VI.FileVersionNumber := TVInfo.DefVersionNumber;
+        VI.FileVersionNumberCode := TVInfo.DefVersionNumber;
       end,
       function (const VI: TVInfo): string
       begin
-        Result := VersionNumberToStr(VI.FileVersionNumber);
+        Result := VI.FileVersionNumberCode;
       end
     );
     AddItem(
@@ -1046,17 +1048,17 @@ begin
       sProductVersion,
       procedure (const VI: TVInfo)
       begin
-        VI.ProductVersionNumber := GetVersionNumber(
-          sProduct, VI.ProductVersionNumber
+        VI.ProductVersionNumberCode := GetVersionNumber(
+          sProduct, VI.ProductVersionNumberCode
         );
       end,
       procedure (const VI: TVInfo)
       begin
-        VI.ProductVersionNumber := TVInfo.DefVersionNumber;
+        VI.ProductVersionNumberCode := TVInfo.DefVersionNumber;
       end,
       function (const VI: TVInfo): string
       begin
-        Result := VersionNumberToStr(VI.ProductVersionNumber);
+        Result := VI.ProductVersionNumberCode;
       end
     );
     AddItem(
