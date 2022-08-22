@@ -1,4 +1,4 @@
-{
+ï»¿{
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
@@ -333,8 +333,8 @@ resourcestring
       + 'Information Expert does not exist. Do you wish to edit'#13
       + 'the compiler''s details?'
       + #13#13'Click:'#13
-      + '   ·   Yes to edit the compiler details.'#13
-      + '   ·   No to make no changes.';
+      + '   â€¢   Yes to edit the compiler details.'#13
+      + '   â€¢   No to make no changes.';
   sClearPrefsQuery = 'Are you sure you want to clear your preferences?';
   sSuccess = 'File compiled successfully.';
   sCantRun = 'Can''t run resource compiler.'#13#13'Check compiler settings?';
@@ -1842,7 +1842,7 @@ begin
         Report.Add('');
         Report.Add(sBadFilesPrefix);
         for BadFile in BadFiles do
-          Report.Add('  • ' + BadFile);
+          Report.Add('  â€¢ ' + BadFile);
         Report.Add('');
         Report.Add(sBadFilesSuffix);
       end;
