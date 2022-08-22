@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
 -->
 <html>
   <head>
@@ -16,41 +16,53 @@
   </head>
   <body>
     <h1>
-      <em>How do I</em> ... Use fields
+      <em>How do I</em> ... Use fields &amp; macros
     </h1>
     <p>
-      Proper use of is one of the most important concepts in Version Information
+      Proper use fields and macros of is one of the most important concepts in
+      Version Information
       Editor since they make updating version information much easier. Before
       going on make sure you understand <a
         href="whatis-fields.htm"
-      >what fields are</a>.
+      >what fields&amp; macros are</a>.
     </p>
     <h2>
-      Entering Fields
+      Entering Fields &amp; Macros
     </h2>
     <p>
-      String info items can contain fields. These items are edited using the <a
+      String info items can contain fields and/or macros. These items are edited
+      using the <a
         href="dlg-string.htm"
-      >String Editor</a> which also provides support for using fields.
+      >String Editor</a> which also provides support for using fields and
+      macros.
     </p>
     <p>
-      The safest and easiest way to enter fields in the editor is to place the
-      cursor in the text where the field is required then select the required
-      field from the <em>Insert Field</em> drop down list then click the
-      <em>Insert</em> which inserts the field into the text at the cursor
-      position.
+      The safest and easiest way to enter fields and macros in the editor is to
+      place the cursor in the text where the field or macro is required then
+      select the required field or macro from the <em>Insert Field</em> drop
+      down list then click the <em>Insert</em> button, which inserts the field
+      or macro into the text at the cursor position.
     </p>
     <p>
-      You can also enter the fields by hand by simply typing the field name in
-      angle brackets. However this is risky because the name may be mispelled or
-      the field may not be valid for this string info item. The drop down list
-      contains only those fields that are valid.
+      You can also enter the fields and macros by hand by simply typing its name
+      in angle brackets. However this is risky because the name may be mispelled
+      or, in the case of fields, it may not be valid for this string info item.
+      The drop down list contains only those fields that are valid.
+    </p>
+    <p>
+      Macros, but not fields, can also be included in the <code>File Version
+      #</code> and <code>Product Version #</code> fixed file information items.
+      Like the String Editor, the Version Number Editor permits the insertion of
+      macros, either manually or drop a drop down list.
+    </p>
+    <p>
+      Macros can also reference fields.
     </p>
     <h2>
       Some Examples
     </h2>
     <h3>
-      Keep version numbers in sync
+      Keep version numbers in sync using fields
     </h3>
     <p>
       To many people's surprise the version numbers stored in the <em>File
@@ -81,6 +93,101 @@
       Of course any string info item could have been used here, and the same
       applies to the <em>Product Version #</em> fixed file info item with the
       use of the &lt;#P1&gt;, &lt;#P2&gt;, &lt;#P3&gt; and &lt;#P4&gt; fields.
+    </p>
+    <h3>
+      Keep version numbers in sync using macros (a)
+    </h3>
+    <p>
+      Suppose you want to always use the same major, minor and patch version
+      number for file and product version number but to set the build number
+      of the file version but not the product version. You can set two
+      &quot;Define&quot; macros as follows: set <code>version</code> to the
+      required major, minor and patch numbers, for example &quot;1.2.3&quot;
+      (without the quotes) and set <code>build</code> to the build number,
+      e.g. &quot;248&quot;.
+    </p>
+    <p>
+      Now set the <code>File Version #</code> field to
+      &quot;&lt;%version&gt;.&lt;%build&gt;&quot; and set <code>Product
+      Version #</code> to &quot;&lt;%version&gt;.0&quot;.
+    </p>
+    <p>
+      Now, when you want to increment the version number just update the
+      <code>version</code> and <code>build</code> macro values.
+    </p>
+    <h3>
+      Keep version numbers in sync using macros (b)
+    </h3>
+    <p>
+      Sometimes there may be a need to embed the version number in another file.
+      Keeping that file and the version number in the version information file
+      in sync can be problematic. &quot;External&quot; and &quot;Include&quot;
+      macros can be used to solve this problem.
+    </p>
+    <h4>
+      The &quot;External&quot; macro solution
+    </h4>
+    <p>
+      Assume, as some applications do, the version number is stored in a file
+      named <code>VERSION</code>. Such a file contains only the version number
+      in the form &quot;1.2.3.4&quot; or &quot;1.2.3&quot; We can use an
+      &quot;External&quot; macro (<code>version</code> say) to import the
+      content of the <code>VERSION</code> file. Define an &quot;External&quot;
+      macro and set it's value to the path to that file, relative to the
+      location of the <code>.vi</code> file.
+    </p>
+    <p>
+      The content of the file is copied into the macro. (Well, actually the
+      first non-blank line of the file is used.)
+    </p>
+    <p>
+      Assuming you want to use the content of the <code>VERSION</code> for the
+      <code>Product Version #</code> just set that fixed file information item
+      to &quot;&lt;%version&gt;&quot;.
+    </p>
+    <p>
+      When the version number needs updating you just need to update the
+      <code>VERSION</code> file.
+    </p>
+    <p>
+      This, and the following &quot;Include&quot; macro version, are both useful
+      if you have two related programs that use the same version number. This
+      approach means that the version number only needs to be updated in one
+      place instead of in two or more <code>.vi</code> files.
+    </p>
+    <h4>
+      The &quot;Include&quot; macro solution
+    </h4>
+    <p>
+      Maybe you want more than one value stored externally to the
+      <code>.vi</code> file. You can create a different &quot;External&quot;
+      macro for each such value. Alternatively, if you can create a file with
+      lines in the format <code>Name=Value</code> you can reference that file
+      from an &quot;Include&quot; macro. The &quot;Include&quot; macro is
+      replaced by dynamically created &quot;Define&quot; type macros for each
+      line of the code.
+    </p>
+    <p>
+      Returning to the example above where we used <code>version</code> and
+      <code>build</code> macros, we can instead define an &quot;Include&quot;
+      macro, say <code>ver</code> that references a file, say
+      <code>version.ini</code>. We create this file to have the following
+      contents:
+    </p>
+    <pre class="source-code indent">version=1.2.3
+build=123</pre>
+    <p>
+      This file will result in two new macros being created:
+      <code>&lt;%version%&gt;</code> and <code>&lt;%build%&gt;</code> (note the
+      trailing <code>%</code> symbol).
+    </p>
+    <p>
+      Similar to before set the <code>File Version #</code> field to
+      &quot;&lt;%version%&gt;.&lt;%build%&gt;&quot; and set <code>Product
+      Version #</code> to &quot;&lt;%version%&gt;.0&quot;.
+    </p>
+    <p>
+      To increment the version number just update <code>version.ini</code>.
     </p>
     <h3>
       Automatically set the Internal Name

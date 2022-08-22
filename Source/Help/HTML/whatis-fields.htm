@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
 -->
 <html>
   <head>
@@ -16,167 +16,255 @@
   </head>
   <body>
     <h1>
-      <em>What are</em> ... Fields
+      <em>What are</em> ... Fields &amp; Macros
     </h1>
     <p>
-      Fields are probably the most useful component of the Version Information
-      Editor and can be used to make updating of version information files much
-      easier.
+      Fields and macros are probably the most useful component of the Version
+      Information Editor and can be used to make updating of version information
+      files much easier and less error prone.
     </p>
     <p>
-      This topic describes what fields are and which ones are available. To
-      learn how to use them see <a
-        href="howto-fields.htm"
-      >How do I use Fields</a>.
+      This topic describes what fields and macros are and what is available. To
+      learn how to use them see <a href="howto-fields.htm">How do I use Fields
+      &amp; Macros</a>.
     </p>
     <p>
-      A field is a kind of named variable or macro which can be embedded
-      anywhere in the text of a STRING INFO item in a version information
-      document.
+      Fields and macros are kinds of named variable which can be embedded
+      anywhere in the text of a <em>String Information</em> item in a version
+      information document. Macros can also be used in the <em>File Version
+      #</em> and <em>Product Version #</em> <em>Fixed File Information</em>
+      items.
     </p>
     <p>
       When the document is exported as a <a
         href="whatis-resfile.htm"
-      >resource file</a> any fields embedded in STRING INFO items are replaced
-      by the values they represent.
+      >resource file</a> any fields and macros are replaced by the values they
+      represent.
     </p>
     <p>
-      Fields names are enclosed in angle brackets when embedded in text - e.g.
-      <code>&lt;FIELDNAME&gt;</code>. Because the opening angle bracket is used
-      to indicate the start of a field, it can't be used directly in text.
-      Instead the special field <code>&lt;&lt;&gt;</code> must be used. Not all
-      fields are valid for use with each string info item.
+      Field and macro names are enclosed in angle brackets when embedded in text
+      - e.g. <code>&lt;FIELDNAME&gt;</code> and <code>&lt;%MACRONAME&gt;</code>.
+      From this it can be seen that the <code>%</code> symbol is use to
+      differentiate macros from fields. Because the opening angle bracket is
+      used to indicate the start of a field or macro, it can't be used directly
+      in text. Instead the special field <code>&lt;&lt;&gt;</code> must be used.
     </p>
     <p>
-      Here is a list of supported fields:
+      Not all fields are valid for use with each string info item. This
+      restriction does not apply to macros.
+    </p>
+    <p>
+      While fields and macros are similar, they are not the same. The main
+      difference is that there are a fixed number of fields, each of which has
+      a pre-determined purpose, while macros have user defined values.
+    </p>
+    <h2 id="fields">
+      Fields
+    </h2>
+    <p>
+      Here is a list of supported fields, the values they represent, and the
+      restrictions on their use.
     </p>
     <table>
-      <tr>
-        <th>
-          Field
-        </th>
-        <th>
-          Description
-        </th>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#F1&gt;
-        </td>
-        <td>
-          The 1st and most significant number of the <em>File Version #</em>
-          item in the fixed file info section.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#F2&gt;
-        </td>
-        <td>
-          The 2nd most significant number of the <em>File Version #</em> item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#F3&gt;
-        </td>
-        <td>
-          The 3rd most significant number of the <em>File Version #</em> item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#F4&gt;
-        </td>
-        <td>
-          The 4th and least significant number of the <em>File Version #</em>
-          item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#P1&gt;
-        </td>
-        <td>
-          The 1st and most significant number of the <em>Product Version #</em>
-          item in the fixed file info section.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#P2&gt;
-        </td>
-        <td>
-          The 2nd most significant number of the <em>Product Version #</em>
-          item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#P3&gt;
-        </td>
-        <td>
-          The 3rd most significant number of the <em>Product Version #</em>
-          item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;#P4&gt;
-        </td>
-        <td>
-          The 4th and least significant number of the <em>Product Version #</em>
-          item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;YEAR&gt;
-        </td>
-        <td>
-          The current 4 digit year according to the system clock.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;SHORTFNAME&gt;
-        </td>
-        <td>
-          The value of the <em>Original File Name</em> string info item without
-          any extension (e.g. if <em>Original File Name</em> is
-          &quot;MYPROG.EXE&quot; then &lt;SHORTNAME&gt; is set to
-          &quot;MYPROG&quot;. <strong>Note:</strong> This field is not valid
-          for use in the <em>Original File Name</em> item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;PRODUCTNAME&gt;
-        </td>
-        <td>
-          The value of the <em>Product Name</em> string info item.
-          <strong>Note:</strong> This field is not valid for use in the
-          <em>Product Name</em> item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;SPECIALBUILD&gt;
-        </td>
-        <td>
-          The value of the <em>Special Build</em> string info item.
-          <strong>Note:</strong> This field is not valid for use in the
-          <em>Special Build</em> item.
-        </td>
-      </tr>
-      <tr>
-        <td class="shaded">
-          &lt;&lt;&gt;
-        </td>
-        <td>
-          Inserts the &quot;&lt;&quot; character.
-        </td>
-      </tr>
+      <thead>
+        <tr>
+          <th>
+            Field
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="shaded">
+            &lt;#F1&gt;
+          </td>
+          <td>
+            The 1st and most significant number of the <em>File Version #</em>
+            item in the fixed file info section.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;#F2&gt;
+          </td>
+          <td>
+            The 2nd most significant number of the <em>File Version #</em> item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;#F3&gt;
+          </td>
+          <td>
+            The 3rd most significant number of the <em>File Version #</em> item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;#F4&gt;
+          </td>
+          <td>
+            The 4th and least significant number of the <em>File Version #</em>
+            item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;#P1&gt;
+          </td>
+          <td>
+            The 1st and most significant number of the <em>Product Version #</em>
+            item in the fixed file info section.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;#P2&gt;
+          </td>
+          <td>
+            The 2nd most significant number of the <em>Product Version #</em>
+            item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;#P3&gt;
+          </td>
+          <td>
+            The 3rd most significant number of the <em>Product Version #</em>
+            item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;#P4&gt;
+          </td>
+          <td>
+            The 4th and least significant number of the <em>Product Version #</em>
+            item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;YEAR&gt;
+          </td>
+          <td>
+            The current 4 digit year according to the system clock.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;SHORTFNAME&gt;
+          </td>
+          <td>
+            The value of the <em>Original File Name</em> string info item without
+            any extension (e.g. if <em>Original File Name</em> is
+            &quot;MYPROG.EXE&quot; then &lt;SHORTNAME&gt; is set to
+            &quot;MYPROG&quot;). <strong>Note:</strong> This field is not valid
+            for use in the <em>Original File Name</em> item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;PRODUCTNAME&gt;
+          </td>
+          <td>
+            The value of the <em>Product Name</em> string info item.
+            <strong>Note:</strong> This field is not valid for use in the
+            <em>Product Name</em> item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;SPECIALBUILD&gt;
+          </td>
+          <td>
+            The value of the <em>Special Build</em> string info item.
+            <strong>Note:</strong> This field is not valid for use in the
+            <em>Special Build</em> item.
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;&lt;&gt;
+          </td>
+          <td>
+            Inserts the &quot;&lt;&quot; character.
+          </td>
+        </tr>
+      </tbody>
     </table>
+    <h2 id="macros">
+      Macros
+    </h2>
+    <p>
+      There are three ways that macros can be defined: <em>Define</em>,
+      <em>External</em> and <em>Include</em>. Each is explained below.
+    </p>
+    <h3>
+      Define
+    </h3>
+    <p>
+      This is the most simple type of macro definition. It simply maps a macro name to a value. So, if <em>Define</em> macro <code>my-def</code> is defined as &quot;Foo&quot; then every occurence of <code>&lt;%my-def&gt;</code >is replaced by &quot;Foo&quot; when the version information resource is generated.
+    </p>
+    <p>
+      The purpose of this type of macro is to enable a single value that is used in multiple places to be defined in one place.
+    </p>
+    <h3>
+      External
+    </h3>
+    <p>
+      This type of macro definition references a file that whose contents contain the macro value, with certain restrictions, explained below. So if <em>External</em> definition defines macro <code>my-ext</code> and file &quot;<code>.\value.dat</code>&quot; then whenever <code>&lt;%my-ext&gt;</code> occurs it is replaced by the contents of &quot;<code>.\value.dat</code>&quot;.
+    </p>
+    <p>
+      The restrictions mentioned above are:
+    </p>
+    <ol>
+      <li>
+        The file must exist. Relative file names are taken as being relative to the directory containing the <code>.vi</code> file. Absolute file names are permitted but not recommended.
+      </li>
+      <li>
+        The value of the macro is set to the first non-blank line of the file. If there are no such lines that the macro's value is an empty string.
+      </li>
+      <li>
+        As a consequence of 1, you can't use (or view the value of) <em>External</em> macros that reference relative file paths until the the <code>.vi</code> file has been saved.
+      </li>
+    </ol>
+    <p>
+      These macros are useful if there is a need to share the value recorded in the file in different parts of the source code.
+    </p>
+    <h3>
+      Include
+    </h3>
+    <p>
+      Like <em>External</em> macros, <em>Include</em> macros definitions reference data in a given file. Where <em>Include</em> macro definitions differ is that they include one or more additional macros that are defined in the file. As a consequence, although a name is required in the macro definition then the name is not used as a macro name. Instead the referenced file names both the macro names and their values. To avoid name clashes with other macro types, macros defined in <em>Include</em> files have <code>%</code> symbols appended to the name.
+    </p>
+    <p>
+      For example, if macro <code>inc-ext</code> is defined as &quot;<code>.\macros.dat</code>&quot;, where the file contains
+    </p>
+    <pre class="indent source-code"># Comment
+
+foo=42
+bar=56</pre>
+    <p>
+      Then we have two new macros: <code>&lt;%foo%&gt;</code> and <code>&lt;%bar%&gt;</code>. When used, the macros are replaced with <code>42</code> and <code>56</code> respectively. <em>Notice that no macro named <code>&lt;%inc-ext</code>&gt;</code> is defined.</em>
+    </p>
+    <p>
+      Restrictions are:
+    </p>
+    <ol>
+      <li>
+        As is implied by the example file content shown above then lines beginning with the <code>#</code> character are ignored and can be used as comments. Blank lines are also ignored.
+      </li>
+      <li>
+        As with <em>External</em> macros you can't use (or view the value of) macros defined by <em>Include</em> macros that reference relative file paths until the <code>.vi</code> file has been saved.
+      </li>
+    </ol>
+    <p>
+      This type of macro is useful whenever definitions in the form <code>name=value</code> are useful in more than one source code file.
+    </p>
   </body>
 </html>

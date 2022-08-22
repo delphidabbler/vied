@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
  *
  * VIEd HTML Help index file.
 -->
@@ -68,6 +68,10 @@
 		<param name="Local" value="HTML\dlg-identifier.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="macro editor">
+		<param name="Local" value="HTML\dlg-macros.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="main menu">
 		<param name="Local" value="HTML\menu.htm">
 		</OBJECT>
@@ -110,6 +114,10 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="view rc statements dialogue box">
 		<param name="Local" value="HTML\dlg-viewrc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="view macro values dialogue box">
+		<param name="Local" value="HTML\dlg-viewmacros.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="welcome page">
