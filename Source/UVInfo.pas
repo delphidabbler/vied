@@ -10,6 +10,23 @@
 }
 
 
+{
+  *** THIS CODE IS VERY "SMELLY"!
+
+  - "Smelly" according to Fowler's definition of bad code smells in his book
+    "Refactoring"
+
+  The macro handling functionality was added in to the TVInfo class when it
+  really should be in its own class.
+
+  Further, the implementation just grew like topsy and there's a lot of
+  duplication and confusing code.
+
+  Data structures are badly chosen too.
+
+  This code really needs a major overhaul.
+}
+
 unit UVInfo;
 
 
@@ -207,6 +224,9 @@ type
     function AdjustFilePath(const FilePath: string): string;
     function HasUndefinedMacros: Boolean;
     function HasBadMacroFileReferences: Boolean;
+  strict private
+    ///  <summary>Removes macros with invalid names from Macros list.</summary>
+    procedure FixupMacros;
   public
     constructor Create;
       {Class constructor. Sets up object.
@@ -761,6 +781,22 @@ begin
   end;
 end;
 
+procedure TVInfo.FixupMacros;
+var
+  Macro: TMacro;
+  FixedMacros: TStrings;
+begin
+  FixedMacros := TStringList.Create;
+  try
+    for Macro in CrackMacros(fMacros) do
+      if IsValidMacroName(Macro.Name) then
+        FixedMacros.Add(EncodeMacro(Macro));
+    fMacros.Assign(FixedMacros);
+  finally
+    FixedMacros.Free;
+  end;
+end;
+
 function TVInfo.GetStrDesc(AnId: TStrInfo): string;
   {Read accessor for StrDesc property.
     @param AnId [in] String info item id.
@@ -937,6 +973,7 @@ begin
     finally
       MacroNames.Free;
     end;
+    FixupMacros;
     ResolveMacros;
     // Read version info stuff into properties: this automatically verifies data
     // read in fixed file info
@@ -1115,6 +1152,8 @@ begin
   for Macro in CrackMacros(fMacros) do
   begin
     // Ignore any macros with invalid names
+    // ** this check is duplicated providing FixupMacros has been called to
+    //    clean up fMacros
     if IsValidMacroName(Macro.Name) then
     begin
       case Macro.Cmd of
