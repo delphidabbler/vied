@@ -193,7 +193,7 @@ type
       DefineMacroCmd = 'Define';
       ExternalMacroCmd = 'External';
       ImportMacroCmd = 'Import';
-      ImportMacroSuffix = '%';
+      ImportMacroSeparator = '.';
       MacroCmds: array[TMacroCmd] of string = (
         DefineMacroCmd, ExternalMacroCmd, ImportMacroCmd
       );
@@ -1132,7 +1132,7 @@ begin
           // Create a macro for each Name=Value line
           for FileIdx := 0 to Pred(FileLines.Count) do
             StoreResolvedMacro(
-              FileLines.Names[FileIdx] + ImportMacroSuffix,
+              Macro.Name + ImportMacroSeparator + FileLines.Names[FileIdx],
               FileLines.ValueFromIndex[FileIdx]
             );
         finally
