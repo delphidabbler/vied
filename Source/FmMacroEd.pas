@@ -54,6 +54,7 @@ type
       fMacros: TStringList;
       fMacroDetails: TArray<TMacro>;
       fRelativeFilePath: string;
+      fCurrentName: string;
     function GetMacros: TStrings;
     procedure SetMacros(Value: TStrings);
     procedure ClearEditCtrls;
@@ -61,6 +62,7 @@ type
     procedure DisplayMacros;
     procedure UpdateMacros(SelIdx: Integer);
     procedure GetMacroDetailsFromCtrls(out Cmd, Name, Value: string);
+    function GetMacroNameFromCtrl: string;
     procedure AddMacroFromCtrls;
     procedure UpdateMacroFromCtrls;
     procedure DeleteMacroFromCtrls;
@@ -84,7 +86,7 @@ uses
   // VCL
   SysUtils, IOUtils, Dialogs,
   // Project
-  FmViewList, UCommonDlg, UMsgDlgs;
+  FmViewList, UCommonDlg, UMsgDlgs, UUtils;
 
 {$R *.dfm}
 
@@ -278,7 +280,20 @@ begin
 end;
 
 procedure TMacroEditor.edNameChange(Sender: TObject);
+var
+  CursorPos: Integer;
 begin
+  // Check macro name is valid
+  if TVInfo.IsValidMacroName(GetMacroNameFromCtrl) then
+    fCurrentName := GetMacroNameFromCtrl
+  else
+  begin
+    // Restore previous name
+    CursorPos := edName.SelStart;
+    edName.Text := fCurrentName;
+    edName.SelStart := CursorPos - 1;
+    ErrorBeep;
+  end;
   UpdateButtons;
 end;
 
@@ -333,8 +348,14 @@ begin
     Cmd := cbCmd.Items[cbCmd.ItemIndex]
   else
     Cmd := '';
-  Name := Trim(edName.Text);
+  Name := GetMacroNameFromCtrl;
   Value := Trim(edValue.Text);
+  fCurrentName := Name;
+end;
+
+function TMacroEditor.GetMacroNameFromCtrl: string;
+begin
+  Result := Trim(edName.Text);
 end;
 
 function TMacroEditor.GetMacros: TStrings;

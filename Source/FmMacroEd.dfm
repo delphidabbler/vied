@@ -27,9 +27,9 @@ inherited MacroEditor: TMacroEditor
     object lblName: TLabel
       Left = 131
       Top = 277
-      Width = 31
+      Width = 114
       Height = 13
-      Caption = '&Name:'
+      Caption = '&Name (letters or digits):'
       FocusControl = edName
     end
     object lblValue: TLabel
@@ -171,7 +171,7 @@ inherited MacroEditor: TMacroEditor
     Left = 48
     Top = 120
     Bitmap = {
-      494C010103000800300010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000046819A0046819A004681
       9A0046819A0046819A0046819A0046819A002445560033637D0033637D00345C
