@@ -129,7 +129,7 @@ type
         @return Property value for AnId.
       }
     function GetStrPermitted(AnId: TStrInfo): Boolean;
-      {Read access method for StrPermitted property. Finds if a string is
+      {Read access  method for StrPermitted property. Finds if a string is
       permitted to have a value.
         @param AnId [in] String info item id.
         @return Value of property for AnId.
@@ -1092,12 +1092,21 @@ begin
        lines in format Name=Value) and a new resolved macro is created for
        each Name/Value pair.
 
-    All macro names must be unique after stripping the prefix. For Define &
-    External macros the macro name in the ini file is that used in the program.
-    For Import macros the macro names available to the program are those
-    imported from the specified file, with a '%' character appended. This is
-    done to avoid name clashes for macro names defined in the .vi file and those
-    defined in separate files.
+    All macro names must be unique after stripping the prefix AND must comprise
+    only letters and digits.
+
+    For Define & External macros the macro name in the ini file is that used in
+    the program.
+
+    For Import macros the macro names available to the program have the form
+    xxx.yyy where xxx is the macro name from the ini file and yyy is one of
+    those imported from the specified file. This is done to avoid name clashes
+    for macro names defined in the .vi file and those defined in other Import
+    files. Macro names in imported files must also comprise only letters and
+    digits.
+
+    Macro names that do not conform to the letter/digit only specification are
+    ignored.
   }
 
   fResolvedMacros.Clear;
@@ -1105,43 +1114,51 @@ begin
     Exit;
   for Macro in CrackMacros(fMacros) do
   begin
-    case Macro.Cmd of
+    // Ignore any macros with invalid names
+    if IsValidMacroName(Macro.Name) then
+    begin
+      case Macro.Cmd of
 
-      mcDefine:
-        // Create a macro from value stored in [Macros] section of .vi file
-        StoreResolvedMacro(Macro.Name, Macro.Value);
+        mcDefine:
+          // Create a macro from value stored in [Macros] section of .vi file
+          StoreResolvedMacro(Macro.Name, Macro.Value);
 
-      mcExternal:
-        // Create a macro with value from 1st non-empty line of file
-        StoreResolvedMacro(
-          Macro.Name, FirstNonEmptyLine(ReadUTF8TextFile(Macro.Value))
-        );
+        mcExternal:
+          // Create a macro with value from 1st non-empty line of file
+          StoreResolvedMacro(
+            Macro.Name, FirstNonEmptyLine(ReadUTF8TextFile(Macro.Value))
+          );
 
-      mcImport:
-      begin
-        FileLines := TStringList.Create;
-        try
-          // Split file into lines
-          FileLines.Text := ReadUTF8TextFile(Macro.Value);
-          // Delete any lines that are in Name=Value format
-          // or are comments lines (start with #)
-          for FileIdx := Pred(FileLines.Count) downto 0 do
-            if not ContainsStr(FileLines[FileIdx], MacroValueSep)
-              or StartsStr('#', TrimLeft(FileLines[FileIdx])) then
-              FileLines.Delete(FileIdx);
-          // Create a macro for each Name=Value line
-          for FileIdx := 0 to Pred(FileLines.Count) do
-            StoreResolvedMacro(
-              Macro.Name + ImportMacroSeparator + FileLines.Names[FileIdx],
-              FileLines.ValueFromIndex[FileIdx]
-            );
-        finally
-          FileLines.Free;
+        mcImport:
+        begin
+          FileLines := TStringList.Create;
+          try
+            // Split file into lines
+            FileLines.Text := ReadUTF8TextFile(Macro.Value);
+            // Delete any lines that are in Name=Value format
+            // or are comments lines (start with #)
+            for FileIdx := Pred(FileLines.Count) downto 0 do
+              if not ContainsStr(FileLines[FileIdx], MacroValueSep)
+                or StartsStr('#', TrimLeft(FileLines[FileIdx])) then
+                FileLines.Delete(FileIdx);
+            // Create a macro for each Name=Value line
+            for FileIdx := 0 to Pred(FileLines.Count) do
+            begin
+              // Ignore any invalid macro name from file
+              if IsValidMacroName(FileLines.Names[FileIdx]) then
+                StoreResolvedMacro(
+                  Macro.Name + ImportMacroSeparator + FileLines.Names[FileIdx],
+                  FileLines.ValueFromIndex[FileIdx]
+                );
+            end;
+          finally
+            FileLines.Free;
+          end;
         end;
+
+        else ; // ignore any unrecognised commands
+
       end;
-
-      else ; // ignore any unreognised commands
-
     end;
   end;
 end;
