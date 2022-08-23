@@ -197,6 +197,7 @@ type
       MacroCmds: array[TMacroCmd] of string = (
         DefineMacroCmd, ExternalMacroCmd, ImportMacroCmd
       );
+    class function IsValidMacroName(const N: string): Boolean;
     class function CrackMacros(const Macros: TStrings): TArray<TMacro>;
     class function EncodeMacro(const Macro: TMacro): string;
     class function TryLookupMacroCmd(const CmdStr: string;
@@ -335,7 +336,7 @@ implementation
 
 uses
   // Delphi
-  ClipBrd, IniFiles, StrUtils, IOUtils, Types,
+  ClipBrd, IniFiles, StrUtils, IOUtils, Types, Character,
   // Project
   UVerUtils, UUtils;
 
@@ -871,6 +872,16 @@ begin
   finally
     SL.Free;
   end;
+end;
+
+class function TVInfo.IsValidMacroName(const N: string): Boolean;
+var
+  Ch: Char;
+begin
+  Result := True;
+  for Ch in N do
+    if not TCharacter.IsLetterOrDigit(Ch) then
+      Exit(False);
 end;
 
 procedure TVInfo.LoadFromFile(const FileName: string);
