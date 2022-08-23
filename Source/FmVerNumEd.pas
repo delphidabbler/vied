@@ -180,12 +180,10 @@ begin
   inherited;
   // Write version number from edit boxes to property: '' => 0
   if rbUseVersionNumbers.Checked and not IsMacroInUse(edMacros.Text) then
-    fVersionNumberCode := Format(
-      '%d.%d.%d.%d',
-      [
-        StrToIntDef(edV1.Text, 0), StrToIntDef(edV2.Text, 0),
-        StrToIntDef(edV3.Text, 0), StrToIntDef(edV4.Text, 0)
-      ]
+    fVersionNumberCode := UVerUtils.VersionNumberToStr(
+      StrToIntDef(edV1.Text, 0), StrToIntDef(edV2.Text, 0),
+      StrToIntDef(edV3.Text, 0), StrToIntDef(edV4.Text, 0),
+      False
     )
   else if AreMacrosValid then
     fVersionNumberCode := Trim(edMacros.Text)
@@ -298,12 +296,10 @@ end;
 
 function TVerNumEditor.VerNumControlsToVerNum: string;
 begin
-  Result := Format(
-    '%d.%d.%d.%d',
-    [
-      StrToIntDef(edV1.Text, 0), StrToIntDef(edV2.Text, 0),
-      StrToIntDef(edV3.Text, 0), StrToIntDef(edV4.Text, 0)
-    ]
+  Result := UVerUtils.VersionNumberToStr(
+    StrToIntDef(edV1.Text, 0), StrToIntDef(edV2.Text, 0),
+    StrToIntDef(edV3.Text, 0), StrToIntDef(edV4.Text, 0),
+    False
   );
 end;
 
