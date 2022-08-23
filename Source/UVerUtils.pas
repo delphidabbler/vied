@@ -32,10 +32,15 @@ const
 
 { --- Version number routines --- }
 
-function VersionNumberToStr(const VN: TPJVersionNumber): string;
+function VersionNumberToStr(const V1, V2, V3, V4: Integer;
+  const UseCommas: Boolean = True): string; overload;
+function VersionNumberToStr(const VN: TPJVersionNumber;
+  const UseCommas: Boolean = True): string; overload; inline;
   {Converts a version number into a string that can be used in a VERSIONINFO
   resource statement.
     @param VN [in] Version number to convert.
+    @param UseCommas [in] Indicates whether comma or dot style version string
+      is required: True => use commas, False => use dots.
     @return Required string representation of version number.
   }
 function StrToVersionNumber(const Str: string): TPJVersionNumber;
@@ -336,14 +341,18 @@ end;
 
 { --- Version numbers --- }
 
-function VersionNumberToStr(const VN: TPJVersionNumber): string;
-  {Converts a version number into a string that can be used in a VERSIONINFO
-  resource statement.
-    @param VN [in] Version number to convert.
-    @return Required string representation of version number.
-  }
+function VersionNumberToStr(const V1, V2, V3, V4: Integer;
+  const UseCommas: Boolean = True): string; overload;
+const
+  FmtStr: array[Boolean] of string = ('%d.%d.%d.%d', '%d, %d, %d, %d');
 begin
-  Result := Format('%d, %d, %d, %d', [VN.V1, VN.V2, VN.V3, VN.V4]);
+  Result := Format(FmtStr[UseCommas], [V1, V2, V3, V4]);
+end;
+
+function VersionNumberToStr(const VN: TPJVersionNumber;
+  const UseCommas: Boolean = True): string; overload;
+begin
+  Result := VersionNumberToStr(VN.V1, VN.V2, VN.V3, VN.V4, UseCommas);
 end;
 
 function StrToVersionNumber(const Str: string): TPJVersionNumber;
