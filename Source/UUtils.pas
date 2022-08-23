@@ -80,6 +80,8 @@ function UserAppDataFolder: string;
     @return Required folder.
   }
 
+///  <summary>Emits a beep to indicate an error.</summary>
+procedure ErrorBeep;
 
 implementation
 
@@ -418,6 +420,11 @@ function UserAppDataFolder: string;
   }
 begin
   Result := SpecialFolderPath(CSIDL_APPDATA);
+end;
+
+procedure ErrorBeep;
+begin
+  MessageBeep(UINT(-1));
 end;
 
 end.
