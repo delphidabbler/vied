@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/
+ *
+ * Copyright (C) 2022, Peter Johnson (www.delphidabbler.com).
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text-html; charset=Windows-1252">
+    <title>
+      dlg-macros
+    </title>
+    <link rel="stylesheet" href="../css/help.css" type="text/css">
+ </head>
+  <body>
+    <h1>
+      Macro Editor
+    </h1>
+    <p>
+      This dialogue box is displayed when the <em>Edit | Macros</em> menu option
+      is selected.
+    </p>
+    <p>
+      The dialogue box is used to add, edit or delete any macros that are
+      required for use in the version information. The remainder of this topic
+      assumes you understand the various
+      <a href="whatis-fields.htm#macros">types of macro</a> you can use.
+    </p>
+    <p>
+      A list of any currently defined macros is displayed at the top of the
+      window in the <em>Macros</em> list view. The <em>Command</em>,
+      <em>Name</em> and <em>Value / File</em> controls are edit controls used to
+      define or edit a macro. The <em>Value / File</em> control's caption
+      depends on which command is selected: it displays <em>Value</em> when a
+      <strong>Define</strong> command is selected in the <em>Command</em>
+      drop-down and displays <em>File</em> whenever either
+      <strong>External</strong> or <strong>Include</strong> commands are
+      specified.
+    </p>
+    <p>
+      Selecting a macro from the <em>Macros</em> list copies its properties into
+      the three edit controls, while clicking in a blank area of the <em>Macros
+      controls</em> clears the edit controls.
+    </p>
+    <p>
+      As many macros can be edited as desired. Once all edits have been made
+      click the <em>OK</em> button to accept all changes or click
+      <em>Cancel</em> to ignore the changes.
+    </p>
+    <p>
+      The following sections describe how to add, update, rename and delete
+      macros.
+    </p>
+    <h2>
+      Add a macro
+    </h2>
+    <ol>
+      <li>
+        If necessary, click in a used part of the <em>Macros</em> list to clear
+        the edit controls.
+      </li>
+      <li>
+        Choose the required macro command type in the <em>Command</em> drop-down
+        list.
+      </li>
+      <li>
+        Give the macro a name. <em>This must be unique across all macro
+        types.</em>
+      </li>
+      <li>
+        <p>
+          In the case of a <em>Define</em> macro, you can enter a value
+          associated with the macro in the <em>Value</em> edit box. The value
+          may be left empty if desired.
+        </p>
+        <p>
+          When either an <em>External</em> or an <em>Import</em> macro are being
+          added a valid file name must be entered in the <em>File</em> edit box.
+          You may also click the button to the right of the edit box and select
+          a file from a standard file open dialogue box. If the file you specify
+          exists you can view it by clicking the <em>View File</em> button below
+          the <em>File</em> edit box. If the file does not exist then the button
+          is disabled and its caption changes to <em>No such file</em>.
+        </p>
+      </li>
+      <li>
+        Now click the <em>Add</em> button to add the macro to the bottom of the
+        <em>Macros</em> list.
+      </li>
+    </ol>
+    <p>
+      <span class="warning">Warning:</span> if you enter an existing name for
+      the macro then the <em>Add</em> button will be replaced by an
+      <em>Update</em> button and any entries you make will be applied to the
+      named macro: you will not be adding a new macro.
+    </p>
+    <h2>
+      Update a macro
+    </h2>
+    <ol>
+      <li>
+        Select the macro to be updated from the <em>Macros</em> list. Doing this
+        copies the macro's properties into the edit controls.
+      </li>
+      <li>
+        If required you can change the macro type by selecting a new value from
+        the <em>Command</em> drop down list.
+      </li>
+      <li>
+        <p>
+          For a <em>Define</em> macro you can edit or delete its value in the
+          <em>Value</em> edit box.
+        </p>
+        <p>
+          In the case of <em>External</em> or <em>Import</em> macros you may
+          change the associated file name in the <em>File</em> edit box or by
+          choosing a file using the file open dialogue box accessed from the
+          button to the right of the edit box. If the file you specify exists
+          you can view it by clicking the <em>View File</em> button below the
+          <em>File</em> edit box. If the file does not exist then the button is
+          disabled and its caption changes to <em>No such file</em>.
+        </p>
+      </li>
+      <li>
+        When ready click the <em>Update</em> button to accept your changes. This
+        will update the macro's properties in the <em>Macro</em> list. Note that
+        the <em>Update</em> button will be disabled if you have made no changes
+        or if any of the changes are invalid.
+      </li>
+    </ol>
+    <p>
+      <span class="warning">Warning:</span> Do not change the name of a macro
+      you are editing unless you are sure you know what you are doing. If you
+      want to rename the macro see the <em>Rename a Macro</em> section below.
+      If you change the name to that of another existing macro then any updates
+      will now apply to that macro, not the one you selected. If a changed name
+      does not exist the <em>Update</em> button will be replaced by the
+      <em>Add</em> button and clicking it will create a new macro with the
+      properties you specified.
+    </p>
+    <h2>
+      Rename a macro
+    </h2>
+    <p>
+      There is no direct way to rename a macro: renaming can be done, but it's a
+      two step process.
+    </p>
+    <h3>
+      Step 1
+    </h3>
+    <ol>
+      <li>
+        Select the macro to be renamed in the <em>Macros</em> list view.
+      </li>
+      <li>
+        Change the macro's name in the <em>Name</em> edit box. <em>Ensure the
+        new name is unique.</em>
+      </li>
+      <li>
+        <p>
+          Click the <em>Add</em> button to add a new macro with the same
+          properties as the one you want to rename. This new macro will be added
+          to the end of the <em>Macros</em> list.
+        </p>
+        <p>
+          <span class="warning">Warning:</span> If the <em>Update</em> button is
+          visible instead of the <em>Add</em> button then the name you have
+          entered already exists. Clicking the <em>Update</em> button will
+          overwrite the named macro with the properties of the one you were
+          renaming.
+        </p>
+      </li>
+    </ol>
+    <p>
+      You will now have two macros with the same properties: the original macro
+      and one with the new name.
+    </p>
+    <h3>
+      Step 2
+    </h3>
+    <ol>
+      <li>
+        Re-select the macro you wanted to rename.
+      </li>
+      <li>
+        Click the <em>Delete</em> button to delete it from the <em>Macros</em>
+        list.
+      </li>
+    </ol>
+    <h2>
+      Delete a macro
+    </h2>
+    <ol>
+      <li>
+        Select the macro to be deleted from the <em>Macros</em> list. This will
+        copy its properties into the edit controls.
+      </li>
+      <li>
+        Click the <em>Delete</em> button. This will remove the macro from the
+        <em>Macros</em> list. Deletion is immediate and can't be undone.
+      </li>
+    </ol>
+  </body>
+</html>

@@ -38,7 +38,8 @@ uses
   USettings in 'USettings.pas',
   UUtils in 'UUtils.pas',
   UVerUtils in 'UVerUtils.pas',
-  UVInfo in 'UVInfo.pas';
+  UVInfo in 'UVInfo.pas',
+  FmMacroEd in 'FmMacroEd.pas' {MacroEditor};
 
 {$Resource Resources.res}
 {$Resource Version.res}

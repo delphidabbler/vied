@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2022, Peter Johnson (https://delphidabbler.com).
 -->
 <html>
   <head>
@@ -23,6 +23,18 @@
       Product Version # FILE INFO items.
     </p>
     <p>
+      Version numbers can be entered in two different ways, selected using the
+      radio buttons at the top of the dialogue box window: <em>Enter literal
+      numbers</em> and <em>Enter macros or text</em>. Each mode of operation is
+      discussed separately below:
+    </p>
+    <h2>
+      Entry modes
+    </h2>
+    <h3>
+      Literal numbers
+    </h3>
+    <p>
       Version numbers are in four parts. The current value for each part is
       displayed in an edit box and the first value is highlighted. Edit the four
       parts of the version number as required then press <em>OK</em> to accept
@@ -33,8 +45,100 @@
       version numbers must be numeric. A blank entry is read as zero.
     </p>
     <p>
-      As a short-cut you can increment any of the version by one by clicking the
-      <em>+1</em> button under the relevant edit control.
+      As a shortcut you can increment any of the version numbers by one by
+      clicking the <em>+1</em> button under the relevant edit control.
+    </p>
+    <h3>
+      Macros or text
+    </h3>
+    <p>
+      Version numbers are entered in the <em>Macros</em> edit box as text. You
+      can either enter literal version numbers, macros or a combination of the
+      two.
+    </p>
+    <p>
+      To enter a macro:
+    </p>
+    <ol>
+      <li>
+        Place the cursor in the <em>Macros</em> edit box where you want the
+        macro to be entered.
+      </li>
+      <li>
+        Select the required macro name from the <em>Insert Macro</em> drop down
+        list.
+      </li>
+      <li>
+        Click the <em>Insert</em> button to copy the macro into the
+        <em>Macros</em> edit box at the required location.
+      </li>
+    </ol>
+    <p>
+      You can also enter the macro name manually, but this is prone to error and
+      not recommended.
+    </p>
+    <p>
+      Whatever you enter <strong>must</strong> be, or in the case of macros,
+      must resolve to, valid version numbers. Valid version numbers comprise of
+      one to four non-negative numbers separated by either full stops
+      (<code>.</code>) or commas (<code>,</code>). Spaces may follow
+      punctuation.
+    </p>
+    <h4>
+      Examples
+    </h4>
+    <p>
+      Assuming that macros <code>&lt;%version&gt;</code> and
+      <code>&lt;%build&gt;</code> resolve to values <code>1.2.3</code> and
+      <code>42</code> respectively, the following are examples are valid entries
+      in the <em>Macros</em> edit box:
+    </p>
+    <ul>
+      <li>
+        <code>1.2.3.4</code>
+      </li>
+      <li>
+        <code>12, 34</code>
+      </li>
+      <li>
+        <code>42</code>
+      </li>
+      <li>
+        <code>&lt;%version&gt;.&lt;%build&gt;</code>
+      </li>
+      <li>
+        <code>&lt;%version&gt;, &lt;%build&gt;</code>
+      </li>
+      <li>
+        <code>&lt;%version&gt;, 999</code>
+      </li>
+      <li>
+        <code>1, 2, 3, &lt;%build&gt;</code>
+      </li>
+    </ul>
+    <h2>
+      Switching between entry modes
+    </h2>
+    <p>
+      If you enter a version number in literal entry mode, then switch to
+      macro/text entry mode, the version number you entered will be copied into
+      the <em>Macros</em> edit box, with each component of the version number
+      separated by dots, e.g. <code>1.2.3.4</code>
+    </p>
+    <p>
+      Conversely if you enter a literal version number in macro/text entry mode
+      and switch to literal entry mode then the version number text will be
+      parsed and the result will be displayed in the four version number edit
+      boxes. Version numbers with fewer than four parts will be right-padded
+      with zeros, e.g. the text <code>1.2</code> will be interpreted as
+      <code>1.2.0.0</code>. Any invalid characters in the version string will be
+      replaced by zeros, e.g. the text <code>1.FOO.9.3</code> will be
+      interpreted as <code>1.0.9.3</code>.
+    </p>
+    <p>
+      However, if any macros are entered in macro/text entry mode then the
+      <em>Enter literal numbers</em> radio button will be greyed out and literal
+      entry mode will not be available.
     </p>
   </body>
 </html>

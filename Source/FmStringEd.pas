@@ -324,7 +324,7 @@ begin
       Exit;
     end;
     // Record part of string to be examined: i.e. all string after current field
-    Str := Copy(Str, Stop + 1, $FF);
+    Str := Copy(Str, Stop + 1, MaxInt);
     // Find start of next field if any
     Posn := Pos('<', Str);
   end;

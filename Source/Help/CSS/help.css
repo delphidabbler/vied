@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
  *
  * CSS for the VIEd HTML help file.
  */
@@ -37,6 +37,13 @@ h2 {
 h3 {
   font-size: 9pt;
   font-weight: bold;
+  font-style: italic;
+  margin: 0.8em 0 0 0;
+}
+
+h4 {
+  font-size: 9pt;
+  font-weight: normal;
   font-style: italic;
   margin: 0.8em 0 0 0;
 }
