@@ -160,7 +160,7 @@
     </h4>
     <p>
       Maybe you want more than one value stored externally to the
-      <code>.vi</code> file. You can create a different &quot;External&quot;
+      <code>.vi</code> file. You <em>could</em> create a different &quot;External&quot;
       macro for each such value. Alternatively, if you can create a file with
       lines in the format <code>Name=Value</code> you can reference that file
       from an &quot;Include&quot; macro. The &quot;Include&quot; macro is
@@ -178,13 +178,13 @@
 build=123</pre>
     <p>
       This file will result in two new macros being created:
-      <code>&lt;%version%&gt;</code> and <code>&lt;%build%&gt;</code> (note the
-      trailing <code>%</code> symbol).
+      <code>&lt;%ver.version&gt;</code> and <code>&lt;%ver.build&gt;</code>. Note the
+      dot separated macro name, where the part before the dot is the name of the &quot;Include&quot; macro and the part after the dot is the name of a macro defined in <code>version.ini</code>.
     </p>
     <p>
-      Similar to before set the <code>File Version #</code> field to
-      &quot;&lt;%version%&gt;.&lt;%build%&gt;&quot; and set <code>Product
-      Version #</code> to &quot;&lt;%version%&gt;.0&quot;.
+      Similar to before you can set the <code>File Version #</code> field to
+      &quot;&lt;%ver.version&gt;.&lt;%ver.build&gt;&quot; and set <code>Product
+      Version #</code> to &quot;&lt;%ver.version&gt;&quot;.
     </p>
     <p>
       To increment the version number just update <code>version.ini</code>.

@@ -201,14 +201,23 @@
       Macros
     </h2>
     <p>
-      There are three ways that macros can be defined: <em>Define</em>,
+      Whereas fields have predefined names and values, macros allow you to effectively create your own custom &quot;fields&quot; and assign values to them.
+    </p>
+    <p>
+      Macros are created and edited in the <a href="dlg-macros.htm">Macros</a> dialogue box. Information about macros is stored with your version information data in a <code>.vi</code> file.
+    </p>
+    <p>
+      Macro names are restricted to alphabetic and numeric characters. Examples of valid names are <code>myMacro</code>, <code>Macro1</code>, <code>M</code>, <code>1MyMacro</code> and <code>42</code>. Examples of invalid macros are <code>my-macro</code>, <code>$myMacro</code>, <code>my macro</code> and <code>#</code>.
+    </p>
+    <p>
+      There are three types of macro: <em>Define</em>,
       <em>External</em> and <em>Include</em>. Each is explained below.
     </p>
     <h3>
       Define
     </h3>
     <p>
-      This is the most simple type of macro definition. It simply maps a macro name to a value. So, if <em>Define</em> macro <code>my-def</code> is defined as &quot;Foo&quot; then every occurence of <code>&lt;%my-def&gt;</code >is replaced by &quot;Foo&quot; when the version information resource is generated.
+      This is the most simple type of macro definition. It simply maps a macro name to a value. So, if <em>Define</em> macro <code>myDef</code> is defined as &quot;Foo&quot; then every occurence of <code>&lt;%myDef&gt;</code >is replaced by &quot;Foo&quot; when the version information resource is generated.
     </p>
     <p>
       The purpose of this type of macro is to enable a single value that is used in multiple places to be defined in one place.
@@ -217,7 +226,7 @@
       External
     </h3>
     <p>
-      This type of macro definition references a file that whose contents contain the macro value, with certain restrictions, explained below. So if <em>External</em> definition defines macro <code>my-ext</code> and file &quot;<code>.\value.dat</code>&quot; then whenever <code>&lt;%my-ext&gt;</code> occurs it is replaced by the contents of &quot;<code>.\value.dat</code>&quot;.
+      This type of macro definition references a file that whose contents contain the macro value, with certain restrictions, explained below. So if <em>External</em> macro <code>myExt</code> references file &quot;<code>.\value.dat</code>&quot; then whenever <code>&lt;%mExt&gt;</code> occurs it is replaced by the contents of &quot;<code>.\value.dat</code>&quot;.
     </p>
     <p>
       The restrictions mentioned above are:
@@ -227,7 +236,7 @@
         The file must exist. Relative file names are taken as being relative to the directory containing the <code>.vi</code> file. Absolute file names are permitted but not recommended.
       </li>
       <li>
-        The value of the macro is set to the first non-blank line of the file. If there are no such lines that the macro's value is an empty string.
+        The value of the macro is set to the first non-blank line of the file. If there is no such line that the macro's value is an empty string.
       </li>
       <li>
         As a consequence of 1, you can't use (or view the value of) <em>External</em> macros that reference relative file paths until the the <code>.vi</code> file has been saved.
@@ -240,17 +249,27 @@
       Include
     </h3>
     <p>
-      Like <em>External</em> macros, <em>Include</em> macros definitions reference data in a given file. Where <em>Include</em> macro definitions differ is that they include one or more additional macros that are defined in the file. As a consequence, although a name is required in the macro definition then the name is not used as a macro name. Instead the referenced file names both the macro names and their values. To avoid name clashes with other macro types, macros defined in <em>Include</em> files have <code>%</code> symbols appended to the name.
+      Like <em>External</em> macros, <em>Include</em> macros definitions reference data in a given file. Where <em>Include</em> macro definitions differ is that they include one or more additional macros that are defined in the file. Instead the referenced file names both the macro names and their values.
     </p>
     <p>
-      For example, if macro <code>inc-ext</code> is defined as &quot;<code>.\macros.dat</code>&quot;, where the file contains
+      To avoid names clashes between macros with the same name being defined in two or more <em>Include</em> files, the macros are referenced by the name assigned to the <em>Include</em> macro, followed by a dot and then the name of a macro from the included file.
     </p>
-    <pre class="indent source-code"># Comment
+    <p>
+      For example, assume that if macro <code>alice</code> is defined as &quot;<code>.\alice.dat</code>&quot; and macro <code>bob</code> is defined as &quot;<code>.\bob.dat</code>&quot;. If <code>alice.dat</code> contains
+    </p>
+    <pre class="indent source-code"># Alice's Q & A
 
-foo=42
-bar=56</pre>
+question=42
+answer=56</pre>
     <p>
-      Then we have two new macros: <code>&lt;%foo%&gt;</code> and <code>&lt;%bar%&gt;</code>. When used, the macros are replaced with <code>42</code> and <code>56</code> respectively. <em>Notice that no macro named <code>&lt;%inc-ext</code>&gt;</code> is defined.</em>
+      and <code>bob.dat</code> contains
+    </p>
+    <pre class="indent source-code"># Bob's Q & A
+
+question=Surname?
+answer=Bloggs</pre>
+          <p>
+      Then we will have four new macros: <code>&lt;%alice.question&gt;</code>, <code>&lt;%alice.answer&gt;</code>, <code>&lt;%bob.question&gt;</code> and <code>&lt;%bob.answer&gt;</code>. When used, the macros are replaced with <code>42</code>, <code>56</code>, &quot;<code>Surname?</code>&quot; and &quot;<code>Bloggs</code>&quot; respectively. Notice that no macros named <code>&lt;%alice</code>&gt;</code> or <code>&lt;%bob&gt;</code>are defined.
     </p>
     <p>
       Restrictions are:
@@ -265,6 +284,9 @@ bar=56</pre>
     </ol>
     <p>
       This type of macro is useful whenever definitions in the form <code>name=value</code> are useful in more than one source code file.
+    </p>
+    <p>
+      The same naming conventions used for macro names apply to those defined in include files, i.e. valid characters and letters or digits.
     </p>
   </body>
 </html>
