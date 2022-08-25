@@ -437,6 +437,12 @@ const
   RCCommentLineNameFmt = 'RC Comment Line %d';
   ResOutputDirName = 'ResOutputDir';
 
+  VIFileVersionName = 'FileVersion';
+  // Current file version
+  // - bump this each time file format changes in such a way that it can't
+  //   safely be read by an earlier version of the program
+  VIFileVersion = 1;
+
 resourcestring
   // Default VI and RC comments
   sVIComment1 = 'Version information file';
@@ -933,6 +939,9 @@ var
   Done: Boolean;  // flag set true when done reading comments
   MacroNames: TStringList;
   MacroName: string;
+resourcestring
+  sUnknownFileVer = 'This .vi file''s format can''t be read by this version of '
+    + 'VIEd - a later version is required.';
 begin
   fVIFile := FileName;
   // ** Do not localise any string literals in this message
@@ -960,6 +969,12 @@ begin
   // Create instance of ini file to use to write ini file style data
   Ini := TIniFile.Create(FileName);
   try
+    // Read and check file version
+    if Ini.ReadInteger(ConfigSection, VIFileVersionName, 0) > VIFileVersion then
+    begin
+      Clear;
+      raise Exception.Create(sUnknownFileVer);
+    end;
     // Read macros
     fMacros.Clear;
     MacroNames := TStringList.Create;
@@ -1274,6 +1289,8 @@ begin
     end;
     // write .res file default output folder
     Ini.WriteString(ConfigSection, ResOutputDirName, fResOutputDir);
+    // write .vi file version
+    Ini.WriteInteger(ConfigSection, VIFileVersionName, VIFileVersion);
   finally
     // Free the ini file instance
     Ini.Free;
