@@ -344,7 +344,6 @@ resourcestring
     + 'error.';
   sCompilePermission = 'Compiling will overwrite %0:s.';
   sAnalysisErrTitle = 'Analysis Errors';
-  sAnalysisErrDesc = 'List of errors found during analysis:';
   sFileFlagMaskRequired = 'You can only specify flags that are included in '
     + 'File Flags Mask.'#13#13
     + 'Edit File Flags Mask, adding the required flags then try again.';
@@ -366,7 +365,6 @@ resourcestring
   sViewRCTitle = 'View RC Statements';
   sViewResMacrosTitle = 'View Macro Values';
   // Other
-  sViewRCDesc = 'The resource file is:';  // dlg box descriptive text
   sUntitled = '[Untitled]'; // caption text when file is un-named
 
 const
@@ -1380,7 +1378,6 @@ begin
         DBox.List := EList;
         // set the dlg box's caption and description
         DBox.Title := sAnalysisErrTitle;
-        DBox.Description := sAnalysisErrDesc;
         DBox.HelpTopic := 'dlg-analysis';
         // display the dlg box
         DBox.ShowModal;
@@ -1883,7 +1880,6 @@ begin
       DBox.List := List;
       // Set the dlg box's caption and description
       DBox.Title := sViewRCTitle;
-      DBox.Description := sViewRCDesc;
       DBox.HelpTopic := 'dlg-viewrc';
       // Display the dlg
       DBox.ShowModal;
