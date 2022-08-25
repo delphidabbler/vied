@@ -272,4 +272,9 @@ object MainForm: TMainForm
     Left = 32
     Top = 264
   end
+  object ApplicationEvents: TApplicationEvents
+    OnHelp = ApplicationEventsHelp
+    Left = 144
+    Top = 32
+  end
 end

@@ -22,7 +22,7 @@ uses
   // DelphiDabbler components
   PJVersionInfo, PJAbout, PJDropFiles, PJWdwState,
   // Project
-  UCommonDlg, UVInfo;
+  UCommonDlg, UVInfo, AppEvnts;
 
 
 const
@@ -88,6 +88,7 @@ type
     MEClearCurrent: TMenuItem;
     MEMacros: TMenuItem;
     MFViewMacros: TMenuItem;
+    ApplicationEvents: TApplicationEvents;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -126,6 +127,8 @@ type
     procedure MEClearCurrentClick(Sender: TObject);
     procedure MEMacrosClick(Sender: TObject);
     procedure MFViewMacrosClick(Sender: TObject);
+    function ApplicationEventsHelp(Command: Word; Data: Integer;
+      var CallHelp: Boolean): Boolean;
   strict private
     type
       TVIItemUpdateCallback = reference to procedure(const VI: TVInfo);
@@ -393,6 +396,15 @@ begin
 end;
 
 { TMainForm }
+
+function TMainForm.ApplicationEventsHelp(Command: Word; Data: Integer;
+  var CallHelp: Boolean): Boolean;
+begin
+  // Prevent Delphi Help system from interfering!
+  // This prevents exception being raised when F1 is pressed over menu items
+  // while still allowing our custom help manager to operate.
+  CallHelp := False;
+end;
 
 procedure TMainForm.CheckCompiler;
   {Checks if a resource compiler is specified, and exists if specified. Allows
