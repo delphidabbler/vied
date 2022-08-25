@@ -22,7 +22,7 @@ uses
   // DelphiDabbler components
   PJVersionInfo, PJAbout, PJDropFiles, PJWdwState,
   // Project
-  UCommonDlg, UVInfo;
+  UCommonDlg, UVInfo, AppEvnts;
 
 
 const
@@ -88,6 +88,7 @@ type
     MEClearCurrent: TMenuItem;
     MEMacros: TMenuItem;
     MFViewMacros: TMenuItem;
+    ApplicationEvents: TApplicationEvents;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -126,6 +127,8 @@ type
     procedure MEClearCurrentClick(Sender: TObject);
     procedure MEMacrosClick(Sender: TObject);
     procedure MFViewMacrosClick(Sender: TObject);
+    function ApplicationEventsHelp(Command: Word; Data: Integer;
+      var CallHelp: Boolean): Boolean;
   strict private
     type
       TVIItemUpdateCallback = reference to procedure(const VI: TVInfo);
@@ -344,7 +347,6 @@ resourcestring
     + 'error.';
   sCompilePermission = 'Compiling will overwrite %0:s.';
   sAnalysisErrTitle = 'Analysis Errors';
-  sAnalysisErrDesc = 'List of errors found during analysis:';
   sFileFlagMaskRequired = 'You can only specify flags that are included in '
     + 'File Flags Mask.'#13#13
     + 'Edit File Flags Mask, adding the required flags then try again.';
@@ -366,7 +368,6 @@ resourcestring
   sViewRCTitle = 'View RC Statements';
   sViewResMacrosTitle = 'View Macro Values';
   // Other
-  sViewRCDesc = 'The resource file is:';  // dlg box descriptive text
   sUntitled = '[Untitled]'; // caption text when file is un-named
 
 const
@@ -395,6 +396,15 @@ begin
 end;
 
 { TMainForm }
+
+function TMainForm.ApplicationEventsHelp(Command: Word; Data: Integer;
+  var CallHelp: Boolean): Boolean;
+begin
+  // Prevent Delphi Help system from interfering!
+  // This prevents exception being raised when F1 is pressed over menu items
+  // while still allowing our custom help manager to operate.
+  CallHelp := False;
+end;
 
 procedure TMainForm.CheckCompiler;
   {Checks if a resource compiler is specified, and exists if specified. Allows
@@ -1380,7 +1390,6 @@ begin
         DBox.List := EList;
         // set the dlg box's caption and description
         DBox.Title := sAnalysisErrTitle;
-        DBox.Description := sAnalysisErrDesc;
         DBox.HelpTopic := 'dlg-analysis';
         // display the dlg box
         DBox.ShowModal;
@@ -1883,7 +1892,6 @@ begin
       DBox.List := List;
       // Set the dlg box's caption and description
       DBox.Title := sViewRCTitle;
-      DBox.Description := sViewRCDesc;
       DBox.HelpTopic := 'dlg-viewrc';
       // Display the dlg
       DBox.ShowModal;
