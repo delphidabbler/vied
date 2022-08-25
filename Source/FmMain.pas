@@ -404,6 +404,7 @@ begin
   // This prevents exception being raised when F1 is pressed over menu items
   // while still allowing our custom help manager to operate.
   CallHelp := False;
+  Result := True;
 end;
 
 procedure TMainForm.CheckCompiler;
