@@ -174,11 +174,11 @@ type
     procedure ResolveMacros;
     function RenderVersionNumberFromCode(const Code: string): TPJVersionNumber;
 
+    ///  <summary>Replaces all fields and macros in a given string info item by
+    ///  their values then returns result with trailing spaces trimmed.
+    ///  </summary>
     function EvaluateFields(StrInfoId: TStrInfo): string;
-      {Replaces all fields in a string info item by their values.
-        @param StrInfoId [in] String info item to be processed.
-        @return Given string info item with fields substuted by values.
-      }
+
     function FieldValue(I: TTokens): string;
       {Gets value of a field.
         @param I [in] Field identifier.
@@ -721,29 +721,26 @@ begin
 end;
 
 function TVInfo.EvaluateFields(StrInfoId: TStrInfo): string;
-  {Replaces all fields in a string info item by their values.
-    @param StrInfoId [in] String info item to be processed.
-    @return Given string info item with fields substuted by values.
-  }
 var
   TokenIdx: Integer;  // index of field token in string
-  I: TTokens;         // loop control
+  Token: TTokens;     // loop control
 begin
-  // Copy string info item value to result
-  Result := StrInfo[StrInfoId];
-  // Process macros
-  Result := ProcessMacros(Result);
+  // Process macros in strining info item
+  Result := ProcessMacros(StrInfo[StrInfoId]);
   // Scan through all tokens, searching for each one in string turn
-  for I := Low(TTokens) to High(TTokens) do
+  for Token := Low(TTokens) to High(TTokens) do
+  begin
     // Repeatedly check output string for presence of a field's token until all
     // instances have been replaced by value
     repeat
       // Check if field token is in result string
-      TokenIdx := Pos(Fields[I], Result);
+      TokenIdx := Pos(Fields[Token], Result);
       // There is a field token, replace it by its value
       if TokenIdx > 0 then
-        Replace(Fields[I], FieldValue(I), Result);
+        Replace(Fields[Token], FieldValue(Token), Result);
     until TokenIdx = 0;
+  end;
+  Result := TrimRight(Result);
 end;
 
 function TVInfo.FieldValue(I: TTokens): string;
