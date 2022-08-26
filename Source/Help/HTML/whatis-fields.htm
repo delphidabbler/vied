@@ -29,7 +29,7 @@
       &amp; Macros</a>.
     </p>
     <p>
-      Fields and macros are kinds of named variable which can be embedded
+      Fields and macros are kinds of named variables which can be embedded
       anywhere in the text of a <em>String Information</em> item in a version
       information document. Macros can also be used in the <em>File Version
       #</em> and <em>Product Version #</em> <em>Fixed File Information</em>
@@ -50,13 +50,13 @@
       in text. Instead the special field <code>&lt;&lt;&gt;</code> must be used.
     </p>
     <p>
-      Not all fields are valid for use with each string info item. This
+      Not all fields are valid for use with each string information item. This
       restriction does not apply to macros.
     </p>
     <p>
       While fields and macros are similar, they are not the same. The main
       difference is that there are a fixed number of fields, each of which has
-      a pre-determined purpose, while macros have user defined values.
+      a pre-determined purpose, while macros are entirely user defined.
     </p>
     <h2 id="fields">
       Fields
@@ -208,7 +208,7 @@
     <p>
       Macros are created and edited in the <a href="dlg-macros.htm">Macros</a>
       dialogue box. Information about macros is stored with your version
-      information data in a <code>.vi</code> file.
+      information data in a .vi file.
     </p>
     <p>
       Macro names are restricted to alphabetic and numeric characters. Examples
@@ -262,12 +262,12 @@
       <li>
         As a consequence of 1, you can't use (or view the value of)
         <em>External</em> macros that reference relative file paths until the
-        the <code>.vi</code> file has been saved.
+        the .vi file has been saved.
       </li>
     </ol>
     <p>
       These macros are useful if there is a need to share the value recorded in
-      the file in different parts of the source code.
+      the file in different parts of a program's source code.
     </p>
     <h3>
       Include
@@ -276,8 +276,8 @@
       Like <em>External</em> macros, <em>Include</em> macros definitions
       reference data in a given file. Where <em>Include</em> macro definitions
       differ is that they include one or more additional macros that are defined
-      in the file. Instead the referenced file names both the macro names and
-      their values.
+      in the file. The referenced file names both the macro names and their
+      values.
     </p>
     <p>
       To avoid names clashes between macros with the same name being defined in
@@ -286,7 +286,7 @@
       name of a macro from the included file.
     </p>
     <p>
-      For example, assume that if macro <code>alice</code> is defined as
+      For example, assume that macro <code>alice</code> is defined as
       &quot;<code>.\alice.dat</code>&quot; and macro <code>bob</code> is defined
       as &quot;<code>.\bob.dat</code>&quot;. If <code>alice.dat</code> contains
     </p>
@@ -307,7 +307,7 @@ answer=Bloggs</pre>
       and <code>&lt;%bob.answer&gt;</code>. When used, the macros are replaced
       with <code>42</code>, <code>56</code>, &quot;<code>Surname?</code>&quot;
       and &quot;<code>Bloggs</code>&quot; respectively. Notice that no macros
-      named <code>&lt;%alice</code>&gt;</code> or <code>&lt;%bob&gt;</code>are
+      named <code>&lt;%alice</code>&gt;</code> or <code>&lt;%bob&gt;</code> are
       defined.
     </p>
     <p>
@@ -315,23 +315,22 @@ answer=Bloggs</pre>
     </p>
     <ol>
       <li>
-        As is implied by the example file content shown above then lines
-        beginning with the <code>#</code> character are ignored and can be used
-        as comments. Blank lines are also ignored.
+        Lines beginning with the <code>#</code> character are ignored and can be
+        used as comments. Blank lines are also ignored.
       </li>
       <li>
         As with <em>External</em> macros you can't use (or view the value of)
         macros defined by <em>Include</em> macros that reference relative file
-        paths until the <code>.vi</code> file has been saved.
+        paths until the .vi file has been saved.
+      </li>
+      <li>
+        Like all macros, the names of those defined in <em>Include</em> files
+        are restricted to alphabetic and numeric characters.
       </li>
     </ol>
     <p>
       This type of macro is useful whenever definitions in the form
-      <code>name=value</code> are useful in more than one source code file.
-    </p>
-    <p>
-      The same naming conventions used for macro names apply to those defined in
-      include files, i.e. valid characters and letters or digits.
+      <code>name=value</code> are referenced in more than one source code file.
     </p>
   </body>
 </html>

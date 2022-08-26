@@ -15,7 +15,7 @@
 </HEAD><BODY>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="analysis errors dialog box">
+		<param name="Name" value="analysis errors dialogue box">
 		<param name="Local" value="HTML\dlg-analysis.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
@@ -100,7 +100,7 @@
 		<param name="Local" value="HTML\dlg-filesave.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="setup dialog box">
+		<param name="Name" value="setup dialogue box">
 		<param name="Local" value="HTML\dlg-setup.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
