@@ -264,9 +264,12 @@ procedure TStringEditor.btnOKClick(Sender: TObject);
   dialog box if all OK, otherwise return to editing.
     @param Sender [in] Not used.
   }
+var
+  TheText: string;
 begin
   inherited;
-  if fCompulsory and (edStr.Text = '') then
+  TheText := TrimRight(edStr.Text);
+  if fCompulsory and (TheText = '') then
     // No text entered and text is compulsory: check whether to accept anyway
     if MsgStringRequired(fKind) = mrOk then
     begin
@@ -278,8 +281,8 @@ begin
       // Ignoring warning: accept empty entry
       fText := ''
   else if FieldsValid then
-    // We're OK: fields are valid
-    fText := edStr.Text
+    // We're OK: fields are valid: trim trailing spaces
+    fText := TheText
   else
   begin
     // Some invalid fields are present - return to memo control
