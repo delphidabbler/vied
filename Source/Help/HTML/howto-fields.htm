@@ -160,12 +160,12 @@
     </h4>
     <p>
       Maybe you want more than one value stored externally to the
-      <code>.vi</code> file. You <em>could</em> create a different &quot;External&quot;
-      macro for each such value. Alternatively, if you can create a file with
-      lines in the format <code>Name=Value</code> you can reference that file
-      from an &quot;Include&quot; macro. The &quot;Include&quot; macro is
-      replaced by dynamically created &quot;Define&quot; type macros for each
-      line of the code.
+      <code>.vi</code> file. You <em>could</em> create a different
+      &quot;External&quot; macro for each such value. Alternatively, if you can
+      create a file with lines in the format <code>Name=Value</code> you can
+      reference that file from an &quot;Include&quot; macro. The
+      &quot;Include&quot; macro is replaced by dynamically created
+      &quot;Define&quot; type macros for each line of the code.
     </p>
     <p>
       Returning to the example above where we used <code>version</code> and
@@ -178,8 +178,10 @@
 build=123</pre>
     <p>
       This file will result in two new macros being created:
-      <code>&lt;%ver.version&gt;</code> and <code>&lt;%ver.build&gt;</code>. Note the
-      dot separated macro name, where the part before the dot is the name of the &quot;Include&quot; macro and the part after the dot is the name of a macro defined in <code>version.ini</code>.
+      <code>&lt;%ver.version&gt;</code> and <code>&lt;%ver.build&gt;</code>.
+      Note the dot separated macro name, where the part before the dot is the
+      name of the &quot;Include&quot; macro and the part after the dot is the
+      name of a macro defined in <code>version.ini</code>.
     </p>
     <p>
       Similar to before you can set the <code>File Version #</code> field to
