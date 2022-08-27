@@ -1515,7 +1515,15 @@ begin
     SL.Add('*/');
     SL.Add('');
   end;
-  // Write VERSIONINFO statement with #define for identifier if required
+  // Write any required definitions for symbols unknown to BRCC32
+  if (fFileType = VFT_DRV)
+    and (fFileSubType = VFT2_DRV_VERSIONED_PRINTER) then
+  begin
+    SL.Add('/* Define symbols not recognised by BRCC32 by default */');
+    SL.Add('#define VFT2_DRV_VERSIONED_PRINTER 0x0000000C');
+    SL.Add('');
+  end;
+  // Write VERSIONINFO statement, with define for identifier if required
   if Identifier <> '' then
   begin
     SL.Add(Format('#define %s 1', [Identifier]));
