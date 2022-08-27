@@ -192,8 +192,8 @@ type
       DefFileType = VFT_APP;
       DefFileFlagsMask = 0;
       DefFileFlags = 0;
-      DefLanguageCode = $0809;
-      DefCharSetCode = 1252;
+      DefLanguageCode = $0809;    // UK English
+      DefCharSetCode = 1200;      // Unicode
       DefString = '';
       DefIdentifier = 'VERINFO';
   public
