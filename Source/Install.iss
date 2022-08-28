@@ -2,7 +2,7 @@
 ; v. 2.0. If a copy of the MPL was not distributed with this file, You can
 ; obtain one at http://mozilla.org/MPL/2.0/
 ;
-; Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+; Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
 ;
 ; Version Information Editor install file generation script for use with Inno
 ; Setup.
@@ -25,7 +25,7 @@
 #define HelpFile "VIEd.chm"
 #define LicenseFile "License.rtf"
 #define ReadmeFile "ReadMe.txt"
-#define ChangeLogFile "ChangeLog.txt"
+#define ChangeLogFile "..\CHANGELOG.md"
 #define InstDocsDir "Docs"
 #define InstUninstDir "Uninstall"
 #define OutDir SourcePath + "..\Exe"          /* SourcePath is predefined */
@@ -91,7 +91,7 @@ Source: {#SrcExePath}{#HelpFile}; DestDir: {app}; Flags: ignoreversion
 ; Documentation
 Source: {#SrcDocsPath}{#LicenseFile}; DestDir: {app}\{#InstDocsDir}; Flags: ignoreversion
 Source: {#SrcDocsPath}{#ReadmeFile}; DestDir: {app}\{#InstDocsDir}; Flags: isreadme ignoreversion
-Source: {#SrcDocsPath}{#ChangeLogFile}; DestDir: {app}\{#InstDocsDir}; Flags: ignoreversion
+Source: {#ChangeLogFile}; DestDir: {app}\{#InstDocsDir}; Flags: ignoreversion
 
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#ExeFile}

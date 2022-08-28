@@ -2,37 +2,11 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <!--
- * Build.html
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Instructions for building Version Information Editor.
- *
- * $Rev$
- * $Date$
- *
- * ***** BEGIN LICENSE BLOCK *****
- *
- * Version: MPL 1.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- *
- * The Original Code is Build.html
- *
- * The Initial Developer of the Original Code is Peter Johnson
- * (http://www.delphidabbler.com/).
- *
- * Portions created by the Initial Developer are Copyright (C) 2011-2014 Peter
- * Johnson. All Rights Reserved.
- *
- * Contributors:
- *   NONE
- *
- * ***** END LICENSE BLOCK *****
+ * Copyright (C) 2011-2022, Peter Johnson (https://delphidabbler.com).
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -218,11 +192,10 @@
 </h3>
 
 <p>
-  Yes, you need an executable version of the tool you are going to build! Use an
-  existing stable version from v2.11.2. This tool is used to compile
-  the program's version information (<code>.vi</code>) files into intermediate
-  resource source (<code>.rc</code>) files. You can get the latest stable
-  version from
+  Yes, you need an executable version of the tool you are going to build!
+  v2.14.0 or later is required. This tool is used to compile the program's
+  version information (<code>.vi</code>) files into intermediate resource source
+  (<code>.rc</code>) files. You can get the latest stable version from
   <a
     href="https://delphidabbler.com/software/vied"
   >https://delphidabbler.com/software/vied</a>.
@@ -317,7 +290,7 @@
 </p>
 
 <dl class="spaced">
-  
+
   <dt>
     <code>DELPHIROOT</code> (required)
   </dt>
@@ -325,7 +298,7 @@
     <code>DELPHIROOT</code> must be set to the install directory of the version
     of Delphi being used.
   </dd>
-  
+
   <dt>
     <code>DELPHIDABLIB_U</code> (required)
   </dt>
@@ -334,7 +307,7 @@
     DelphiDabbler components .dcu files are installed in the version of
     Delphi to be used.
   </dd>
-  
+
   <dt>
     <code>DELPHIDABLIB_R</code> (required)
   </dt>
@@ -343,7 +316,7 @@
     DelphiDabbler components .res &amp; .dfm files are installed in the version of
     Delphi to be used.
   </dd>
-  
+
   <dt>
     <code>INNOSETUP</code>
   </dt>
@@ -351,7 +324,7 @@
     Set to the install directory of Inno Setup 5. If not set Inno Setup must be
     on the system path.
   </dd>
-  
+
   <dt>
     <code>VIEDROOT</code>
   </dt>
@@ -359,7 +332,7 @@
     Set to the path where the DelphiDabbler Version Information Editor (VIEd) is
     installed. If not set VIEd must be on the system path.
   </dd>
-  
+
   <dt>
     <code>HHCROOT</code>
   </dt>
@@ -367,7 +340,7 @@
     Set to the path where the Microsoft HTML Help Compiler is installed. If not
     set the compiler must be on the system path.
   </dd>
-  
+
   <dt>
     <code>ZIPROOT</code>
   </dt>
@@ -375,7 +348,7 @@
     Set to the path where Zip.exe is installed. If not set Zip.exe must be on
     the system path.
   </dd>
-  
+
   <dt>
     <code>RELEASEFILENAME</code>
   </dt>

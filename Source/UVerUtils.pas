@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
  *
  * Version information utility routines and look-up tables. Provides conversions
  * between version information codes and text descriptions etc.
@@ -371,27 +371,17 @@ function StrToVersionNumber(const Str: string): TPJVersionNumber;
     @param Str [in] String representation of version number.
     @return Required TPJVersion information structure.
   }
-const
-  Separator = ',';
-  AltSeparator = '.';
 var
   Start: Integer;               // cursor to walk along string}
   NumStr: string;               // current number in string}
   Nums: array[1..4] of LongInt; // array to hold numbers from string}
   I: Integer;                   // loop control variable}
-  Sep: Char;
 begin
-  // Decide whether to use VI style version number separator (',') or
-  // alternatate separator ('.')
-  Sep := Separator;
-  if Pos(Sep, Str) = 0 then
-    Sep := AltSeparator;
-
   Start := 1;
-  // Iterate for each version number (there are up to four in string)
+  // Iterate for each version number (there are four in string)
   for I := Low(Nums) to High(Nums) do
   begin
-    NextField(Str, Start, NumStr, Sep);
+    NextField(Str, Start, NumStr, ',');
     NumStr := TrimSpaces(NumStr);
     // Convert NumStr into the required number - default 0 if no valid value
     if NumStr <> '' then
