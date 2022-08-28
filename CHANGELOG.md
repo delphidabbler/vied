@@ -1,5 +1,31 @@
 # Change Log for Version Information Editor
 
+## v2.14.0 of 28 August 2022
+
++ New feature that enables the user to define "macros" that can be used to insert text in one or more version information strings and in the file and product version fixed file information entries. There are three types of macro:
+  + "Define" macros: values are stored directly in the .vi file.
+  + "External" macros: these macros get their values from an external file.
+  + "Include" macros: these macros refer to external files that in turn define on of more related macros.
++ UI changes to support macros, including a new macro editor and facility to view the available macros and their values.
++ Dotted quads are now acceptable version strings (e.g. 1.2.3.4) in addition to the comma separated values that were previously required (e.g. 1, 2, 3, 4).
++ String information item changes:
+  + The 128 character limit has been lifted.
+  + Trailing spaces are removed from strings.
++ Predefined version information values updated to conform with current Microsoft documentation.
++ Default character set / code page changed from "Miscellaneous" to "Unicode".
++ "Silent" version of the program now has new exit code 4 to report bad file references in macros.
++ Fixed some UI bugs:
+  + Hidden text removed from some dialogue boxes.
+  + Errors are no longer reported when F1 is pressed when a menu is displayed.
++ .vi file now has a file version number. Started this at v1.
++ Program manifest now declares compatible versions of Windows up to Windows 10/11.
++ Some refactoring.
++ Now compiled with Delphi XE.
++ Help file updated with changes.
++ License help topic updated and license displayed by the installer is now an exact copy of the help topic text.
++ Change log converted from plain text to markdown format.
++ Other documentation updated and overhauled.
+
 ## v2.13.1 of 14 October 2014
 
 + Fixed bug [GitHub issue 21] where symbol used to indicate a hex value in main window was inconsistent: the Pascal '$' symbol is now always used in preference to the C style '0x'.
