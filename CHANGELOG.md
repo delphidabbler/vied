@@ -4,19 +4,19 @@
 
 + Fixed bug [GitHub issue 21] where symbol used to indicate a hex value in main window was inconsistent: the Pascal '$' symbol is now always used in preference to the C style '0x'.
 + Documentation changes:
-  - Added source code section to read-me file [GitHub issue 19]
-  - Corrected error in change log [GitHub issue 20].
+  + Added source code section to read-me file [GitHub issue 19]
+  + Corrected error in change log [GitHub issue 20].
 
 ## v2.13.0 of 23 February 2014
 
 + Gave GUI, especially main window, a refresh with a new font and a more attractive way of displaying version information [GitHub issue 12].
 + New commands:
-  - User preferences can now be deleted via the new "File | Clear Preferences" menu option [GitHub issue 2].
-  - The selected version information item can now be deleted or cleared to its default value by pressing Ctrl+Del or choosing the new "Edit | Clear Current Item" menu item [GitHub issue 3].
+  + User preferences can now be deleted via the new "File | Clear Preferences" menu option [GitHub issue 2].
+  + The selected version information item can now be deleted or cleared to its default value by pressing Ctrl+Del or choosing the new "Edit | Clear Current Item" menu item [GitHub issue 3].
 + Made various improvements to dialogue boxes:
-  - Increased size of dialogues used to display generated RC source and analysis errors [GitHub issue 7].
-  - Changed comments editor and string editor dialogues to be resizeable and to display the position of the edit control's caret [GitHub issues 5 & 6].
-  - Version number edit dialogue now has "+1" buttons to quickly increment each part of the version number [GitHub issue 4].
+  + Increased size of dialogues used to display generated RC source and analysis errors [GitHub issue 7].
+  + Changed comments editor and string editor dialogues to be resizeable and to display the position of the edit control's caret [GitHub issues 5 & 6].
+  + Version number edit dialogue now has "+1" buttons to quickly increment each part of the version number [GitHub issue 4].
 + File Flag Masks now defaults to zero instead of $3F for new documents. Attempting to edit File Flags when File Flag Mask is zero now results in an error message being displayed.
 + Fix Bug [GitHub issue 14]: Insufficient memory allocated for window class names in dialogue boxes.
 + Program now requires Windows XP as a minimum operating system.
@@ -27,10 +27,10 @@
 ## v2.12.0 of 28 March 2011
 
 + Completely rewrote help system:
-  - Changed from WinHelp to HTML Help.
-  - Removed context sensitive help for menu options.
-  - Help menu revised to access relevant topics in new help file.
-  - F1 rather than Ctrl+F1 now displays help contents.
+  + Changed from WinHelp to HTML Help.
+  + Removed context sensitive help for menu options.
+  + Help menu revised to access relevant topics in new help file.
+  + F1 rather than Ctrl+F1 now displays help contents.
 + Modified to compile cleanly with Delphi 2010 compiler.
 + Handling of common dialogue boxes changed to centre them over main window and to work with HTML help.
 + Stripped out Alt key bug fix and work around for Vista UI problems that were added in v2.11.2 as these are handled correctly by Delphi 2010.
@@ -72,8 +72,8 @@
 ## v2.10.0 of 18 November 2003
 
 + Added new facility to directly compile a .vi file to a predetermined output folder, details of which are stored in the .vi file, providing that an external compiler is configured. This was done by:
-  - adding a new File | Compile menu option with hot key F9;
-  - adding a new Edit | Compile Output Folder menu option to enable compiler output folder to be edited.
+  + adding a new File | Compile menu option with hot key F9;
+  + adding a new Edit | Compile Output Folder menu option to enable compiler output folder to be edited.
 + The help file was updated to cover the new features.
 
 ## v2.9.1 of 25 August 2003
@@ -137,6 +137,7 @@
 + Fixed bug where 32bit version of program was treating ProductVersion resource string as not being permitted whenever it was supplied.
 
 ## v2.0.0 of 13 April 1999 {Never publicly released}
+
 + Converted program to allow compilation as 16 bit and 32 bit programs, using Delphi 1 and Delphi 2 respectively.
 + Moved code previously called from StrProcs.pas library unit into main project.
 + Added an include file to provide information from 32bit Windows WinVer.h header that is not provided with Delphi 2.
