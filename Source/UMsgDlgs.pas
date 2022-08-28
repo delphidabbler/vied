@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
  *
  * Simple message dialogue boxes used by Version Information Editor program.
 }
@@ -17,8 +17,19 @@ interface
 
 uses
   // Delphi
-  Classes;
+  Dialogs, Classes;
 
+
+///  <summary>Displays a customised message dialog box.</summary>
+///  <param name="Msg">string [in] Message displayed in dialog box.</param>
+///  <param name="MsgType">TMsgDlgType [in] Type of dialog box. Must not be
+///  mtCustom.</param>
+///  <param name="Buttons">TMsgDlgButtons [in] Set of buttons to display in
+///  dialog box.</param>
+///  <returns>Word. Value indicating which button was pressed to close the
+///  dialog box.</returns>
+function Display(const Msg: string; const MsgType: TMsgDlgType;
+  const Buttons: TMsgDlgButtons): Word;
 
 ///  <summary>Displays dialog that warns that a file has changed and gets user's
 ///  response.</summary>
@@ -75,10 +86,10 @@ procedure MsgNeedFileFlag(const StrDesc: string);
 ///  <returns>Boolean. True if the user agrees.</returns>
 function MsgDeleteInvalidText(const StrDesc: string): Boolean;
 
-///  <summary>Displays an error message noting a field has been found in the
-///  text of a string item where the field is not valid for the string item.
-///  </summary>
-///  <param name="Field">string [in] Name of field.</param>
+///  <summary>Displays an error message noting a field or macro has been found
+///  in the text of a string item where the field is not valid for the string
+///  item.</summary>
+///  <param name="Field">string [in] Name of field or macro.</param>
 ///  <param name="StrDesc">string [in] Description of string item.</param>
 procedure MsgInvalidField(const Field, StrDesc: string);
 
@@ -105,7 +116,7 @@ implementation
 
 uses
   // Delphi
-  SysUtils, Controls, Dialogs, Forms,
+  SysUtils, Controls, Forms,
   // Project
   UHelp;
 
@@ -128,7 +139,7 @@ resourcestring
   sDeleteInvalidText = '%s should not have a value'#13
       + 'since the related file flag is not set.'#13#13
       + 'Do you wish to delete the text?';
-  sInvalidField = 'Field "%s" is not valid for %s.';
+  sInvalidField = 'Field or macro "%s" is not valid for %s.';
   sInvalidIdentifier = 'An identifier can''t start with a digit.';
   sNoAnalysisErrorsFound = 'No errors were found.';
   sFileAccessError = 'An error occurred while attempting to access file'#13
@@ -136,14 +147,6 @@ resourcestring
   sNoFileName = 'No file name was specified.';
   sUntitled = 'Untitled';
 
-///  <summary>Displays a customised message dialog box.</summary>
-///  <param name="Msg">string [in] Message displayed in dialog box.</param>
-///  <param name="MsgType">TMsgDlgType [in] Type of dialog box. Must not be
-///  mtCustom.</param>
-///  <param name="Buttons">TMsgDlgButtons [in] Set of buttons to display in
-///  dialog box.</param>
-///  <returns>Word. Value indicating which button was pressed to close the
-///  dialog box.</returns>
 function Display(const Msg: string; const MsgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons): Word;
 var

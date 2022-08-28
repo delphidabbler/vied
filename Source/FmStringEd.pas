@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
  *
  * String editor dialogue box. Allows user to enter multi or single line strings
  * and (optionally) to select required fields from a drop down list.
@@ -76,10 +76,6 @@ type
       {Read access method for Lines property.
         @return Reference to lines of string editor control.
       }
-    function GetMaxLength: Integer;
-      {Read access method for MaxLength property.
-        @return Maximum length of string editor control.
-      }
     procedure SetAllowEnter(const Value: Boolean);
       {Write access method for AllowEnter property. Determines if string editor
       receives return (enter) key presses.
@@ -93,11 +89,6 @@ type
     procedure SetLines(const Value: TStrings);
       {Write access method for Lines property. Updates string editor control.
         @param Value [in] New property value.
-      }
-    procedure SetMaxLength(const Value: Integer);
-      {Write access method for MaxLength property.
-        @param Value [in] New property value. Sets maximum length of string
-          editor.
       }
     procedure SetText(const Value: string);
       {Write access method for Text property: stores value and displays in
@@ -137,8 +128,6 @@ type
     property Kind: string write fKind;
       {Description of the kind of edit required - will be preceeded by 'Edit'
       (write only)}
-    property MaxLength: Integer read GetMaxLength write SetMaxLength;
-      {The maximum length of string that can be entered (0=unlimited)}
     property WrapLines: Boolean read fWrapLines write SetWrapLines;
       {Property true if lines are to be wrapped, false otherwise}
     property FixedWidthFont: Boolean read fFixedWidthFont
@@ -152,8 +141,7 @@ type
     property Text: string read fText write SetText;
       {The text entered by the user. The user can also set a default text to be
       used by assigning a string to the property before calling the dialogue
-      box. If lenght of string is not limited by MaxLength property then strings
-      returned by this property are truncated to 255 characters}
+      box.}
     property Lines: TStrings read GetLines write SetLines;
       {Lines entered by user - user can set default lines to be displayed by
       assigning a string list to the property before calling the dlg box}
@@ -264,9 +252,12 @@ procedure TStringEditor.btnOKClick(Sender: TObject);
   dialog box if all OK, otherwise return to editing.
     @param Sender [in] Not used.
   }
+var
+  TheText: string;
 begin
   inherited;
-  if fCompulsory and (edStr.Text = '') then
+  TheText := TrimRight(edStr.Text);
+  if fCompulsory and (TheText = '') then
     // No text entered and text is compulsory: check whether to accept anyway
     if MsgStringRequired(fKind) = mrOk then
     begin
@@ -278,8 +269,8 @@ begin
       // Ignoring warning: accept empty entry
       fText := ''
   else if FieldsValid then
-    // We're OK: fields are valid
-    fText := edStr.Text
+    // We're OK: fields are valid: trim trailing spaces
+    fText := TheText
   else
   begin
     // Some invalid fields are present - return to memo control
@@ -324,7 +315,7 @@ begin
       Exit;
     end;
     // Record part of string to be examined: i.e. all string after current field
-    Str := Copy(Str, Stop + 1, $FF);
+    Str := Copy(Str, Stop + 1, MaxInt);
     // Find start of next field if any
     Posn := Pos('<', Str);
   end;
@@ -360,7 +351,6 @@ resourcestring
   // Text that appears in dialog box
   sEdit = 'Edit %s';
   sEditTextLbl = '&Edit the required text below';
-  sMaxChars = '(max %d characters):';
 begin
   inherited;
   // Set caption
@@ -368,14 +358,9 @@ begin
   // Focus memo component and select all text unless unlimited text length
   edStr.SetFocus;
   edStr.SelStart := 0;
-  if MaxLength > 0 then
-    edStr.SelLength := Length(edStr.Text);
   // Update memo caption to indicate any maximum text length
   lblStr.Caption := sEditTextLbl;
-  if MaxLength > 0 then
-    lblStr.Caption := lblStr.Caption + ' ' + Format(sMaxChars, [MaxLength])
-  else
-    lblStr.Caption := lblStr.Caption + ':';
+  lblStr.Caption := lblStr.Caption + ':';
   // Make 1st field in combo box current
   cmbField.ItemIndex := 0;
   // Arrange dlg box according to whether field controls are being displayed
@@ -394,14 +379,6 @@ function TStringEditor.GetLines: TStrings;
   }
 begin
   Result := edStr.Lines;
-end;
-
-function TStringEditor.GetMaxLength: Integer;
-  {Read access method for MaxLength property.
-    @return Maximum length of string editor control.
-  }
-begin
-  Result := edStr.MaxLength;
 end;
 
 procedure TStringEditor.SetAllowEnter(const Value: Boolean);
@@ -455,14 +432,6 @@ procedure TStringEditor.SetLines(const Value: TStrings);
   }
 begin
   edStr.Lines := Value;
-end;
-
-procedure TStringEditor.SetMaxLength(const Value: Integer);
-  {Write access method for MaxLength property.
-    @param Value [in] New property value. Sets maximum length of string editor.
-  }
-begin
-  edStr.MaxLength := Value;
 end;
 
 procedure TStringEditor.SetText(const Value: string);

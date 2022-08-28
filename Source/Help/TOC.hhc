@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
  *
  * VIEd HTML Help table of contents file.
 -->
@@ -103,7 +103,7 @@
 			<param name="Local" value="HTML\howto-compile.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Use fields">
+			<param name="Name" value="Use fields and macros">
 			<param name="Local" value="HTML\howto-fields.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
@@ -141,7 +141,7 @@
 			<param name="Local" value="HTML\whatis-identifier.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Fields">
+			<param name="Name" value="Fields and Macros">
 			<param name="Local" value="HTML\whatis-fields.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">

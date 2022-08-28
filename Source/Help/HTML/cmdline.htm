@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
 -->
 <html>
   <head>
@@ -47,7 +47,7 @@
       .vi file, but with the extension changed to .rc.
     </p>
     <p>
-      Once the file has been generated, or if there is an error the program
+      Once the file has been generated, or if there is an error, the program
       terminates. The program retrurns one of the following exit codes:
     </p>
     <ul class="unspaced">
@@ -61,7 +61,12 @@
         2 &ndash; error: there was a problem loading the .vi file.
       </li>
       <li>
-        3 &ndash; error: there was a problem converting and/or writing the .rc file.
+        3 &ndash; error: there was a problem converting and/or writing the .rc
+        file.
+      </li>
+      <li>
+        4 &ndash; error: one or more external files referenced from macros does
+        not exist.
       </li>
     </ul>
     <h2>
@@ -69,7 +74,7 @@
     </h2>
     <p>
       If a directory path is passed as the only parameter on the command line
-      this is used as the default directory for all the program’s file dialog
+      this is used as the default directory for all the program's file dialogue
       boxes.
     </p>
     <p>

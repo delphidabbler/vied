@@ -2,7 +2,7 @@
 ; v. 2.0. If a copy of the MPL was not distributed with this file, You can
 ; obtain one at http://mozilla.org/MPL/2.0/
 ;
-; Copyright (C) 2011-2014, Peter Johnson (www.delphidabbler.com).
+; Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
 ;
 ; VIEd HTML Help project file.
 
@@ -37,11 +37,13 @@ HTML\dlg-setup.htm
 HTML\dlg-vernum.htm
 HTML\dlg-analysis.htm
 HTML\dlg-viewrc.htm
+HTML\dlg-viewmacros.htm
 HTML\dlg-fileopen.htm
 HTML\dlg-filesave.htm
 HTML\dlg-fileexport.htm
 HTML\dlg-compile.htm
 HTML\dlg-browserescomp.htm
+HTML\dlg-macros.htm
 HTML\menu.htm
 HTML\menu-file.htm
 HTML\menu-edit.htm

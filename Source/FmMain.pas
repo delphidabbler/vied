@@ -1,9 +1,9 @@
-{
+﻿{
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
  *
  * Main user interface and program logic for Version Information Editor.
 }
@@ -22,7 +22,7 @@ uses
   // DelphiDabbler components
   PJVersionInfo, PJAbout, PJDropFiles, PJWdwState,
   // Project
-  UCommonDlg, UVInfo;
+  UCommonDlg, UVInfo, AppEvnts;
 
 
 const
@@ -86,6 +86,9 @@ type
     MFSpacer3: TMenuItem;
     MFClearPreferences: TMenuItem;
     MEClearCurrent: TMenuItem;
+    MEMacros: TMenuItem;
+    MFViewMacros: TMenuItem;
+    ApplicationEvents: TApplicationEvents;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
@@ -122,6 +125,10 @@ type
     procedure DisplayListViewDblClick(Sender: TObject);
     procedure MFClearPreferencesClick(Sender: TObject);
     procedure MEClearCurrentClick(Sender: TObject);
+    procedure MEMacrosClick(Sender: TObject);
+    procedure MFViewMacrosClick(Sender: TObject);
+    function ApplicationEventsHelp(Command: Word; Data: Integer;
+      var CallHelp: Boolean): Boolean;
   strict private
     type
       TVIItemUpdateCallback = reference to procedure(const VI: TVInfo);
@@ -167,13 +174,10 @@ type
       complete.
         @param Msg [in/out] Not used.
       }
-    function GetVersionNumber(const VKind: string;
-      const Value: TPJVersionNumber): TPJVersionNumber;
-      {Gets a version number from user via a dialog box
-        @param VKind [in] Type of version information required.
-        @param Value [in] Default version number. Used if user cancels.
-        @return Edited version number or Value if users cancels.
-      }
+    ///  <summary>Get version number code from dialogue box</summary>
+    ///  <remarks>VKind [in] Type of version information required.</remarks>
+    function GetVersionNumber(const VKind: string; const Current: string):
+      string;
     function GetDropDownChoice(const AKind: string;
       const AList: TStringList; const DefChoice: string): string;
       {Gets a string from user from amongst a list of possible choices displayed
@@ -199,16 +203,18 @@ type
         @param EList [in] List of additional possibilities that may be selected.
         @return List of selected items. This is same as IList when method exits.
       }
+    ///  <summary>Gets string entered by the user in a dialog box. Text may
+    ///  optionally contain fields / macros.</summary>
+    ///  <param name="AKind">string [in] Describes item being edited.</param>
+    ///  <param name="DefChoice">string [in] [in] String to return if user
+    ///  cancels.</param>
+    ///  <param name="MustEnter">Boolean [in] Specifies whether user must enter
+    ///  some text.</param>
+    ///  <param name="ValidFields">TStringList [in] List of fields and macros
+    ///  that are valid for entry in text.</param>
+    ///  <returns>String entered by user or DefChoice is user cancels.</returns>
     function GetString(const AKind, DefChoice: string;
       const MustEnter: Boolean; const ValidFields: TStringList): string;
-      {Gets a string up to 128 characters entered by the user in a dialog box.
-      Text may optionally contain some "fields".
-        @param AKind [in] Describes item being edited.
-        @param DefChoice [in] String to return if user cancels.
-        @param MustEnter [in] True if user must enter some text.
-        @param ValidFields [in] Fields that are valid in entered text.
-        @return String enetred by user or DefChoice if user cancels.
-      }
     procedure CheckCompiler;
       {Checks if a resource compiler is specified, and exists if specified.
       Allows user to set up compiler if problems encountered.
@@ -310,11 +316,12 @@ implementation
 
 uses
   // Delphi
-  SysUtils, ShellAPI,
+  SysUtils, ShellAPI, Math, IOUtils,
   // Project units
   UHelp, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
   FmDropDownListEd, FmIdEd, FmNumberEd, FmResCompiler, FmResCompilerCheck,
-  FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd, FmResOutputDir;
+  FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd, FmResOutputDir,
+  FmMacroEd;
 
 {$R *.DFM}
 
@@ -331,8 +338,8 @@ resourcestring
       + 'Information Expert does not exist. Do you wish to edit'#13
       + 'the compiler''s details?'
       + #13#13'Click:'#13
-      + '   �   Yes to edit the compiler details.'#13
-      + '   �   No to make no changes.';
+      + '   •   Yes to edit the compiler details.'#13
+      + '   •   No to make no changes.';
   sClearPrefsQuery = 'Are you sure you want to clear your preferences?';
   sSuccess = 'File compiled successfully.';
   sCantRun = 'Can''t run resource compiler.'#13#13'Check compiler settings?';
@@ -342,7 +349,6 @@ resourcestring
     + 'error.';
   sCompilePermission = 'Compiling will overwrite %0:s.';
   sAnalysisErrTitle = 'Analysis Errors';
-  sAnalysisErrDesc = 'List of errors found during analysis:';
   sFileFlagMaskRequired = 'You can only specify flags that are included in '
     + 'File Flags Mask.'#13#13
     + 'Edit File Flags Mask, adding the required flags then try again.';
@@ -362,8 +368,8 @@ resourcestring
   sRCCommentsTitle = 'RC File Comments';
   sVICommentsTitle = 'VI File Comments';
   sViewRCTitle = 'View RC Statements';
+  sViewResMacrosTitle = 'View Macro Values';
   // Other
-  sViewRCDesc = 'The resource file is:';  // dlg box descriptive text
   sUntitled = '[Untitled]'; // caption text when file is un-named
 
 const
@@ -392,6 +398,16 @@ begin
 end;
 
 { TMainForm }
+
+function TMainForm.ApplicationEventsHelp(Command: Word; Data: Integer;
+  var CallHelp: Boolean): Boolean;
+begin
+  // Prevent Delphi Help system from interfering!
+  // This prevents exception being raised when F1 is pressed over menu items
+  // while still allowing our custom help manager to operate.
+  CallHelp := False;
+  Result := True;
+end;
 
 procedure TMainForm.CheckCompiler;
   {Checks if a resource compiler is specified, and exists if specified. Allows
@@ -824,14 +840,6 @@ end;
 
 function TMainForm.GetString(const AKind, DefChoice: string;
   const MustEnter: Boolean; const ValidFields: TStringList): string;
-  {Gets a string up to 128 characters entered by the user in a dialog box. Text
-  may optionally contain some "fields".
-    @param AKind [in] Describes item being edited.
-    @param DefChoice [in] String to return if user cancels.
-    @param MustEnter [in] True if user must enter some text.
-    @param ValidFields [in] Fields that are valid in entered text.
-    @return String enetred by user or DefChoice if user cancels.
-  }
 var
   Ed: TStringEditor;  // instance of dlg box
 begin
@@ -840,7 +848,6 @@ begin
   try
     // Set required properties
     Ed.Kind := AKind;               // info for title
-    Ed.MaxLength := 128;            // limit length of text to 128
     Ed.WrapLines := True;           // word-wrap lines
     Ed.FixedWidthFont := False;     // use a proportional font to display text
     Ed.MemoHeight := 102;           // set height of memo component
@@ -890,7 +897,7 @@ begin
 end;
 
 function TMainForm.GetVersionNumber(const VKind: string;
-  const Value: TPJVersionNumber): TPJVersionNumber;
+  const Current: string): string;
   {Gets a version number from user via a dialog box
     @param VKind [in] Type of version information required.
     @param Value [in] Default version number. Used if user cancels.
@@ -898,19 +905,24 @@ function TMainForm.GetVersionNumber(const VKind: string;
   }
 var
   Ed: TVerNumEditor;  // instance of version number editor dlg box
+  Macros: TStringList;
 begin
-  // Create instance of dlg box
+  Macros := nil;
   Ed := TVerNumEditor.Create(Self);
   try
+    Macros := TStringList.Create;
+    fVerInfo.AddMacros(Macros);
     // Set required properties
     Ed.Kind := VKind;               // info for title
-    Ed.VersionNumber := Value;      // default version number for editing
+    Ed.VersionNumberCode := Current;      // default version number for editing
+    Ed.ValidMacros := Macros;
     // Display dlg and respond to user input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return new version number (will be unchanged if user pressed cancel)
-    Result := Ed.VersionNumber;
+    Result := Ed.VersionNumberCode;
   finally
     Ed.Free;
+    Macros.Free;
   end;
 end;
 
@@ -1028,17 +1040,17 @@ begin
       sFileVersion,
       procedure (const VI: TVInfo)
       begin
-        VI.FileVersionNumber := GetVersionNumber(
-          sFile, VI.FileVersionNumber
+        VI.FileVersionNumberCode := GetVersionNumber(
+          sFile, VI.FileVersionNumberCode
         );
       end,
       procedure (const VI: TVInfo)
       begin
-        VI.FileVersionNumber := TVInfo.DefVersionNumber;
+        VI.FileVersionNumberCode := TVInfo.DefVersionNumber;
       end,
       function (const VI: TVInfo): string
       begin
-        Result := VersionNumberToStr(VI.FileVersionNumber);
+        Result := VI.FileVersionNumberCode;
       end
     );
     AddItem(
@@ -1046,17 +1058,17 @@ begin
       sProductVersion,
       procedure (const VI: TVInfo)
       begin
-        VI.ProductVersionNumber := GetVersionNumber(
-          sProduct, VI.ProductVersionNumber
+        VI.ProductVersionNumberCode := GetVersionNumber(
+          sProduct, VI.ProductVersionNumberCode
         );
       end,
       procedure (const VI: TVInfo)
       begin
-        VI.ProductVersionNumber := TVInfo.DefVersionNumber;
+        VI.ProductVersionNumberCode := TVInfo.DefVersionNumber;
       end,
       function (const VI: TVInfo): string
       begin
-        Result := VersionNumberToStr(VI.ProductVersionNumber);
+        Result := VI.ProductVersionNumberCode;
       end
     );
     AddItem(
@@ -1372,7 +1384,6 @@ begin
         DBox.List := EList;
         // set the dlg box's caption and description
         DBox.Title := sAnalysisErrTitle;
-        DBox.Description := sAnalysisErrDesc;
         DBox.HelpTopic := 'dlg-analysis';
         // display the dlg box
         DBox.ShowModal;
@@ -1440,6 +1451,29 @@ begin
   MECompOut.Enabled := HaveCompiler;
 end;
 
+procedure TMainForm.MEMacrosClick(Sender: TObject);
+var
+  Ed: TMacroEditor;
+resourcestring
+  sMacrosNotAvailable =
+    'Macros will not be available until the file has been saved';
+begin
+  Ed := TMacroEditor.Create(Self);
+  try
+    Ed.Macros := fVerInfo.Macros;
+    Ed.RelativeFilePath := fVerInfo.RelativeMacroFilePath;
+    if Ed.ShowModal = mrOK then
+    begin
+      fVerInfo.Macros := Ed.Macros;
+      fChanged := True;
+      if not fVerInfo.HasBeenSaved and (fVerInfo.Macros.Count > 0) then
+        Display(sMacrosNotAvailable, mtWarning, [mbOK]);
+    end;
+  finally
+    Ed.Free;
+  end;
+end;
+
 procedure TMainForm.MERCCommentsClick(Sender: TObject);
   {Edit | RC File Comments menu click event handler.
     @param Sender [in] Not used.
@@ -1452,7 +1486,6 @@ begin
   try
     // Set properties of dlg box
     Ed.Kind := sRCCommentsTitle;      // goes in title
-    Ed.MaxLength := 0;                // no limit on length of text
     Ed.WrapLines := False;            // don't wrap lines
     Ed.FixedWidthFont := True;        // use a fixed width font to display text
     Ed.MemoHeight := 215;             // set height of memo component
@@ -1507,7 +1540,6 @@ begin
   try
     // Set properties of dlg box
     Ed.Kind := sVICommentsTitle;      // goes in title
-    Ed.MaxLength := 0;                // no limit on length of text
     Ed.WrapLines := False;            // don't wrap lines
     Ed.FixedWidthFont := True;        // use a fixed width font to display text
     Ed.MemoHeight := 215;             // set height of memo component
@@ -1709,6 +1741,131 @@ begin
   SaveFile;
 end;
 
+procedure TMainForm.MFViewMacrosClick(Sender: TObject);
+var
+  DBox: TViewListDlg;             // dialogue box instance
+  Report: TStringList;            // report to be displayed in dialogue box
+  Idx: Integer;                   // loops through resolved macros
+  Macro: TVInfo.TMacro;           // enumerates macros as entered
+  Macros: TArray<TVInfo.TMacro>;  // array of macros as entered
+  NameColWidth: Integer;
+  ValueColWidth: Integer;
+  Ruling: string;
+  BadFiles: TStringList;
+  BadFile: string;
+resourcestring
+  sNoMacros = 'No macros defined';
+  sNotSaved = '** Macros not available until the file has been saved';
+  sResolvedMacroFmt = '%0:s = "%1:s"';
+  sNameColHeader = 'Name';
+  sValueColHeader = 'Value';
+  sBadFilesPrefix = '!! Warning !!'#13#10#13#10
+    + 'The externally referenced files listed below '#13#10
+    + 'cannot be found:'#13#10;
+  sBadFilesSuffix = 'This means that the macros are either incomplete'#13#10
+    + 'or are wrong.'#13#10#13#10
+    + 'You can edit the macros using the Edit | Macros'#13#10
+    + 'menu option.';
+
+const
+  ColumnFmt = '| %-*s | %-*s |';  // do not localise
+
+  {****
+     This is quick and dirty code - it really needs pulling out into a separate
+     form unit
+  ****}
+
+begin
+  // Create report
+  Report := TStringList.Create;
+  try
+    if fVerInfo.Macros.Count = 0 then
+      Report.Add(sNoMacros)
+    else if not fVerInfo.HasBeenSaved then
+      Report.Add(sNotSaved)
+    else
+    begin
+      // Calculate width of table columns & rulings required
+      NameColWidth := Length(sNameColHeader);
+      ValueColWidth := Length(sValueColheader);
+      for Idx := 0 to Pred(fVerInfo.ResolvedMacros.Count) do
+      begin
+        NameColWidth := Max(
+          Length(fVerInfo.ResolvedMacros.Names[Idx]), NameColWidth
+        );
+        ValueColWidth := Max(
+          Length(fVerInfo.ResolvedMacros.ValueFromIndex[Idx]), ValueColWidth
+        );
+      end;
+      Ruling := '|' + StringOfChar('-', NameColWidth + 2) + '|'
+        + StringOfChar('-', ValueColWidth + 2) + '|';
+
+      // Add table header
+      Report.Add(
+        Format(
+          ColumnFmt,
+          [NameColWidth, sNameColHeader, ValueColWidth, sValueColHeader]
+        )
+      );
+      Report.Add(Ruling);
+
+      // Add details of resolved macros
+      for Idx := 0 to Pred(fVerInfo.ResolvedMacros.Count) do
+        Report.Add(
+          Format(
+            ColumnFmt,
+            [
+              NameColWidth,
+              fVerInfo.ResolvedMacros.Names[Idx],
+              ValueColWidth,
+              fVerInfo.ResolvedMacros.ValueFromIndex[Idx]
+            ]
+          )
+        );
+
+      // Add table footer
+      Report.Add(Ruling);
+    end;
+
+    BadFiles := TStringList.Create;
+    try
+      Macros := fVerInfo.CrackMacros(fVerInfo.Macros);
+      for Macro in Macros do
+      begin
+        if Macro.Cmd in [mcExternal, mcImport] then
+        begin
+          if not TFile.Exists(fVerInfo.AdjustFilePath(Macro.Value)) then
+            BadFiles.Add(Macro.Value);
+        end;
+      end;
+      if BadFiles.Count > 0 then
+      begin
+        Report.Add('');
+        Report.Add(sBadFilesPrefix);
+        for BadFile in BadFiles do
+          Report.Add('  • ' + BadFile);
+        Report.Add('');
+        Report.Add(sBadFilesSuffix);
+      end;
+    finally
+      BadFiles.Free;
+    end;
+
+    // Display report in dialogue box
+    DBox := TViewListDlg.Create(Self);
+    try
+      DBox.List := Report;
+      DBox.Title := sViewResMacrosTitle;
+      DBox.HelpTopic := 'dlg-viewmacros';
+      DBox.ShowModal;
+    finally
+      DBox.Free;
+    end;
+  finally
+    Report.Free;
+  end;
+end;
+
 procedure TMainForm.MFViewRCClick(Sender: TObject);
   {File | View RC Statements menu click event handler.
     @param Sender [in] Not used.
@@ -1727,7 +1884,6 @@ begin
       DBox.List := List;
       // Set the dlg box's caption and description
       DBox.Title := sViewRCTitle;
-      DBox.Description := sViewRCDesc;
       DBox.HelpTopic := 'dlg-viewrc';
       // Display the dlg
       DBox.ShowModal;
@@ -1871,6 +2027,11 @@ begin
     // Load input file
     try
       fVerInfo.LoadFromFile(InFile);
+      if fVerInfo.HasBadMacroFileReferences then
+      begin
+        ExitCode := 4;
+        Exit;
+      end;
     except
       ExitCode := 2;  // error 2 => exception on loading file
       Exit;

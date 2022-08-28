@@ -42,7 +42,6 @@ object MainForm: TMainForm
         HeaderAlign = taLeftJustify
         FooterAlign = taLeftJustify
         TitleImage = -1
-        ExtendedImage = -1
       end
       item
         Header = 'Translation Information'
@@ -51,7 +50,6 @@ object MainForm: TMainForm
         HeaderAlign = taLeftJustify
         FooterAlign = taLeftJustify
         TitleImage = -1
-        ExtendedImage = -1
       end
       item
         Header = 'String Information'
@@ -60,7 +58,6 @@ object MainForm: TMainForm
         HeaderAlign = taLeftJustify
         FooterAlign = taLeftJustify
         TitleImage = -1
-        ExtendedImage = -1
       end>
     GroupView = True
     ReadOnly = True
@@ -126,6 +123,10 @@ object MainForm: TMainForm
         Caption = '&View RC Statements...'
         OnClick = MFViewRCClick
       end
+      object MFViewMacros: TMenuItem
+        Caption = 'View Macro Values...'
+        OnClick = MFViewMacrosClick
+      end
       object MFSpacer3: TMenuItem
         Caption = '-'
       end
@@ -161,6 +162,10 @@ object MainForm: TMainForm
       object MEVIComments: TMenuItem
         Caption = '&VI Comments...'
         OnClick = MEVICommentsClick
+      end
+      object MEMacros: TMenuItem
+        Caption = 'Macros...'
+        OnClick = MEMacrosClick
       end
       object MECompOut: TMenuItem
         Caption = 'Compiler &Output Folder...'
@@ -266,5 +271,10 @@ object MainForm: TMainForm
     OnDropFiles = FileCatcherDropFiles
     Left = 32
     Top = 264
+  end
+  object ApplicationEvents: TApplicationEvents
+    OnHelp = ApplicationEventsHelp
+    Left = 144
+    Top = 32
   end
 end

@@ -7,7 +7,11 @@
  *
  * Version information utility routines and look-up tables. Provides conversions
  * between version information codes and text descriptions etc.
+ *
+ * Implementation based on Microsoft documentation at
+ * https://docs.microsoft.com/en-us/windows/win32/menurc/versioninfo-resource
 }
+
 
 
 unit UVerUtils;
@@ -23,6 +27,12 @@ uses
   PJVersionInfo;
 
 
+const
+  // Constant not defined in Windows unit on Delphi XE
+  // *** Constant not understood by BRCC32 - must be defined in .rc file in case
+  //     used.
+  VFT2_DRV_VERSIONED_PRINTER = $0000000C;
+
 { --- Styles of hex symbols that can be used --- }
 
 const
@@ -32,10 +42,15 @@ const
 
 { --- Version number routines --- }
 
-function VersionNumberToStr(const VN: TPJVersionNumber): string;
+function VersionNumberToStr(const V1, V2, V3, V4: Integer;
+  const UseCommas: Boolean = True): string; overload;
+function VersionNumberToStr(const VN: TPJVersionNumber;
+  const UseCommas: Boolean = True): string; overload; inline;
   {Converts a version number into a string that can be used in a VERSIONINFO
   resource statement.
     @param VN [in] Version number to convert.
+    @param UseCommas [in] Indicates whether comma or dot style version string
+      is required: True => use commas, False => use dots.
     @return Required string representation of version number.
   }
 function StrToVersionNumber(const Str: string): TPJVersionNumber;
@@ -336,14 +351,18 @@ end;
 
 { --- Version numbers --- }
 
-function VersionNumberToStr(const VN: TPJVersionNumber): string;
-  {Converts a version number into a string that can be used in a VERSIONINFO
-  resource statement.
-    @param VN [in] Version number to convert.
-    @return Required string representation of version number.
-  }
+function VersionNumberToStr(const V1, V2, V3, V4: Integer;
+  const UseCommas: Boolean = True): string; overload;
+const
+  FmtStr: array[Boolean] of string = ('%d.%d.%d.%d', '%d, %d, %d, %d');
 begin
-  Result := Format('%d, %d, %d, %d', [VN.V1, VN.V2, VN.V3, VN.V4]);
+  Result := Format(FmtStr[UseCommas], [V1, V2, V3, V4]);
+end;
+
+function VersionNumberToStr(const VN: TPJVersionNumber;
+  const UseCommas: Boolean = True): string; overload;
+begin
+  Result := VersionNumberToStr(VN.V1, VN.V2, VN.V3, VN.V4, UseCommas);
 end;
 
 function StrToVersionNumber(const Str: string): TPJVersionNumber;
@@ -381,15 +400,25 @@ end;
 
 const
   // Array of OS codes to symbolic constants
-  FileOSTable: array[0..6] of TCodeStrMap = (
+  FileOSTable: array[0..7] of TCodeStrMap = (
     (Code: VOS_DOS;           Str: 'VOS_DOS';           ),
     (Code: VOS_NT;            Str: 'VOS_NT';            ),
     (Code: VOS__WINDOWS16;    Str: 'VOS__WINDOWS16';    ),
     (Code: VOS__WINDOWS32;    Str: 'VOS__WINDOWS32';    ),
     (Code: VOS_DOS_WINDOWS16; Str: 'VOS_DOS_WINDOWS16'; ),
     (Code: VOS_DOS_WINDOWS32; Str: 'VOS_DOS_WINDOWS32'; ),
-    (Code: VOS_NT_WINDOWS32;  Str: 'VOS_NT_WINDOWS32';  )
+    (Code: VOS_NT_WINDOWS32;  Str: 'VOS_NT_WINDOWS32';  ),
+    (Code: VOS_UNKNOWN;       Str: 'VOS_UNKNOWN';       )
   );
+  // Note: the following values are not supported above since they are not
+  // documented by Microsoft:
+  // * VOS__PM16      (=$00002)
+  // * VOS__PM32      (=$00003)
+  // * VOS_OS216      (=$20000)
+  // * VOS_OS232      (=$30000)
+  // * VOS_OS216_PM16 (=$20002)
+  // * VOS_OS232_PM32 (=$30003)
+  // The values of the 1st four of the above are reserved by Microsoft
 
 function FileOSToStr(const OS: LongInt): string;
   {Gets symbolic constant representing an OS code.
@@ -592,19 +621,23 @@ end;
 
 const
   // Maps driver sub-type code to symbolic constants.
-  DriverSubTypeTable: array[0..10] of TCodeStrMap = (
-    (Code: VFT2_UNKNOWN;          Str: 'VFT2_UNKNOWN';          ),
-    (Code: VFT2_DRV_COMM;         Str: 'VFT2_DRV_COMM';         ),
-    (Code: VFT2_DRV_PRINTER;      Str: 'VFT2_DRV_PRINTER';      ),
-    (Code: VFT2_DRV_KEYBOARD;     Str: 'VFT2_DRV_KEYBOARD';     ),
-    (Code: VFT2_DRV_LANGUAGE;     Str: 'VFT2_DRV_LANGUAGE';     ),
-    (Code: VFT2_DRV_DISPLAY;      Str: 'VFT2_DRV_DISPLAY';      ),
-    (Code: VFT2_DRV_MOUSE;        Str: 'VFT2_DRV_MOUSE';        ),
-    (Code: VFT2_DRV_NETWORK;      Str: 'VFT2_DRV_NETWORK';      ),
-    (Code: VFT2_DRV_SYSTEM;       Str: 'VFT2_DRV_SYSTEM';       ),
-    (Code: VFT2_DRV_INSTALLABLE;  Str: 'VFT2_DRV_INSTALLABLE';  ),
-    (Code: VFT2_DRV_SOUND;        Str: 'VFT2_DRV_SOUND';        )
+  DriverSubTypeTable: array[0..11] of TCodeStrMap = (
+    (Code: VFT2_UNKNOWN;                Str: 'VFT2_UNKNOWN';              ),
+    (Code: VFT2_DRV_COMM;               Str: 'VFT2_DRV_COMM';             ),
+    (Code: VFT2_DRV_PRINTER;            Str: 'VFT2_DRV_PRINTER';          ),
+    (Code: VFT2_DRV_KEYBOARD;           Str: 'VFT2_DRV_KEYBOARD';         ),
+    (Code: VFT2_DRV_LANGUAGE;           Str: 'VFT2_DRV_LANGUAGE';         ),
+    (Code: VFT2_DRV_DISPLAY;            Str: 'VFT2_DRV_DISPLAY';          ),
+    (Code: VFT2_DRV_MOUSE;              Str: 'VFT2_DRV_MOUSE';            ),
+    (Code: VFT2_DRV_NETWORK;            Str: 'VFT2_DRV_NETWORK';          ),
+    (Code: VFT2_DRV_SYSTEM;             Str: 'VFT2_DRV_SYSTEM';           ),
+    (Code: VFT2_DRV_INSTALLABLE;        Str: 'VFT2_DRV_INSTALLABLE';      ),
+    (Code: VFT2_DRV_SOUND;              Str: 'VFT2_DRV_SOUND';            ),
+    (Code: VFT2_DRV_VERSIONED_PRINTER;  Str: 'VFT2_DRV_VERSIONED_PRINTER' )
   );
+  // Note: the following value is not supported above since it is not
+  // documented by Microsoft:
+  // * VFT2_DRV_COMM  (=10)
 
 function PvtDriveSubTypeToStr(const FSType: LongInt): string;
   {Converts a driver sub-type code to a symbolic constant.
@@ -689,6 +722,10 @@ const
     (Code: VS_FF_INFOINFERRED;  Str: 'VS_FF_INFOINFERRED' ),
     (Code: VS_FF_SPECIALBUILD;  Str: 'VS_FF_SPECIALBUILD' )
   );
+  // Note: VS_FF_INFOINFERRED (=$10), included above, is no longer documented by
+  // Microsoft, but the official value that represents all VS_FF_xxx flags or'd
+  // together, VS_FFI_FILEFLAGSMASK, has value $3F, which includes
+  // VS_FF_INFOINFERRED. Therefore the flag has been left in the table.
 
 function FileFlagSetToStr(const FFlags: LongInt): string;
   {Builds a string containing a '+' delimited string of symbolic constants of
@@ -760,14 +797,10 @@ function ValidFileFlagsMask(const Mask: LongInt): Boolean;
     @param Mask [in] Mask to be checked.
     @return True if Mask is valid, False if not.
   }
-const
-  // Bit-set of all valid codes
-  AllFlags: LongInt = VS_FF_DEBUG or VS_FF_PRERELEASE or VS_FF_PATCHED or
-    VS_FF_PRIVATEBUILD or VS_FF_INFOINFERRED or VS_FF_SPECIALBUILD;
 begin
   // Given Mask anded with complement of set comprising all valid flags should
   // be zero - if it's not then Mask must contain an invalid file flag code
-  Result := ((Mask and not AllFlags) = 0);
+  Result := ((Mask and not VS_FFI_FILEFLAGSMASK) = 0);
 end;
 
 function ValidFileFlags(const FFlags, Mask: LongInt): Boolean;
@@ -810,7 +843,7 @@ const
     (Code: $0413; Str: 'Dutch'                     ),
     (Code: $0414; Str: 'Norwegian - Bokmål'        ),
     (Code: $0415; Str: 'Polish'                    ),
-    (Code: $0416; Str: 'Brazilian Portuguese'      ),
+    (Code: $0416; Str: 'Portuguese (Brazil)'       ),
     (Code: $0417; Str: 'Rhaeto-Romanic'            ),
     (Code: $0418; Str: 'Romanian'                  ),
     (Code: $0419; Str: 'Russian'                   ),
@@ -825,12 +858,12 @@ const
     (Code: $0804; Str: 'Simplified Chinese'        ),
     (Code: $0807; Str: 'Swiss German'              ),
     (Code: $0809; Str: 'U.K. English'              ),
-    (Code: $080A; Str: 'Mexican Spanish'           ),
+    (Code: $080A; Str: 'Spanish (Mexico)'          ),
     (Code: $080C; Str: 'Belgian French'            ),
     (Code: $0810; Str: 'Swiss Italian'             ),
     (Code: $0813; Str: 'Belgian Dutch'             ),
     (Code: $0814; Str: 'Norwegian - Nynorsk'       ),
-    (Code: $0816; Str: 'Portuguese'                ),
+    (Code: $0816; Str: 'Portuguese (Portugal)'     ),
     (Code: $081A; Str: 'Serbo-Croatian (Cyrillic)' ),
     (Code: $0C0C; Str: 'Canadian French'           ),
     (Code: $100C; Str: 'Swiss French'              )
@@ -885,18 +918,18 @@ end;
 const
   // Map of character set codes to the descriptions of the codes
   CharSetTable: array[0..11] of TCodeStrMap = (
-    (Code: 0;     Str: '7-bit ASCII'                         ),
-    (Code: 932;   Str: 'Windows, Japan (Shift - JIS X-0208)' ),
-    (Code: 949;   Str: 'Windows, Korea (Shift - KSC 5601)'   ),
-    (Code: 950;	  Str: 'Windows, Taiwan (GB5)'               ),
-    (Code: 1200;	Str: 'Unicode'                             ),
-    (Code: 1250;	Str: 'Windows, Latin-2 (Eastern European)' ),
-    (Code: 1251;	Str: 'Windows, Cyrillic'                   ),
-    (Code: 1252;	Str: 'Windows, Multilingual'               ),
-    (Code: 1253;	Str: 'Windows, Greek'                      ),
-    (Code: 1254;	Str: 'Windows, Turkish'                    ),
-    (Code: 1255;	Str: 'Windows, Hebrew'                     ),
-    (Code: 1256;  Str: 'Windows, Arabic'                     )
+    (Code:    0;  Str: '7-bit ASCII'                ),
+    (Code:  932;  Str: 'Japan (Shift - JIS X-0208)' ),
+    (Code:  949;  Str: 'Korea (Shift - KSC 5601)'   ),
+    (Code:  950;  Str: 'Taiwan (Big5)'              ),
+    (Code: 1200;  Str: 'Unicode'                    ),
+    (Code: 1250;  Str: 'Latin-2 (Eastern European)' ),
+    (Code: 1251;  Str: 'Cyrillic'                   ),
+    (Code: 1252;  Str: 'Multilingual'               ),
+    (Code: 1253;  Str: 'Greek'                      ),
+    (Code: 1254;  Str: 'Turkish'                    ),
+    (Code: 1255;  Str: 'Hebrew'                     ),
+    (Code: 1256;  Str: 'Arabic'                     )
   );
 
 function CharCodeToStr(const CharCode: Word): string;

@@ -7,7 +7,7 @@ inherited StringEditor: TStringEditor
   OnResize = FormResize
   OnShow = FormShow
   ExplicitWidth = 619
-  ExplicitHeight = 440
+  ExplicitHeight = 441
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBody: TPanel
@@ -58,17 +58,6 @@ inherited StringEditor: TStringEditor
       Style = csDropDownList
       DropDownCount = 6
       TabOrder = 1
-      Items.Strings = (
-        '#F1'
-        '#F2'
-        '#F3'
-        '#F4'
-        '#P1'
-        '#P2'
-        '#P3'
-        '#P4'
-        'YEAR'
-        'SHORTFNAME')
     end
     object btnInsert: TButton
       Left = 256

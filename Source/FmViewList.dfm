@@ -8,13 +8,6 @@ inherited ViewListDlg: TViewListDlg
     Height = 287
     ExplicitWidth = 479
     ExplicitHeight = 287
-    object lblList: TLabel
-      Left = 0
-      Top = 0
-      Width = 409
-      Height = 13
-      AutoSize = False
-    end
     object edList: TMemo
       Left = 0
       Top = 0
@@ -32,9 +25,6 @@ inherited ViewListDlg: TViewListDlg
       ReadOnly = True
       ScrollBars = ssBoth
       TabOrder = 0
-      ExplicitTop = 18
-      ExplicitWidth = 409
-      ExplicitHeight = 223
     end
   end
 end
