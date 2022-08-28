@@ -203,16 +203,18 @@ type
         @param EList [in] List of additional possibilities that may be selected.
         @return List of selected items. This is same as IList when method exits.
       }
+    ///  <summary>Gets string entered by the user in a dialog box. Text may
+    ///  optionally contain fields / macros.</summary>
+    ///  <param name="AKind">string [in] Describes item being edited.</param>
+    ///  <param name="DefChoice">string [in] [in] String to return if user
+    ///  cancels.</param>
+    ///  <param name="MustEnter">Boolean [in] Specifies whether user must enter
+    ///  some text.</param>
+    ///  <param name="ValidFields">TStringList [in] List of fields and macros
+    ///  that are valid for entry in text.</param>
+    ///  <returns>String entered by user or DefChoice is user cancels.</returns>
     function GetString(const AKind, DefChoice: string;
       const MustEnter: Boolean; const ValidFields: TStringList): string;
-      {Gets a string up to 128 characters entered by the user in a dialog box.
-      Text may optionally contain some "fields".
-        @param AKind [in] Describes item being edited.
-        @param DefChoice [in] String to return if user cancels.
-        @param MustEnter [in] True if user must enter some text.
-        @param ValidFields [in] Fields that are valid in entered text.
-        @return String enetred by user or DefChoice if user cancels.
-      }
     procedure CheckCompiler;
       {Checks if a resource compiler is specified, and exists if specified.
       Allows user to set up compiler if problems encountered.
@@ -838,14 +840,6 @@ end;
 
 function TMainForm.GetString(const AKind, DefChoice: string;
   const MustEnter: Boolean; const ValidFields: TStringList): string;
-  {Gets a string up to 128 characters entered by the user in a dialog box. Text
-  may optionally contain some "fields".
-    @param AKind [in] Describes item being edited.
-    @param DefChoice [in] String to return if user cancels.
-    @param MustEnter [in] True if user must enter some text.
-    @param ValidFields [in] Fields that are valid in entered text.
-    @return String enetred by user or DefChoice if user cancels.
-  }
 var
   Ed: TStringEditor;  // instance of dlg box
 begin
@@ -854,7 +848,6 @@ begin
   try
     // Set required properties
     Ed.Kind := AKind;               // info for title
-    Ed.MaxLength := 0;              // no limit to length of text
     Ed.WrapLines := True;           // word-wrap lines
     Ed.FixedWidthFont := False;     // use a proportional font to display text
     Ed.MemoHeight := 102;           // set height of memo component
@@ -1493,7 +1486,6 @@ begin
   try
     // Set properties of dlg box
     Ed.Kind := sRCCommentsTitle;      // goes in title
-    Ed.MaxLength := 0;                // no limit on length of text
     Ed.WrapLines := False;            // don't wrap lines
     Ed.FixedWidthFont := True;        // use a fixed width font to display text
     Ed.MemoHeight := 215;             // set height of memo component
@@ -1548,7 +1540,6 @@ begin
   try
     // Set properties of dlg box
     Ed.Kind := sVICommentsTitle;      // goes in title
-    Ed.MaxLength := 0;                // no limit on length of text
     Ed.WrapLines := False;            // don't wrap lines
     Ed.FixedWidthFont := True;        // use a fixed width font to display text
     Ed.MemoHeight := 215;             // set height of memo component
