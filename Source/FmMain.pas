@@ -854,7 +854,7 @@ begin
   try
     // Set required properties
     Ed.Kind := AKind;               // info for title
-    Ed.MaxLength := 128;            // limit length of text to 128
+    Ed.MaxLength := 0;              // no limit to length of text
     Ed.WrapLines := True;           // word-wrap lines
     Ed.FixedWidthFont := False;     // use a proportional font to display text
     Ed.MemoHeight := 102;           // set height of memo component
