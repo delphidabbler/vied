@@ -20,7 +20,7 @@ VIEd requires Windows XP and later.
 Source Code
 -----------
 
-VIEd is written in Object Pascal and targeted at Delphi 2010, although any later non-Unicode compiler should suffice.
+VIEd is written in Object Pascal and targeted at Delphi XE, although any later Delphi compiler should suffice.
 
 See `Build.html` in the repo root for information about how to build the program from code.
 
