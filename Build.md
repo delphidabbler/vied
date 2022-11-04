@@ -30,33 +30,27 @@ You can use the Delphi IDE to edit the code and test compile it, but final build
 
 The following command line tools are required to compile the whole project using the build scripts.
 
-* `DCC32`
+* `DCC32` - The Delphi command line compiler.
+* `BRCC32` - The Borland resource compiler. This is used to compile resource source (`.rc`) files.
+* `MAKE` - The Borland Make tool. This is used to build the project from the makefile.
 
-  The Delphi command line compiler.
-  
-* `BRCC32`
-
-  The Borland resource compiler. This is used to compile resource source (`.rc`) files.
-
-The following environment variables are associated with these tools:
-
-* `DELPHIROOT`- required. Should be set to the install directory of the version of Delphi being used. `DCC32` and `BRCC32` are expected to be in the `Bin` sub-directory of `DELPHIROOT`.
-
-### Borland Make
-
-This is the make tool that ships with Delphi. You can use any version that works.
+The `DELPHIROOT` environment variable must be set to the install directory of the version of Delphi being used. All the above tools are expected to be located in the `Bin` sub-directory of `DELPHIROOT`.
 
 ### DelphiDabbler Version Information Editor
 
-Yes, you need an executable version of the tool you are going to build! v2.14.0 or later is required. This tool is used to compile the program's version information (`.vi`) files into intermediate resource source (`.rc`) files. You can get the latest stable version from [https://delphidabbler.com/software/vied](https://delphidabbler.com/software/vied).
+Yes, you need an executable version of the tool you are going to build! v2.14.0 or later is required. This tool is used to compile the program's version information (`.vi`) files into intermediate resource source (`.rc`) files.
+
+You can get the latest stable version from [https://delphidabbler.com/software/vied](https://delphidabbler.com/software/vied).
 
 Version Information Editor is expected to be on the system path unless its install directory is specified by the `VIEDROOT` environment variable.
 
 ### Inno Setup
 
-The Unicode version of the Inno setup command line compiler is needed to create _CodeSnip_'s install program. Any v5 release from v5.4.0 (u) is required as is a compatible version of the ISPP pre-processor. v6 is not suitable. You can get Inno Setup with ISPP at [http://www.jrsoftware.org/isinfo.php](https://www.jrsoftware.org/isinfo.php). Choose the Unicode version. If you already have the ANSI version the Unicode version can be installed alongside it - just use a different install directory and program group name.
+The Unicode version of the Inno setup command line compiler is needed to create _CodeSnip_'s install program. Any v5 release from v5.4.0 (u) is required as is a compatible version of the ISPP pre-processor. v6 is not suitable.
 
-The compiler is expected to be on the path unless its install directory is specified by the `INNOSETUP` environment variable.
+You can get Inno Setup with ISPP at [http://www.jrsoftware.org/isinfo.php](https://www.jrsoftware.org/isinfo.php). Choose the Unicode version. If you already have the ANSI version the Unicode version can be installed alongside it - just use a different install directory and program group name.
+
+The setup compiler is expected to be on the path unless its install directory is specified by the `INNOSETUP` environment variable.
 
 ### Microsoft HTML Help Compiler (HHC)
 
@@ -66,7 +60,9 @@ The program is expected to be on the path unless its install directory is specif
 
 ### Zip
 
-This program is used to create _VIEd_'s release file. You can get a Windows command line version at [http://stahlforce.com/dev/index.php?tool=zipunzip](http://stahlforce.com/dev/index.php?tool=zipunzip).
+This program is used to create _VIEd_'s release file.
+
+You can get a Windows command line version at [http://stahlforce.com/dev/index.php?tool=zipunzip](http://stahlforce.com/dev/index.php?tool=zipunzip).
 
 The program is expected to be on the path unless its install directory is specified by the `ZIPROOT` environment variable.
 
@@ -76,7 +72,9 @@ The program is expected to be on the path unless its install directory is specif
 
 First you need to get the source code of _Version Information Editor_. This is maintained in the **[delphidabbler/vied](https://github.com/delphidabbler/vied)** Git repository on GitHub.
 
-All releases back to v2.11.2 are available from the [GitHub releases page](https://github.com/delphidabbler/vied/releases). Choose the release you want from those listed and download an archive containing the required source code. Alternatively you can select a release tag or a branch and fork the repo.
+All releases back to v2.11.2 are available from the [GitHub releases page](https://github.com/delphidabbler/vied/releases). Choose the release you want from those listed and download an archive containing the required source code.
+
+Alternatively you can fork and clone the repo using Git. The `master` branch contains the source code of the latest release while the `develop` branch contains any changes made since the last release.
 
 ### Configure the Environment
 
@@ -84,41 +82,41 @@ The makefile makes use of the following environment:
 
 * `DELPHIROOT` (required)
 
-  `DELPHIROOT` must be set to the install directory of the version of Delphi being used.
+  Must be set to the install directory of the version of Delphi being used.
 
 * `DELPHIDABLIB_U` (required)
 
-  `DELPHIDABLIB_U` must be set to the directory where the required DelphiDabbler components .dcu files are installed in the version of Delphi to be used.
+  Must be set to the directory where the required DelphiDabbler components' .dcu files are installed.
 
 * `DELPHIDABLIB_R` (required)
 
-  `DELPHIDABLIB_R` must be set to the directory where the required DelphiDabbler components .res & .dfm files are installed in the version of Delphi to be used.
+  Must be set to the directory where the required DelphiDabbler components' .res & .dfm files are installed.
 
 * `INNOSETUP`
 
-  Set to the install directory of Inno Setup 5. If not set Inno Setup must be on the system path.
+  Set to the install directory of Inno Setup 5. If not set then Inno Setup must be on the system path.
 
 * `VIEDROOT`
 
-  Set to the path where the DelphiDabbler Version Information Editor (VIEd) is installed. If not set VIEd must be on the system path.
+  Set to the path where the DelphiDabbler Version Information Editor (VIEd) is installed. If not set then VIEd must be on the system path.
 
 * `HHCROOT`
 
-  Set to the path where the Microsoft HTML Help Compiler is installed. If not set the compiler must be on the system path.
+  Set to the path where the Microsoft HTML Help Compiler is installed. If not set then the compiler must be on the system path.
 
 * `ZIPROOT`
 
-  Set to the path where Zip.exe is installed. If not set Zip.exe must be on the system path.
+  Set to the path where Zip is installed. If not set then Zip must be on the system path.
 
 * `RELEASEFILENAME`
 
-  Set to the name of the zip file to be used to store a release. This file name should have no path or extension. If not set then "dd-vied" is used.
+  Set to the name of the zip file to be used to store a release. This file name should have no path or extension. If not set then `dd-vied` is used.
 
-You may find it convenient to create a batch file that sets up the environment that you run from a command window before running the makefile.
+You may find it convenient to create a batch file that sets up the environment variables. Such a batch file should be run before running `MAKE`.
 
 ### Configure the Source Tree
 
-After checking out or downloading and extracting the source code you should have the following directory structure:
+After obtaining the source code you should have the following directory structure:
 
 ```
 ./
@@ -136,20 +134,20 @@ After checking out or downloading and extracting the source code you should have
           +-- HTML           - HTML help topic files
 ```
 
-If your source tree also contains one or more of the `Bin`, `Exe` or `Release` directories that's OK, as will become clear later.
-
 The first thing to do before attempting to hack the code is to configure the source tree. Open a console window and navigate to the `Source` directory. Run any script you have created to set the environment variables then do:
 
 ```
 > make config
 ```
 
-This script does two things:
+This command does two things:
 
-1.  It creates the `Bin`, `Exe` and `Release` directories, along with various sub-directories of `Bin` that are required to receive the binary code. If any of these directories already existed they will have been emptied.
-2.  It creates the `.cfg` file from a template file. This file is required to configure the Delphi command line compiler. The `.cfg` file will be ignored by Subversion.
+1.  It creates the `Bin`, `Exe` and `Release` directories, along with various sub-directories of `Bin` that are required to receive the binary code. If any of these directories already existed they will be emptied.
+2.  It creates the `.cfg` file from a template file. This file is required to configure the Delphi command line compiler.
 
-If you intending to edit and compile the code using the Delphi IDE you must also run the following command from the `Source` directory:
+The above directories and the `.cfg` file will be ignored by Git.
+
+If you are intending to edit and compile the code using the Delphi IDE you must also run the following command from the `Source` directory:
 
 ```
 > make resources
@@ -171,11 +169,11 @@ The makefile offers several options. They are:
 
 * `make resources`
 
-  Compiles the resource files required to build the program. Files are placed in the `Bin` directory, which must exist.
+  Compiles the resource files required to build the program. The resulting `.res` files are placed in the `Bin` directory, which must exist.
 
 * `make pascal`
 
-  Compiles the pascal source using the required version of Delphi. Requires that resource files are present in the `Bin` directory. The compiled exe file is placed in the `Exe` directory.
+  Compiles the pascal source code. Requires that resource files are present in the `Bin` directory. The compiled executable file is placed in the `Exe` directory and `.dcu` files are written to the `Bin` directory.
 
 * `make vied`
 
@@ -191,7 +189,7 @@ The makefile offers several options. They are:
 
 * `make release`
 
-  Creates a zip file containing the necessary release files. By default the release file is named `dd-vied.zip` but this can be changed by setting the `RELEASEFILENAME` environment variable (see above).
+  Creates a zip file containing the necessary release files. By default the release file is named `dd-vied.zip` but this can be changed by setting the `RELEASEFILENAME` environment variable (see above). The `.zip` file is written to the `Release` directory.
 
 * `make everything` or `make`
 
