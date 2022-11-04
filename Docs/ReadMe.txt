@@ -95,7 +95,7 @@ http://delphidabbler.com/software/vied for program updates.
 Version Information Editor's source code is maintained in the delphidabbler/vied
 Git repository on GitHub at https://github.com/delphidabbler/vied
 
-Source code of all releases back to v2.11.2 are available from the GitHub
+Source code of all releases back to v2.13.0 are available from the GitHub
 repository's releases page. Choose the release you want from those listed and
 download an archive containing the required source code. Alternatively you can
 select a release tag or a branch and fork the repo.

@@ -72,7 +72,7 @@ The program is expected to be on the path unless its install directory is specif
 
 First you need to get the source code of _Version Information Editor_. This is maintained in the **[delphidabbler/vied](https://github.com/delphidabbler/vied)** Git repository on GitHub.
 
-All releases back to v2.11.2 are available from the [GitHub releases page](https://github.com/delphidabbler/vied/releases). Choose the release you want from those listed and download an archive containing the required source code.
+Releases back to v2.13.0 are available from the [GitHub releases page](https://github.com/delphidabbler/vied/releases). Choose the release you want from those listed and download an archive containing the required source code.
 
 Alternatively you can fork and clone the repo using Git. The `master` branch contains the source code of the latest release while the `develop` branch contains any changes made since the last release.
 

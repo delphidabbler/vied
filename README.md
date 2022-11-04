@@ -30,7 +30,7 @@ Contributions should be licensed under either the Mozilla Public License v2.0 (w
 
 ## Executable Code
 
-VIEd is distributed in a zip file containing a standard Windows installer. All releases from the latest back to v2.11.2 are available from the project's [releases page](https://github.com/delphidabbler/vied/releases).
+VIEd is distributed in a zip file containing a standard Windows installer. All releases from the latest back to v2.13.0 are available from the project's [releases page](https://github.com/delphidabbler/vied/releases).
 
 ## Documentation
 
