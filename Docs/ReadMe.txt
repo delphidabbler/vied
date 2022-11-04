@@ -11,7 +11,7 @@ Contents
 4. Uninstalling - instructions on how to uninstall the program
 5. Updates - details of where to check for program updates
 6. Source Code
-7. Getting in Touch - how to contact DelphiDabbler
+7. Issues - how to report bugs & request new features
 8. About DelphiDabbler
 
 
@@ -34,59 +34,48 @@ capable of running the required operating system will be suitable.
 3) Installation
 ---------------
 
-Version Information Editor is installed using the setup program. This should be
-named VIEd-Setup-9.9.9.exe, where 9.9.9 is replaced by the program version
-number.
+Version Information Editor is installed using a standard Windows, wizard based,
+setup program. This should be named VIEd-Setup-9.9.9.exe, where 9.9.9 is
+replaced by the program's version number.
 
 The setup program is usually distributed in a zip file that also contains this
-read-me file.
+read-me file. This zip file will be named vied-exe-9.9.9.zip, where 9.9.9 is the
+same version number noted above.
 
-Extract the setup program from the zip file and double click it to run.
+Extract the setup program from the zip file and run it to install the program.
 
-Please note that administrator privileges are required to run the installer. On
-Vista and later the program may also require elevation.
-
-The setup program is a standard wizard based installer, with the following
-pages:
-
-* Welcome page - press "Next" to begin the installation.
-
-* License page - read the license and select the "I accept the agreement" radio
-  button if you are happy with it. Then press "Next" to continue.
-
-* Destination Location page - choose a directory where you want to install the
-  program, or just accept the default. Press "Next" to continue once you've made
-  your choice.
-
-* Ready to Install page - displays the options you've chosen. Use "Back" to go
-  back if you want to change anything, or press "Install" to go ahead.
-  Installation now starts and a progress bar is briefly shown before the final
-  page is displayed.
-
-* Completion page - informs that the install has completed. This page gives the
-  option of starting the program and displaying this read-me file. Deselect the
-  options by un-ticking the adjacent check box. Click "Finish" to close the
-  wizard. VIEd is now installed.
+Please note that administrator privileges are required to run the installer. You
+may be prompted for permission to run the setup program and may need to provide
+an administrator password.
 
 
 4) Uninstalling
 ---------------
 
-To uninstall Version Information Editor open the control panel and start the
-"Programs and Features" applet (a.k.a "Add/Remove Programs"). Locate
-DelphiDabbler Version Information Editor in the list of installed programs and
-click the remove button. The uninstaller will now run, asking you to confirm
-that you want to uninstall.
+Version Information Editor can be uninstalled two ways:
 
-Note that the uninstaller requires administrator privileges. On Vista and later
-the uninstaller may also require elevation.
+Either:
+  Open the application settings app appropriate to your version of Windows,
+  locate DelphiDabbler Version Information Editor in the list of installed
+  programs and select the remove option;
+
+Or:
+  Locate and open the "Version Information Editor" entry on the Start menu then
+  click "Uninstall Version Information Editor".
+
+The uninstaller will now run. Follow the prompts and provide administrator
+authorisation as required. Version Information Editor will now be unistalled.
 
 
 5) Updates
 ----------
 
 Check the Version Information Editor web page at
-http://delphidabbler.com/software/vied for program updates.
+https://delphidabbler.com/software/vied to find the latest version of the
+program.
+
+Alternatively check the program's releases page on GitHub at
+https://github.com/delphidabbler/vied/releases
 
 
 6) Source Code
@@ -96,24 +85,24 @@ Version Information Editor's source code is maintained in the delphidabbler/vied
 Git repository on GitHub at https://github.com/delphidabbler/vied
 
 Source code of all releases back to v2.13.0 are available from the GitHub
-repository's releases page. Choose the release you want from those listed and
-download an archive containing the required source code. Alternatively you can
-select a release tag or a branch and fork the repo.
+repository's releases page at https://github.com/delphidabbler/vied/releases.
+Choose the release you want from those listed and download an archive containing
+the required source code.
+
+Git users can fork the project and clone the repository. The master branch
+contains the source code of the latest release while the develop is more up to
+date with later, unpublished, changes. The develop branch may be unstable.
 
 Notes on how to compile Version Information Editor from source code can be found
-in the file Build.html in the root of the repository in either the master branch
-or for the release you are interested in.
+in the file Build.md in the root of the repository. Note that, up to v2.14.0,
+build documentation was provided in a file named Build.html.
 
 
-7) Getting in Touch
--------------------
+7) Issues
+---------
 
-Please get in touch if you have any comments, suggestions or if you find any
-bugs. You can contact the author by completing the form at
-http://www.delphidabbler.com/contact.
-
-However bugs and feature requests should be made via the Version Information
-Tools Issue Tracker at http://delphidabbler.com/url/vied-issues
+Bugs reports and feature requests should be made via Version Information
+Editor's issues tracker at https://github.com/delphidabbler/vied/issues
 
 
 8) About DelphiDabbler
@@ -121,5 +110,5 @@ Tools Issue Tracker at http://delphidabbler.com/url/vied-issues
 
 The DelphiDabbler is Peter Johnson - a hobbyist Delphi programmer living in
 Ceredigion, Wales, UK. The DelphiDabbler website is at
-http://delphidabbler.com/ and contains all Peter's open source programs,
+https://delphidabbler.com/ and contains all Peter's open source programs,
 Delphi library code, programming articles, hints and tips and other resources.
