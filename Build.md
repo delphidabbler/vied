@@ -1,379 +1,127 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+# Version Information Editor Build Instructions
 
-<!--
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/
- *
- * Copyright (C) 2011-2022, Peter Johnson (https://delphidabbler.com).
--->
+## Introduction
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+_Version Information Editor_ is written in Object Pascal and is targeted at Delphi XE. The Delphi IDE can be used to modify the source and to perform test builds. Final builds should be done using the provided makefile, but you can get away with using the IDE if you don't change any resources.
 
-<head>
-  <title>
-    Building Version Information Editor
-  </title>
-  <style type="text/css">
-    body {
-      font-family: Verdana, Arial, sans-serif;
-    }
-    pre, code {
-      font-family: "Lucida Console", "Courier New", Courier, mono;
-    }
-    dl.spaced dt {
-      margin-top: 0.5em;
-    }
-    h1 {
-      text-align: center;
-    }
-    h2 {
-      padding-bottom: 0.25em;
-      border-bottom: 1px silver solid;
-    }
-    .indent {
-      margin-left: 2em;
-    }
-    ul.spaced li,
-    ol.spaced li {
-      margin-top: 0.5em;
-    }
-    .prompt {
-      color: blue;
-      font-weight: bold;
-    }
-    .note {
-      padding: 0.5em;
-      border: 1px silver dotted;
-    }
-  </style>
-</head>
+## Dependencies
 
-<body>
+Several DelphiDabbler libraries and components are required to compile _Version Information Editor_. They are:
 
-<h1>
-  Version Information Editor Build Instructions
-</h1>
+*   [Version Information Component](https://delphidabbler.com/software/verinfo) v3.3 or later.
+*   [About Box Component](https://delphidabbler.com/software/aboutbox) v3.5.1 or later.
+*   [Drop Files Components](https://delphidabbler.com/software/dropfiles) v5.0.2 or later.
+*   [Window State Components](https://delphidabbler.com/software/wdwstate) v5.3.1 or later.
+*   [Shell Folders Unit](https://delphidabbler.com/software/shellfolders) v2.3 or later.
 
-<h2>
-  Introduction
-</h2>
+These components must be installed into the Delphi component palette since they are required at design time.
 
-<p>
-  <em>Version Information Editor</em> is written in Object Pascal and is
-  targeted at Delphi XE. The Delphi IDE can be used to modify the source and
-  to perform test builds. Final builds should be done using the provided
-  makefile, but you can get away with using the IDE if you don't change any
-  resources.
-</p>
+All the components and classes must be installed in the same directory, so the easiest thing to do is to install everything into the Delphi user design time package. [See here](http://www.delphidabbler.com/url/install-comp) if you need help doing this.
 
-<h2>
-  Dependencies
-</h2>
+## Build Tools
 
-<p>
-  Several DelphiDabbler libraries and components are required to compile
-  <em>Version Information Editor</em>. They are:
-</p>
+The following tools are required to build _VIEd_.
 
-<ul class="spaced">
-  <li>
-    <a
-      href="https://delphidabbler.com/software/verinfo"
-    >Version Information Component</a> v3.3 or later.
-  </li>
-  <li>
-    <a
-      href="https://delphidabbler.com/software/aboutbox"
-    >About Box Component</a> v3.5.1 or later.
-  </li>
-  <li>
-    <a
-      href="https://delphidabbler.com/software/dropfiles"
-    >Drop Files Components</a> v5.0.2 or later.
-  </li>
-  <li>
-    <a
-      href="https://delphidabbler.com/software/wdwstate"
-    >Window State Components</a> v5.3.1 or later.
-  </li>
-  <li>
-    <a
-      href="https://delphidabbler.com/software/shellfolders"
-    >Shell Folders Unit</a> v2.3 or later.
-  </li>
-</ul>
+### Delphi
 
-<p>
-  These components must be installed into the Delphi component palette since
-  they are required at design time.
-</p>
+A copy of the Delphi XE command line compiler is required to build the object Pascal code from the provided makefile.
 
-<p>
-  All the components and classes must be installed in the same directory, so
-  the easiest thing to do is to install everything into the Delphi user design
-  time package. <a
-    href="http://www.delphidabbler.com/url/install-comp"
-  >See here</a> if you need help doing this.
-</p>
+You can use the Delphi IDE to edit the code and test compile it, but final builds should be created using the makefile, which requires the following tools that are supplied with Delphi:
 
-<h2>
-  Build Tools
-</h2>
+The following command line tools are required to compile the whole project using the build scripts.
 
-<p>
-  The following tools are required to build <em>VIEd</em>.
-</p>
+* `DCC32`
 
-<h3>
-  Delphi
-</h3>
+  The Delphi command line compiler.
+  
+* `BRCC32`
 
-<p>
-  A copy of the Delphi XE command line compiler is required to build the
-  object Pascal code from the provided makefile.
-</p>
+  The Borland resource compiler. This is used to compile resource source (`.rc`) files.
 
-<p>
-  You can use the Delphi IDE to edit the code and test compile it, but final
-  builds should be created using the makefile, which requires the following
-  tools that are supplied with Delphi:
-</p>
+The following environment variables are associated with these tools:
 
-<p>
-  The following command line tools are required to compile the whole project
-  using the build scripts.
-</p>
+* `DELPHIROOT`- required. Should be set to the install directory of the version of Delphi being used. `DCC32` and `BRCC32` are expected to be in the `Bin` sub-directory of `DELPHIROOT`.
 
-<dl class="spaced">
-  <dt>
-    <code>DCC32</code>
-  </dt>
-  <dd>
-    The Delphi command line compiler.
-  </dd>
+### Borland Make
 
-  <dt>
-    <code>BRCC32</code>
-  </dt>
-  <dd>
-    The Borland resource compiler. This is used to compile resource source
-    (<code>.rc</code>) files.
-  </dd>
-</dl>
+This is the make tool that ships with Delphi. You can use any version that works.
 
-<p>
-  The following environment variables are associated with these tools:
-</p>
+### DelphiDabbler Version Information Editor
 
-<dl>
-  <dt class="spaced">
-    <code>DELPHIROOT</code> - required.
-  </dt>
-  <dd>
-    Should be set to the install directory of the version of Delphi being
-    used. <code>DCC32</code> and <code>BRCC32</code> are expected to be in the
-    <code>Bin</code> sub-directory of <code>DELPHIROOT</code>.
-  </dd>
-</dl>
+Yes, you need an executable version of the tool you are going to build! v2.14.0 or later is required. This tool is used to compile the program's version information (`.vi`) files into intermediate resource source (`.rc`) files. You can get the latest stable version from [https://delphidabbler.com/software/vied](https://delphidabbler.com/software/vied).
 
-<h3>
-  Borland Make
-</h3>
+Version Information Editor is expected to be on the system path unless its install directory is specified by the `VIEDROOT` environment variable.
 
-<p>
-  This is the make tool that ships with Delphi. You can use any version that
-  works.
-</p>
+### Inno Setup
 
-<h3>
-  DelphiDabbler Version Information Editor
-</h3>
+The Unicode version of the Inno setup command line compiler is needed to create _CodeSnip_'s install program. Any v5 release from v5.4.0 (u) is required as is a compatible version of the ISPP pre-processor. v6 is not suitable. You can get Inno Setup with ISPP at [http://www.jrsoftware.org/isinfo.php](https://www.jrsoftware.org/isinfo.php). Choose the Unicode version. If you already have the ANSI version the Unicode version can be installed alongside it - just use a different install directory and program group name.
 
-<p>
-  Yes, you need an executable version of the tool you are going to build!
-  v2.14.0 or later is required. This tool is used to compile the program's
-  version information (<code>.vi</code>) files into intermediate resource source
-  (<code>.rc</code>) files. You can get the latest stable version from
-  <a
-    href="https://delphidabbler.com/software/vied"
-  >https://delphidabbler.com/software/vied</a>.
-</p>
+The compiler is expected to be on the path unless its install directory is specified by the `INNOSETUP` environment variable.
 
-<p>
-  Version Information Editor is expected to be on the system path unless its
-  install directory is specified by the <code>VIEDROOT</code> environment
-  variable.
-</p>
+### Microsoft HTML Help Compiler (HHC)
 
-<h3>
-  Inno Setup
-</h3>
+This command line compiler is supplied with Microsoft HTML Help Workshop. It is used to compile the _VIEd_ help file.
 
-<p>
-  The Unicode version of the Inno setup command line compiler is needed to
-  create <em>CodeSnip</em>'s install program. Any v5 release from v5.4.0 (u)
-  is required as is a compatible version of the ISPP pre-processor. v6 is
-  not suitable. You can get Inno Setup with ISPP at <a
-    href="https://www.jrsoftware.org/isinfo.php"
-  >http://www.jrsoftware.org/isinfo.php</a>. Choose the Unicode version. If you
-  already have the ANSI version the Unicode version can be installed alongside
-  it - just use a different install directory and program group name.
-</p>
+The program is expected to be on the path unless its install directory is specified by the `HHCROOT` environment variable.
 
-<p>
-  The compiler is expected to be on the path unless its install directory is
-  specified by the <code>INNOSETUP</code> environment variable.
-</p>
+### Zip
 
-<h3>
-  Microsoft HTML Help Compiler (HHC)
-</h3>
+This program is used to create _VIEd_'s release file. You can get a Windows command line version at [http://stahlforce.com/dev/index.php?tool=zipunzip](http://stahlforce.com/dev/index.php?tool=zipunzip).
 
-<p>
-  This command line compiler is supplied with Microsoft HTML Help Workshop. It
-  is used to compile the <em>VIEd</em> help file.
-</p>
+The program is expected to be on the path unless its install directory is specified by the `ZIPROOT` environment variable.
 
-<p>
-  The program is expected to be on the path unless its install directory is
-  specified by the <code>HHCROOT</code> environment variable.
-</p>
+## Preparation
 
-<h3>
-  Zip
-</h3>
+### Get the Source Code
 
-<p>
-  This program is used to create <em>VIEd</em>'s release file. You can get a
-  Windows command line version at
-  <a
-    href="http://stahlforce.com/dev/index.php?tool=zipunzip"
-  >http://stahlforce.com/dev/index.php?tool=zipunzip</a>.
-</p>
+First you need to get the source code of _Version Information Editor_. This is maintained in the **[delphidabbler/vied](https://github.com/delphidabbler/vied)** Git repository on GitHub.
 
-<p>
-  The program is expected to be on the path unless its install directory is
-  specified by the <code>ZIPROOT</code> environment variable.
-</p>
+All releases back to v2.11.2 are available from the [GitHub releases page](https://github.com/delphidabbler/vied/releases). Choose the release you want from those listed and download an archive containing the required source code. Alternatively you can select a release tag or a branch and fork the repo.
 
-<h2>
-  Preparation
-</h2>
+### Configure the Environment
 
-<h3>
-  Get the Source Code
-</h3>
+The makefile makes use of the following environment:
 
-<p>
-  First you need to get the source code of <em>Version Information Editor</em>.
-  This is maintained in the <strong><a
-    href="https://github.com/delphidabbler/vied"
-  >delphidabbler/vied</a></strong> Git repository on GitHub.
-</p>
+* `DELPHIROOT` (required)
 
-<p>
-  All releases back to v2.11.2 are available from the <a
-    href="https://github.com/delphidabbler/vied/releases"
-  >GitHub releases page</a>. Choose the release you want from those listed and
-  download an archive containing the required source code. Alternatively you can
-  select a release tag or a branch and fork the repo.
-</p>
+  `DELPHIROOT` must be set to the install directory of the version of Delphi being used.
 
-<h3>
-  Configure the Environment
-</h3>
+* `DELPHIDABLIB_U` (required)
 
-<p>
-  The makefile makes use of the following environment:
-</p>
+  `DELPHIDABLIB_U` must be set to the directory where the required DelphiDabbler components .dcu files are installed in the version of Delphi to be used.
 
-<dl class="spaced">
+* `DELPHIDABLIB_R` (required)
 
-  <dt>
-    <code>DELPHIROOT</code> (required)
-  </dt>
-  <dd>
-    <code>DELPHIROOT</code> must be set to the install directory of the version
-    of Delphi being used.
-  </dd>
+  `DELPHIDABLIB_R` must be set to the directory where the required DelphiDabbler components .res & .dfm files are installed in the version of Delphi to be used.
 
-  <dt>
-    <code>DELPHIDABLIB_U</code> (required)
-  </dt>
-  <dd>
-    <code>DELPHIDABLIB_U</code> must be set to the directory where the required
-    DelphiDabbler components .dcu files are installed in the version of
-    Delphi to be used.
-  </dd>
+* `INNOSETUP`
 
-  <dt>
-    <code>DELPHIDABLIB_R</code> (required)
-  </dt>
-  <dd>
-    <code>DELPHIDABLIB_R</code> must be set to the directory where the required
-    DelphiDabbler components .res &amp; .dfm files are installed in the version of
-    Delphi to be used.
-  </dd>
+  Set to the install directory of Inno Setup 5. If not set Inno Setup must be on the system path.
 
-  <dt>
-    <code>INNOSETUP</code>
-  </dt>
-  <dd>
-    Set to the install directory of Inno Setup 5. If not set Inno Setup must be
-    on the system path.
-  </dd>
+* `VIEDROOT`
 
-  <dt>
-    <code>VIEDROOT</code>
-  </dt>
-  <dd>
-    Set to the path where the DelphiDabbler Version Information Editor (VIEd) is
-    installed. If not set VIEd must be on the system path.
-  </dd>
+  Set to the path where the DelphiDabbler Version Information Editor (VIEd) is installed. If not set VIEd must be on the system path.
 
-  <dt>
-    <code>HHCROOT</code>
-  </dt>
-  <dd>
-    Set to the path where the Microsoft HTML Help Compiler is installed. If not
-    set the compiler must be on the system path.
-  </dd>
+* `HHCROOT`
 
-  <dt>
-    <code>ZIPROOT</code>
-  </dt>
-  <dd>
-    Set to the path where Zip.exe is installed. If not set Zip.exe must be on
-    the system path.
-  </dd>
+  Set to the path where the Microsoft HTML Help Compiler is installed. If not set the compiler must be on the system path.
 
-  <dt>
-    <code>RELEASEFILENAME</code>
-  </dt>
-  <dd>
-    Set to the name of the zip file to be used to store a release. This file
-    name should have no path or extension. If not set then &quot;dd-vied&quot;
-    is used.
-  </dd>
-</dl>
+* `ZIPROOT`
 
-<p>
-  You may find it convenient to create a batch file that sets up the environment
-  that you run from a command window before running the makefile.
-</p>
+  Set to the path where Zip.exe is installed. If not set Zip.exe must be on the system path.
 
-<h3>
-  Configure the Source Tree
-</h3>
+* `RELEASEFILENAME`
 
-<p>
-  After checking out or downloading and extracting the source code you should
-  have the following directory structure:
-</p>
+  Set to the name of the zip file to be used to store a release. This file name should have no path or extension. If not set then "dd-vied" is used.
 
-<pre>./
+You may find it convenient to create a batch file that sets up the environment that you run from a command window before running the makefile.
+
+### Configure the Source Tree
+
+After checking out or downloading and extracting the source code you should have the following directory structure:
+
+```
+./
   |
   +-- Docs                   - documentation
   |
@@ -385,182 +133,80 @@
           |
           +-- CSS            - style sheet used for help file
           |
-          +-- HTML           - HTML help topic files</pre>
+          +-- HTML           - HTML help topic files
+```
 
-<p>
-  If your source tree also contains one or more of the <code>Bin</code>,
-  <code>Exe</code> or <code>Release</code> directories that's OK, as will become
-  clear later.
-</p>
+If your source tree also contains one or more of the `Bin`, `Exe` or `Release` directories that's OK, as will become clear later.
 
-<p>
-  The first thing to do before attempting to hack the code is to configure the
-  source tree. Open a console window and navigate to the <code>Source</code>
-  directory. Run any script you have created to set the environment variables
-  then do:
-</p>
+The first thing to do before attempting to hack the code is to configure the source tree. Open a console window and navigate to the `Source` directory. Run any script you have created to set the environment variables then do:
 
-<pre class="indent"><span class="prompt">&gt;</span> make config</pre>
+```
+> make config
+```
 
-<p>
-  This script does two things:
-</p>
+This script does two things:
 
-<ol class="spaced">
-  <li>
-    It creates the <code>Bin</code>, <code>Exe</code> and
-    <code>Release</code> directories, along with various sub-directories of
-    <code>Bin</code> that are required to receive the binary code. If any of
-    these directories already existed they will have been emptied.
-  </li>
-  <li>
-    It creates the <code>.cfg</code> file from a template file. This file is
-    required to configure the Delphi command line compiler. The
-    <code>.cfg</code> file will be ignored by Subversion.
-  </li>
-</ol>
+1.  It creates the `Bin`, `Exe` and `Release` directories, along with various sub-directories of `Bin` that are required to receive the binary code. If any of these directories already existed they will have been emptied.
+2.  It creates the `.cfg` file from a template file. This file is required to configure the Delphi command line compiler. The `.cfg` file will be ignored by Subversion.
 
-<p>
-  If you intending to edit and compile the code using the Delphi IDE you must
-  also run the following command from the <code>Source</code> directory:
-</p>
+If you intending to edit and compile the code using the Delphi IDE you must also run the following command from the `Source` directory:
 
-<pre class="indent"><span class="prompt">&gt;</span> make resources</pre>
+```
+> make resources
+```
 
-<p>
-  This creates the resource files that the IDE needs to link into compiled
-  executables.
-</p>
+This creates the resource files that the IDE needs to link into compiled executables.
 
-<p>
-  You are now ready to modify the code if you wish and to build the source.
-</p>
+You are now ready to modify the code if you wish and to build the source.
 
-<h2>
-  Building Version Information Editor
-</h2>
+## Building Version Information Editor
 
-<p>
-  The code is built using the makefile, which must be run from a command line
-  that has <code>Source</code> as its working directory.
-</p>
+The code is built using the makefile, which must be run from a command line that has `Source` as its working directory.
 
-<p>
-  The makefile offers several options. They are:
-</p>
+The makefile offers several options. They are:
 
-<dl class="spaced">
-  <dt>
-    <code>make config</code>
-  </dt>
-  <dd>
-    As we have already seen this command configures the source tree. It should
-    be run before using any other command. The command creates the required
-    Delphi <code>.cfg</code> file from its template and creates empty
-    <code>Bin</code>, <code>Exe</code> and <code>Release</code> directories.
-  </dd>
+* `make config`
 
-  <dt>
-    <code>make resources</code>
-  </dt>
-  <dd>
-    Compiles the resource files required to build the program. Files are placed
-    in the <code>Bin</code> directory, which must exist.
-  </dd>
+  As we have already seen this command configures the source tree. It should be run before using any other command. The command creates the required Delphi `.cfg` file from its template and creates empty `Bin`, `Exe` and `Release` directories.
 
-  <dt>
-    <code>make pascal</code>
-  </dt>
-  <dd>
-    Compiles the pascal source using the required version of Delphi. Requires
-    that resource files are present in the <code>Bin</code> directory. The
-    compiled exe file is placed in the <code>Exe</code> directory.
-  </dd>
+* `make resources`
 
-  <dt>
-    <code>make vied</code>
-  </dt>
-  <dd>
-    Compiles <em>VIEd</em> from source. This command is equivalent to <code>make
-    resources</code> followed by <code>make pascal</code>.
-  </dd>
+  Compiles the resource files required to build the program. Files are placed in the `Bin` directory, which must exist.
 
-  <dt>
-    <code>make help</code>
-  </dt>
-  <dd>
-    Compiles the HTML help file from source. The compiled file is placed in the
-    <code>Exe</code> directory.
-  </dd>
+* `make pascal`
 
-  <dt>
-    <code>make setup</code>
-  </dt>
-  <dd>
-    Builds the setup program. The command requires that the <em>VIEd</em>
-    executable and the help file have been compiled and are present in the
-    <code>Exe</code> directory. It also requires that certain documents are
-    present in the <code>Docs</code> directory. The compiled setup program is
-    placed in the <code>Exe</code> directory.
-  </dd>
+  Compiles the pascal source using the required version of Delphi. Requires that resource files are present in the `Bin` directory. The compiled exe file is placed in the `Exe` directory.
 
-  <dt>
-    <code>make release</code>
-  </dt>
-  <dd>
-    Creates a zip file containing the necessary release files. By default the
-    release file is named <code>dd-vied.zip</code> but this can be changed by
-    setting the <code>RELEASEFILENAME</code> environment variable (see above).
-  </dd>
+* `make vied`
 
-  <dt>
-    <code>make everything</code> or <code>make</code>
-  </dt>
-  <dd>
-    This is the default option used when make is run with no targets. It
-    configures the source tree, builds the <em>VIEd</em> executable and the help
-    file, then builds the install program and finally creates the release zip
-    file.
-  </dd>
+  Compiles _VIEd_ from source. This command is equivalent to `make resources` followed by `make pascal`.
 
-  <dt>
-    <code>make clean</code>
-  </dt>
-  <dd>
-    Deletes unwanted and temporary files and directories from the source tree.
-    The command does not delete the <code>Bin</code>, <code>Exe</code> and
-    <code>Release</code> directories and contents and neither does it delete the
-    <code>.cfg</code> file from the <code>Source</code> directory.
-  </dd>
+* `make help`
 
-  <dt>
-    <code>make deepclean</code>
-  </dt>
-  <dd>
-    Like <code>make clean</code> this command deletes unwanted and temporary
-    files and directories. It also removes the directories and files created by
-    <code>make config</code>, i.e. the <code>Bin</code>, <code>Exe</code> and
-    <code>Release</code> directories along with the  <code>.cfg</code> file in
-    the <code>Source</code> directory.
-  </dd>
-</dl>
+  Compiles the HTML help file from source. The compiled file is placed in the `Exe` directory.
 
-<p class="note">
-  <strong>Note:</strong> If the <code>make</code> command fails to run you may
-  need to use <code>%DELPHIROOT%\Bin\Make</code>.
-</p>
+* `make setup`
 
-<h2>
-  Copyright
-</h2>
+  Builds the setup program. The command requires that the _VIEd_ executable and the help file have been compiled and are present in the `Exe` directory. It also requires that certain documents are present in the `Docs` directory. The compiled setup program is placed in the `Exe` directory.
 
-<p>
-  If you are planning to re-use or modify any of the code, please see
-  <code>SourceCodeLicenses.txt</code> in the <code>Docs</code> directory for
-  an overview of the various open source licenses that apply to the
-  <em>Version Information Editor</em> source code.
-</p>
+* `make release`
 
-</body>
+  Creates a zip file containing the necessary release files. By default the release file is named `dd-vied.zip` but this can be changed by setting the `RELEASEFILENAME` environment variable (see above).
 
-</html>
+* `make everything` or `make`
+
+  This is the default option used when make is run with no targets. It configures the source tree, builds the _VIEd_ executable and the help file, then builds the install program and finally creates the release zip file.
+
+* `make clean`
+
+  Deletes unwanted and temporary files and directories from the source tree. The command does not delete the `Bin`, `Exe` and `Release` directories and contents and neither does it delete the `.cfg` file from the `Source` directory.
+
+* `make deepclean`
+
+  Like `make clean` this command deletes unwanted and temporary files and directories. It also removes the directories and files created by `make config`, i.e. the `Bin`, `Exe` and `Release` directories along with the `.cfg` file in the `Source` directory.
+
+**Note:** If the `make` command fails to run you may need to use `%DELPHIROOT%\Bin\Make`.
+
+## Copyright
+
+If you are planning to re-use or modify any of the code, please see `SourceCodeLicenses.txt` in the `Docs` directory for an overview of the various open source licenses that apply to the _Version Information Editor_ source code.
