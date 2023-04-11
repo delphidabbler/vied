@@ -29,12 +29,14 @@ type
     lblDesc: TLabel;
     chkValidate: TCheckBox;
     chkDescFileFlags: TCheckBox;
+    chkUseUTF8: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private // properties
     fAutoValidate: Boolean;
     fDescribeFileFlags: Boolean;
+    fUTF8EncodeVIFiles: Boolean;
   public
     property AutoValidate : Boolean
       read fAutoValidate write fAutoValidate;
@@ -42,6 +44,10 @@ type
     property DescribeFileFlags : Boolean
       read fDescribeFileFlags write fDescribeFileFlags;
       {Whether file flags are fully described at start-up}
+    ///  <summary>Whether UTF-8 is used by default when writing .vi files.
+    ///  </summary>
+    property UTF8EncodeVIFiles: Boolean
+      read fUTF8EncodeVIFiles write fUTF8EncodeVIFiles;
   end;
 
 implementation
@@ -56,6 +62,7 @@ begin
   inherited;
   fAutoValidate := chkValidate.Checked;
   fDescribeFileFlags := chkDescFileFlags.Checked;
+  fUTF8EncodeVIFiles := chkUseUTF8.Checked;
 end;
 
 procedure TUserSetupDlg.FormCreate(Sender: TObject);
@@ -72,6 +79,7 @@ begin
   // Set check boxes to state given by properties
   chkValidate.Checked := fAutoValidate;
   chkDescFileFlags.Checked := fDescribeFileFlags;
+  chkUseUTF8.Checked := fUTF8EncodeVIFiles;
 end;
 
 end.
