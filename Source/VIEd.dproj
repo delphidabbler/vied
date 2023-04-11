@@ -89,6 +89,8 @@
 			<DCCReference Include="FmMacroEd.pas">
 				<Form>MacroEditor</Form>
 			</DCCReference>
+			<DCCReference Include="UVIData.pas"/>
+			<DCCReference Include="UFileIO.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
