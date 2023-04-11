@@ -614,40 +614,12 @@ procedure TVInfo.CopyToClipBoard;
   }
 var
   RCList: TStringList;          // string list to hold resource file code
-  I: Integer;                   // loop control
-  PBuf: PChar;                  // buffer to hold whole  text to copy
-  BufSize: Integer;             // size of above buffer
-  Line: array[0..257] of char;  // text of each line of resource file
 begin
-  // Give PBuf a nil value so that StrDispose will always work
-  PBuf := nil;
-  // Create the string list
   RCList := TStringList.Create;
   try
-    // Write text of "file" to string list
     WriteAsRC(RCList);
-    // Calcualte size required for buffer to hold all text
-    // size 1 for terminal \0 character
-    BufSize := 1;
-    // itereate through lines incrementing by length of line (+ 2 for EOL)
-    for I := 0 to RCList.Count - 1 do
-      Inc(BufSize, Length(RCList[I]) + 2);
-    // Allocate buffer of required size and set to empty string
-    PBuf := StrAlloc(BufSize);
-    StrCopy(PBuf, '');
-    // Iterate through list of lines, appending each line to the buffer
-    for I := 0 to RCList.Count - 1 do
-    begin
-      // copy line + CR + LF to C format string
-      StrPCopy(Line, RCList[I] + #13#10);
-      // append line to end of buffer
-      StrCat(PBuf, Line);
-    end;
-    // Copy whole buffer to clipboard
-    ClipBoard.SetTextBuf(PBuf);
+    Clipboard.AsText := TrimRight(RCList.Text) + #13#10;
   finally
-    // Free buffer and string list
-    StrDispose(PBuf);
     RCList.Free;
   end;
 end;
