@@ -39,7 +39,10 @@ uses
   UUtils in 'UUtils.pas',
   UVerUtils in 'UVerUtils.pas',
   UVInfo in 'UVInfo.pas',
-  FmMacroEd in 'FmMacroEd.pas' {MacroEditor};
+  FmMacroEd in 'FmMacroEd.pas' {MacroEditor},
+  UVIData in 'UVIData.pas',
+  UFileIO in 'UFileIO.pas',
+  FmFileEncoding in 'FmFileEncoding.pas' {FileEncodingDlg};
 
 {$Resource Resources.res}
 {$Resource Version.res}

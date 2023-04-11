@@ -83,6 +83,14 @@ function UserAppDataFolder: string;
 ///  <summary>Emits a beep to indicate an error.</summary>
 procedure ErrorBeep;
 
+///  <summary>Checks if two byte arrays are equal.</summary>
+///  <param name="BA1">TBytes [in] First byte array to be compared.</param>
+///  <param name="BA2">TBytes [in] Second byte array to be compared.</param>
+///  <returns>True if the two arrays are equal, False if not.</returns>
+///  <remarks>If both arrays are empty they are considered equal.</remarks>
+function IsEqualBytes(const BA1, BA2: TBytes): Boolean; overload;
+
+
 implementation
 
 
@@ -425,6 +433,18 @@ end;
 procedure ErrorBeep;
 begin
   MessageBeep(UINT(-1));
+end;
+
+function IsEqualBytes(const BA1, BA2: TBytes): Boolean; overload;
+var
+  I: Integer;
+begin
+  if Length(BA1) <> Length(BA2) then
+    Exit(False);
+  for I := 0 to Pred(Length(BA1)) do
+    if BA1[I] <> BA2[I] then
+      Exit(False);
+  Result := True;
 end;
 
 end.

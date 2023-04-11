@@ -98,9 +98,11 @@ type
     fResolvedMacros: TStringList;
     // Value of Macros property (macros are unresolved)
     fMacros: TStrings;
+    // Value of ResOutputDir property
     fResOutputDir: string;
+    // Value of IsUTF8EncodedFile property
+    fIsUTF8EncodedFile: Boolean;
     fVIFile: string;
-      {Value of ResOutputDir property}
     procedure SetFileOS(AValue: LongInt);
       {Write access method for FileOS property.
         @param AValue [in] New property value.
@@ -348,6 +350,13 @@ type
     property ResOutputDir: string read fResOutputDir write fResOutputDir;
       {Default output directory of .res files: can be relative to .vi file
       folder}
+
+    ///  <summary>Flag true if current vi file was read from a UTF-8 encoded
+    ///  file or False if file was ANSI.</summary>
+    ///  <remarks>For a new document, the encoding depends on the preferred
+    ///  encoding format in settings.</remarks>
+    property IsUTF8EncodedFile: Boolean read fIsUTF8EncodedFile
+      write fIsUTF8EncodedFile;
   end;
 
 
@@ -356,9 +365,9 @@ implementation
 
 uses
   // Delphi
-  ClipBrd, IniFiles, StrUtils, IOUtils, Types, Character,
+  ClipBrd, IniFiles, StrUtils, IOUtils, Types, Character, Generics.Collections,
   // Project
-  UVerUtils, UUtils;
+  UFileIO, UVerUtils, UVIData, UUtils;
 
 
 const
@@ -415,32 +424,28 @@ const
 
   MacroOpener = FieldOpener + '%';
 
-  // Names used in version information (.vi) files
-  // section names
-  FixedFileInfoSection = 'Fixed File Info';
-  VarFileInfoSection = 'Variable File Info';
-  StringFileInfoSection = 'String File Info';
-  ConfigSection = 'Configuration Details';
-  MacrosSection = 'Macros';
-  // value names
-  FileVersionNumberName = 'File Version #';
-  ProductVersionNumberName = 'Product Version #';
-  FileOSName = 'File OS';
-  FileTypeName = 'File Type';
-  FileSubTypeName = 'File Sub-Type';
-  FileFlagsMaskName = 'File Flags Mask';
-  FileFlagsName = 'File Flags';
-  LanguageName = 'Language';
-  CharacterSetName = 'Character Set';
-  IdentifierName = 'Identifier';
-  NumRCCommentsName = 'NumRCComments';
-  RCCommentLineNameFmt = 'RC Comment Line %d';
-  ResOutputDirName = 'ResOutputDir';
+//  // Value names used in version information (.vi) files
+//  FileVersionNumberName = 'File Version #';
+//  ProductVersionNumberName = 'Product Version #';
+//  FileOSName = 'File OS';
+//  FileTypeName = 'File Type';
+//  FileSubTypeName = 'File Sub-Type';
+//  FileFlagsMaskName = 'File Flags Mask';
+//  FileFlagsName = 'File Flags';
+//  LanguageName = 'Language';
+//  CharacterSetName = 'Character Set';
+//  IdentifierName = 'Identifier';
+//  NumRCCommentsName = 'NumRCComments';
+//  RCCommentLineNameFmt = 'RC Comment Line %d';
+//  ResOutputDirName = 'ResOutputDir';
+//  VIFileVersionName = 'FileVersion';
 
-  VIFileVersionName = 'FileVersion';
   // Current file version
   // - bump this each time file format changes in such a way that it can't
   //   safely be read by an earlier version of the program
+  // - this versioning was effectively introduced when the macros were added to
+  //   the file format: before that the file version is assumed to have been
+  //   zero, although the program didn't check the version then
   VIFileVersion = 1;
 
 resourcestring
@@ -900,121 +905,111 @@ procedure TVInfo.LoadFromFile(const FileName: string);
     @param FileName [in] Name of file to be loaded.
   }
 var
-  Ini: TIniFile;  // ini file instance - .vi files use ini file format
-  F: TextFile;    // file identifier used to read VI comments
   I: TStrInfo;    // loop control for string info
   J: Integer;     // loop control for comments
   Line: string;   // line to receive comments
-  Done: Boolean;  // flag set true when done reading comments
-  MacroNames: TStringList;
-  MacroName: string;
+  FileContent: TFileContent;
+  VIData: TVIData;
+  ConfigDataSection: TVIDataSection;
+  FFIDataSection: TVIDataSection;
+  VarDataSection: TVIDataSection;
+  StrDataSection: TVIDataSection;
+  Entry: TPair<string,string>;
 resourcestring
   sUnknownFileVer = 'This .vi file''s format can''t be read by this version of '
     + 'VIEd - a later version is required.';
 begin
   fVIFile := FileName;
-  // ** Do not localise any string literals in this message
-  // Read VI comments from file
-  // open file
-  AssignFile(F, FileName);
-  Reset(F);
+
+  // Read file & record format
+  FileContent := TFileIO.ReadFile(FileName);
+  fIsUTF8EncodedFile := FileContent.IsUTF8;
+
+  VIData := TVIData.Create;
   try
-    // read in comments
-    fVIComments.Clear;
-    Done := False;
-    while not Eof(F) and not Done do
-    begin
-      ReadLn(F, Line);
-      // if line is comment, record it, else gone past end of comments
-      if Pos(';', Line) = 1 then
-        fVIComments.Add(Copy(Line, 2, MaxInt))
-      else
-        Done := Pos('[', Line) = 1;
-    end;
-  finally
-    // Close the file
-    CloseFile(F);
-  end;
-  // Create instance of ini file to use to write ini file style data
-  Ini := TIniFile.Create(FileName);
-  try
-    // Read and check file version
-    if Ini.ReadInteger(ConfigSection, VIFileVersionName, 0) > VIFileVersion then
+    // Parse the file content
+    TVIDataReader.Parse(FileContent.Content, VIData);
+
+    // Get VI comments
+    VIData.GetComments(fVIComments);
+
+    // Check if file version supported
+    ConfigDataSection := VIData.GetSection(dsConfig);
+    if StrToIntDef(
+      ConfigDataSection.GetValue(TVIDataIO.VIFileVersionName), 0
+    ) > VIFileVersion then
     begin
       Clear;
       raise Exception.Create(sUnknownFileVer);
     end;
+
     // Read macros
     fMacros.Clear;
-    MacroNames := TStringList.Create;
-    try
-      Ini.ReadSection(MacrosSection, MacroNames);
-      for MacroName in MacroNames do
-        fMacros.Add(
-          MacroName + MacroValueSep
-            + Ini.ReadString(MacrosSection, MacroName, '')
-        );
-    finally
-      MacroNames.Free;
-    end;
+    for Entry in VIData.GetSection(dsMacros) do
+      fMacros.Add(Entry.Key + MacroValueSep + Entry.Value);
     FixupMacros;
     ResolveMacros;
-    // Read version info stuff into properties: this automatically verifies data
+
+    // Read FFI
+    FFIDataSection := VIData.GetSection(dsFFI);
     // read in fixed file info
-    FileVersionNumberCode := Ini.ReadString(
-      FixedFileInfoSection,
-      FileVersionNumberName,
+    FileVersionNumberCode := FFIDataSection.GetValue(
+      TVIDataIO.FileVersionNumberName, VersionNumberToStr(DefVersionNumber)
+    );
+    ProductVersionNumberCode := FFIDataSection.GetValue(
+      TVIDataIO.ProductVersionNumberName,
       VersionNumberToStr(DefVersionNumber)
     );
-    ProductVersionNumberCode := Ini.ReadString(
-      FixedFileInfoSection,
-      ProductVersionNumberName,
-      VersionNumberToStr(DefVersionNumber)
+    FileOS := FFIDataSection.GetValueAsInt(TVIDataIO.FileOSName, DefFileOS);
+    FileType := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileTypeName, DefFileType
     );
-    FileOS := Ini.ReadInteger(FixedFileInfoSection, FileOSName, DefFileOS);
-    FileType := Ini.ReadInteger(
-      FixedFileInfoSection, FileTypeName, DefFileType
+    FileSubType := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileSubTypeName, DefaultFileSubType(FileType)
     );
-    FileSubType := Ini.ReadInteger(
-      FixedFileInfoSection, FileSubTypeName, DefaultFileSubType(FileType)
+    FileFlagsMask := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileFlagsMaskName, DefFileFlagsMask
     );
-    FileFlagsMask := Ini.ReadInteger(
-      FixedFileInfoSection, FileFlagsMaskName, DefFileFlagsMask
+    FileFlags := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileFlagsName, DefFileFlags
     );
-    FileFlags := Ini.ReadInteger(
-      FixedFileInfoSection, FileFlagsName, DefFileFlags
-    );
+
     // read in variable file info
-    LanguageCode := Ini.ReadInteger(
-      VarFileInfoSection, LanguageName, DefLanguageCode
+    VarDataSection := VIData.GetSection(dsVar);
+    LanguageCode := VarDataSection.GetValueAsInt(
+      TVIDataIO.LanguageName, DefLanguageCode
     );
-    CharSetCode := Ini.ReadInteger(
-      VarFileInfoSection, CharacterSetName, DefCharSetCode
+    CharSetCode := VarDataSection.GetValueAsInt(
+      TVIDataIO.CharacterSetName, DefCharSetCode
     );
+
     // read in string info
+    StrDataSection := VIData.GetSection(dsString);
     for I := Low(TStrInfo) to High(TStrInfo) do
-      StrInfo[I] := Ini.ReadString(
-        StringFileInfoSection, StrDesc[I], DefString
-      );
+      StrInfo[I] := StrDataSection.GetValue(StrDesc[I], DefString);
+
     // Read config section
     // read identifier
-    Identifier := Ini.ReadString(ConfigSection, IdentifierName, DefIdentifier);
+    Identifier := ConfigDataSection.GetValue(
+      TVIDataIO.IdentifierName, DefIdentifier
+    );
     // read RC comments - stripping | characters (used to preserve indentation)
     fRCComments.Clear;
-    for J := 0 to Ini.ReadInteger(ConfigSection, NumRCCommentsName, 0) - 1 do
+    for J := 0 to Pred(
+      ConfigDataSection.GetValueAsInt(TVIDataIO.NumRCCommentsName, 0)
+    ) do
     begin
-      Line := Ini.ReadString(
-        ConfigSection, Format(RCCommentLineNameFmt, [J]), ''
+      Line := ConfigDataSection.GetValue(
+        Format(TVIDataIO.RCCommentLineNameFmt, [J]), ''
       );
       if (Length(Line) > 0) and (Line[1] = '|') then
         Line := Copy(Line, 2, Length(Line) -1);
       fRCComments.Add(Line);
     end;
     // read default .res file output folder
-    fResOutputDir := Ini.ReadString(ConfigSection, ResOutputDirName, '');
+    fResOutputDir := ConfigDataSection.GetValue(TVIDataIO.ResOutputDirName, '');
   finally
-    // Free the instance of the ini file
-    Ini.Free;
+    VIData.Free;
   end;
 end;
 
@@ -1191,78 +1186,71 @@ procedure TVInfo.SaveToFile(const FileName: string);
     @param FileName [in] Name of saved file.
   }
 var
-  Ini: TIniFile;  // ini file instance - .vi files use ini file format
-  F: TextFile;    // file identifier used to read VI comments
   I: TStrInfo;    // loop control for string info
   J: Integer;     // loop control for comments
   M: Integer;     // loop control for macros
   FileNameChanged: Boolean;
+  VIData: TVIData;
+  FFIData: TVIDataSection;
+  VarData: TVIDataSection;
+  CfgData: TVIDataSection;
 begin
   FileNameChanged := not SameText(fVIFile, FileName);
   fVIFile := FileName;
 
-  // ** Do not localise any string literals in this message
-  // Read VI comments from file if there are any
-  if fVIComments.Count > 0 then
-  begin
-    // associate name of required file with file identifier
-    AssignFile(F, FileName);
-    // open file for writing
-    Rewrite(F);
-    try
-      // write out all comments preceeded by ';' char
-      for J := 0 to fVIComments.Count - 1 do
-        WriteLn(F, Format(';%s', [fVIComments[J]]));
-    finally
-      // close the file
-      CloseFile(F);
-    end;
-  end;
-  // Create an instance of the ini file class using the required file name
-  Ini := TIniFile.Create(FileName);
+  VIData := TVIData.Create;
   try
+    VIData.SetComments(fVIComments);
+
     // Write macros
     for M := 0 to Pred(fMacros.Count) do
-      Ini.WriteString(
-        MacrosSection, fMacros.Names[M], fMacros.ValueFromIndex[M]
+      VIData.GetSection(dsMacros).AddOrSetValue(
+        fMacros.Names[M], fMacros.ValueFromIndex[M]
       );
-    // Write version information
+
     // write fixed file info
-    Ini.WriteString(
-      FixedFileInfoSection, FileVersionNumberName, FileVersionNumberCode
+    FFIData := VIData.GetSection(dsFFI);
+    FFIData.AddOrSetValue(
+      TVIDataIO.FileVersionNumberName, FileVersionNumberCode
     );
-    Ini.WriteString(
-      FixedFileInfoSection, ProductVersionNumberName, ProductVersionNumberCode
+    FFIData.AddOrSetValue(
+      TVIDataIO.ProductVersionNumberName, ProductVersionNumberCode
     );
-    Ini.WriteInteger(FixedFileInfoSection, FileOSName, FileOS);
-    Ini.WriteInteger(FixedFileInfoSection, FileTypeName, FileType);
-    Ini.WriteInteger(FixedFileInfoSection, FileSubTypeName, FileSubType);
-    Ini.WriteInteger(FixedFileInfoSection, FileFlagsMaskName, FileFlagsMask);
-    Ini.WriteInteger(FixedFileInfoSection, FileFlagsName, FileFlags);
+    FFIData.AddOrSetValue(TVIDataIO.FileOSName, FileOS);
+    FFIData.AddOrSetValue(TVIDataIO.FileTypeName, FileType);
+    FFIData.AddOrSetValue(TVIDataIO.FileSubTypeName, FileSubType);
+    FFIData.AddOrSetValue(TVIDataIO.FileFlagsMaskName, FileFlagsMask);
+    FFIData.AddOrSetValue(TVIDataIO.FileFlagsName, FileFlags);
     // write variable file info
-    Ini.WriteInteger(VarFileInfoSection, LanguageName, LanguageCode);
-    Ini.WriteInteger(VarFileInfoSection, CharacterSetName, CharSetCode);
+    VarData := VIData.GetSection(dsVar);
+    VarData.AddOrSetValue(TVIDataIO.LanguageName, LanguageCode);
+    VarData.AddOrSetValue(TVIDataIO.CharacterSetName, CharSetCode);
     // write string info
     for I := Low(TStrInfo) to High(TStrInfo) do
-      Ini.WriteString(StringFileInfoSection, StrDesc[I], StrInfo[I]);
+      VIData.GetSection(dsString).AddOrSetValue(StrDesc[I], StrInfo[I]);
     // Write config section
+    CfgData := VIData.GetSection(dsConfig);
     // write identifier
-    Ini.WriteString(ConfigSection, IdentifierName, Identifier);
+    CfgData.AddOrSetValue(TVIDataIO.IdentifierName, Identifier);
     // write RC comments: first # of lines then write lines preceded by |
-    Ini.WriteInteger(ConfigSection, NumRCCommentsName, fRCComments.Count);
+    CfgData.AddOrSetValue(TVIDataIO.NumRCCommentsName, fRCComments.Count);
     for J := 0 to fRCComments.Count - 1 do
     begin
-      Ini.WriteString(
-        ConfigSection, Format(RCCommentLineNameFmt, [J]), '|' + fRCComments[J]
+      CfgData.AddOrSetValue(
+        Format(TVIDataIO.RCCommentLineNameFmt, [J]), '|' + fRCComments[J]
       );
     end;
     // write .res file default output folder
-    Ini.WriteString(ConfigSection, ResOutputDirName, fResOutputDir);
+    CfgData.AddOrSetValue(TVIDataIO.ResOutputDirName, fResOutputDir);
     // write .vi file version
-    Ini.WriteInteger(ConfigSection, VIFileVersionName, VIFileVersion);
+    CfgData.AddOrSetValue(TVIDataIO.VIFileVersionName, VIFileVersion);
+
+    TFileIO.WriteFile(
+      FileName,
+      TFileContent.Create(fIsUTF8EncodedFile, TVIDataWriter.Write(VIData))
+    );
   finally
-    // Free the ini file instance
-    Ini.Free;
+    VIData.Free;
   end;
   if FileNameChanged then
     ResolveMacros;

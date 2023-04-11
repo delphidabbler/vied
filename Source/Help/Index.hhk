@@ -32,6 +32,10 @@
 		<param name="Local" value="HTML\dlg-compilerdir.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="choose .vi file encoding dialogue box">
+		<param name="Local" value="HTML\dlg-encoding.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="command line options">
 		<param name="Local" value="HTML\cmdline.htm">
 		</OBJECT>
