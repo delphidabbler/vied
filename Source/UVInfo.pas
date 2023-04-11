@@ -892,11 +892,17 @@ end;
 
 class function TVInfo.IsValidMacroName(const N: string): Boolean;
 var
-  Ch: Char;
+  Idx: Integer;
 begin
   Result := True;
-  for Ch in N do
-    if not TCharacter.IsLetterOrDigit(Ch) then
+  if N = '' then
+    Exit(False); //! fix part of issue #52
+  if not TCharacter.IsLetterOrDigit(N[1]) then
+    Exit(False); //! fix remainder of issue #52
+  //! permit '-' and '_' in name per issue #51
+  for Idx := 2 to Length(N) do
+    if not TCharacter.IsLetterOrDigit(N[Idx])
+      and (N[Idx] <> '-') and (N[Idx] <> '_')  then
       Exit(False);
 end;
 
