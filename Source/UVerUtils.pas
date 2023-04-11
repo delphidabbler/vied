@@ -376,12 +376,16 @@ var
   NumStr: string;               // current number in string}
   Nums: array[1..4] of LongInt; // array to hold numbers from string}
   I: Integer;                   // loop control variable}
+  AdjustedStr: string;          // copy of Str with dots replaced by commas
 begin
   Start := 1;
+  // replace any dots in Str with commas so following parsing will work with
+  // both dot and comma delimited version strings
+  AdjustedStr :=  StringReplace(Str, '.', ',', [rfReplaceAll]);
   // Iterate for each version number (there are four in string)
   for I := Low(Nums) to High(Nums) do
   begin
-    NextField(Str, Start, NumStr, ',');
+    NextField(AdjustedStr, Start, NumStr, ',');
     NumStr := TrimSpaces(NumStr);
     // Convert NumStr into the required number - default 0 if no valid value
     if NumStr <> '' then
