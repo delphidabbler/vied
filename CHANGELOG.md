@@ -1,5 +1,9 @@
 # Change Log for Version Information Editor
 
+## v2.14.2 of 11 April 2023
+
+* HOTFIX of bug introduced in the build of v2.14.1 that caused strings that delimited version numbers with dots instead of commas be rendered as 0.0.0.0 [issue #55].
+
 ## v2.14.1 of 11 April 2023
 
 + HOTFIX of potential buffer overrun in code that copies resource file statements to clipboard [issue #54].
