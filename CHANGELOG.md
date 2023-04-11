@@ -1,5 +1,9 @@
 # Change Log for Version Information Editor
 
+## v2.14.1 of 11 April 2023
+
++ HOTFIX of potential buffer overrun in code that copies resource file statements to clipboard [issue #54].
+
 ## v2.14.0 of 28 August 2022
 
 + New feature that enables the user to define "macros" that can be used to insert text in one or more version information strings and in the file and product version fixed file information entries. There are three types of macro:
