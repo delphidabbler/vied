@@ -90,13 +90,19 @@ procedure ErrorBeep;
 ///  <remarks>If both arrays are empty they are considered equal.</remarks>
 function IsEqualBytes(const BA1, BA2: TBytes): Boolean; overload;
 
+///  <summary>Escapes all characters from string S that are included in
+///  Escapable with the backslash character followed by the matching character
+///  in Escapes.</summary>
+///  <remarks>Escapable and Escapes must be the same length.</remarks>
+function BackslashEscape(const S, Escapable, Escapes: string): string;
+
 
 implementation
 
 
 uses
   // Delphi
-  Classes, Windows, ShlObj, ActiveX;
+  Classes, Windows, ShlObj, ActiveX, StrUtils;
 
 
 function NextField(TextLine: string; var StringStart: Integer;
@@ -446,6 +452,49 @@ begin
       Exit(False);
   Result := True;
 end;
+
+function BackslashEscape(const S, Escapable, Escapes: string): string;
+const
+  EscChar = '\';        // the C escape character
+var
+  EscCount: Integer;
+  Ch: Char;
+  PRes: PChar;
+  EscCharPos: Integer;
+begin
+  Assert(Length(Escapable) = Length(Escapes));
+  // Check for empty string and treat specially (empty string crashes main code)
+  if S = '' then
+  begin
+    Result := '';
+    Exit;
+  end;
+  // Count escapable characters in string
+  EscCount := 0;
+  for Ch in S do
+  begin
+    if ContainsStr(Escapable, Ch) then
+      Inc(EscCount);
+  end;
+  // Set size of result string and get pointer to it
+  SetLength(Result, Length(S) + EscCount);
+  PRes := PChar(Result);
+  // Replace escapable chars with the escaped version
+  for Ch in S do
+  begin
+    EscCharPos := AnsiPos(Ch, Escapable);
+    if EscCharPos > 0 then
+    begin
+      PRes^ := EscChar;
+      Inc(PRes);
+      PRes^ := Escapes[EscCharPos];
+    end
+    else
+      PRes^ := Ch;
+    Inc(PRes);
+  end;
+end;
+
 
 end.
 
