@@ -1516,6 +1516,7 @@ begin
   for I := Low(TTokens) to High(TTokens) do
     if not (I in ExcludeFields[Id]) then
       SL.Add(Fields[I]);
+  SL.Sort;
   // Add macros
   AddMacros(SL);
 end;
