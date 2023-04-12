@@ -59,7 +59,9 @@ type
     tkSHORTFNAME, tkPRODUCTNAME, tkSPECIALBUILD, tkDELIMITER, tkCOMMENTS,
     tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
     tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
-    tkPRODUCTVERSION
+    tkPRODUCTVERSION, tkMONTH, tkMONTH0, tkDAY, tkDAY0, thHOUR, tkHOUR0,
+    tkMINUTE, tkMINUTE0, tkSECOND, tkSECOND0, tkMILLISECOND, tkMILLISECOND0,
+    tkYEAR2
   );
 
   TTokenSet = set of TTokens;
@@ -443,26 +445,23 @@ const
     FieldOpener + 'LEGALTRADEMARKS' + FieldCloser,
     FieldOpener + 'ORIGINALFILENAME' + FieldCloser,
     FieldOpener + 'PRIVATEBUILD' + FieldCloser,
-    FieldOpener + 'PRODUCTVERSION' + FieldCloser
+    FieldOpener + 'PRODUCTVERSION' + FieldCloser,
+    FieldOpener + 'MONTH' + FieldCloser,
+    FieldOpener + 'MONTH0' + FieldCloser,
+    FieldOpener + 'DAY' + FieldCloser,
+    FieldOpener + 'DAY0' + FieldCloser,
+    FieldOpener + 'HOUR' + FieldCloser,
+    FieldOpener + 'HOUR0' + FieldCloser,
+    FieldOpener + 'MINUTE' + FieldCloser,
+    FieldOpener + 'MINUTE0' + FieldCloser,
+    FieldOpener + 'SECOND' + FieldCloser,
+    FieldOpener + 'SECOND0' + FieldCloser,
+    FieldOpener + 'MILLISECOND' + FieldCloser,
+    FieldOpener + 'MILLISECOND0' + FieldCloser,
+    FieldOpener + 'YEAR2' + FieldCloser
   );
 
   MacroOpener = FieldOpener + '%';
-
-//  // Value names used in version information (.vi) files
-//  FileVersionNumberName = 'File Version #';
-//  ProductVersionNumberName = 'Product Version #';
-//  FileOSName = 'File OS';
-//  FileTypeName = 'File Type';
-//  FileSubTypeName = 'File Sub-Type';
-//  FileFlagsMaskName = 'File Flags Mask';
-//  FileFlagsName = 'File Flags';
-//  LanguageName = 'Language';
-//  CharacterSetName = 'Character Set';
-//  IdentifierName = 'Identifier';
-//  NumRCCommentsName = 'NumRCComments';
-//  RCCommentLineNameFmt = 'RC Comment Line %d';
-//  ResOutputDirName = 'ResOutputDir';
-//  VIFileVersionName = 'FileVersion';
 
   // Current file version
   // - bump this each time file format changes in such a way that it can't
@@ -773,11 +772,22 @@ function TVInfo.FieldValue(I: TTokens; AExclusions: TTokenSet): string;
     Result := IntToStr(FieldValue);
   end;
 
+var
+  DateTimeNow: TDateTime;
+  Locale: TFormatSettings;
+
+  function DateFmtNow(const AFmtStr: string): string;
+  begin
+    Result := FormatDateTime(AFmtStr, DateTimeNow, Locale);
+  end;
+
 resourcestring
   sCircularRef = 'Circular reference while resolving %s field';
 begin
   if I in AExclusions then
     raise Exception.CreateFmt(sCircularRef, [Fields[I]]);
+  DateTimeNow := Now;
+  Locale := TFormatSettings.Create;
   // Return result dependant on token
   case I of
     tkF1: Result := ParseVersionField(fFileVersionNumberCode, 1);
@@ -788,7 +798,20 @@ begin
     tkP2: Result := ParseVersionField(fProductVersionNumberCode, 2);
     tkP3: Result := ParseVersionField(fProductVersionNumberCode, 3);
     tkP4: Result := ParseVersionField(fProductVersionNumberCode, 4);
-    tkYEAR: Result := YearToStr(Date, True);
+    tkYEAR: Result := DateFmtNow('yyyy');
+    tkYEAR2: Result := DateFmtNow('yy');
+    tkMONTH: Result := DateFmtNow('m');
+    tkMONTH0: Result := DateFmtNow('mm');
+    tkDAY: Result := DateFmtNow('d');
+    tkDAY0: Result := DateFmtNow('dd');
+    thHOUR: Result := DateFmtNow('h');
+    tkHOUR0: Result := DateFmtNow('hh');
+    tkMINUTE: Result := DateFmtNow('n');
+    tkMINUTE0: Result := DateFmtNow('nn');
+    tkSECOND: Result := DateFmtNow('s');
+    tkSECOND0: Result := DateFmtNow('ss');
+    tkMILLISECOND: Result := DateFmtNow('z');
+    tkMILLISECOND0: Result := DateFmtNow('zzz');
     tkSHORTFNAME:
       Result := RemoveExtension(EvaluateFields(siOriginalFileName));
     tkPRODUCTNAME:
