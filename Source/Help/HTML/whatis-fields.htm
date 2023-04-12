@@ -211,12 +211,27 @@
       information data in a .vi file.
     </p>
     <p>
-      Macro names are restricted to alphabetic and numeric characters. Examples
-      of valid names are <code>myMacro</code>, <code>Macro1</code>,
-      <code>M</code>, <code>1MyMacro</code> and <code>42</code>. Examples of
-      invalid macros are <code>my-macro</code>, <code>$myMacro</code>, <code>my
-      macro</code> and <code>#</code>.
+      Macro names can be any number of characters long. They must begin with a
+      letter or a number. Subsequence characters can be letters, numbers, a dash
+      or an underscore. Examples of valid names are:
     </p>
+    <ul>
+      <li><code>myMacro</code></li>
+      <li><code>Macro-1</code></li>
+      <li><code>M</code></li>
+      <li><code>1My_Macro</code></li>
+      <li><code>42</code></li>
+    </ul>
+    <p>
+      Examples of invalid macro names are:
+    </p>
+    <ul>
+      <li><code>-my-macro</code></li>
+      <li><code>_myMacro</code></li>
+      <li><code>my macro</code></li>
+      <li><code>$myMacro</code></li>
+      <li><code>#</code></li>
+    </ul>
     <p>
       There are three types of macro: <em>Define</em>,
       <em>External</em> and <em>Include</em>. Each is explained below.
