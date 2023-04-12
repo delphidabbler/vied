@@ -152,7 +152,116 @@
             &lt;YEAR&gt;
           </td>
           <td>
-            The current 4 digit year according to the system clock.
+            The current 4 digit year. &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;YEAR2&gt;
+          </td>
+          <td>
+            The current 2 digit year. &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;MONTH&gt;
+          </td>
+          <td>
+            The number of the current month, with no leading zero. Range 1..12.
+            &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;MONTH0&gt;
+          </td>
+          <td>
+            The number of the current month, with leading zero. Range 01..12.
+            &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;DAY&gt;
+          </td>
+          <td>
+            The the current day of the month, with no leading zero. Range 1..31.
+            &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;DAY0&gt;
+          </td>
+          <td>
+            The the current day of the month, with leading zero. Range 01..31.
+            &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;HOUR&gt;
+          </td>
+          <td>
+            The current hour, with no leading zero. Range 0..23. &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;HOUR0&gt;
+          </td>
+          <td>
+            The current hour, with leading zero. Range 00..23. &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;MINUTE&gt;
+          </td>
+          <td>
+            The current minute, with no leading zero. Range 0..59. &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;MINUTE0&gt;
+          </td>
+          <td>
+            The current minute, with leading zero. Range 00..59. &dagger;     
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;SECOND&gt;
+          </td>
+          <td>
+            The current second, with no leading zero. Range 0..59. &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;SECOND0&gt;
+          </td>
+          <td>
+            The current second, with leading zero. Range 00..59. &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;MILLISECOND&gt;
+          </td>
+          <td>
+            The current millisecond, with no leading zero. Range 0..999.
+            &dagger;
+          </td>
+        </tr>
+        <tr>
+          <td class="shaded">
+            &lt;MILLISECOND0&gt;
+          </td>
+          <td>
+            The current millisecond, with leading zero. Range 000..999. &dagger;
           </td>
         </tr>
         <tr>
@@ -297,6 +406,10 @@
         </tr>
       </tbody>
     </table>
+    <p>
+      &dagger; All the date related fields refer to the date and time that the
+      resource file is rendered. 
+    </p>
     <p>
       <span class="warning">Warning:</span> Do not include any of the fields are
       replaced with the content of a string information item within the same
