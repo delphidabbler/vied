@@ -56,8 +56,13 @@ type
     Enumerated type listing tokens for all fields.
   }
   TTokens = (tkF1, tkF2, tkF3, tkF4, tkP1, tkP2, tkP3, tkP4, tkYEAR,
-      tkSHORTFNAME, tkPRODUCTNAME, tkSPECIALBUILD, tkDELIMITER);
+    tkSHORTFNAME, tkPRODUCTNAME, tkSPECIALBUILD, tkDELIMITER, tkCOMMENTS,
+    tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
+    tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
+    tkPRODUCTVERSION
+  );
 
+  TTokenSet = set of TTokens;
 
   {
   TVInfo:
@@ -181,7 +186,10 @@ type
     ///  </summary>
     function EvaluateFields(StrInfoId: TStrInfo): string;
 
-    function FieldValue(I: TTokens): string;
+    function DoEvaluateFields(StrInfoId: TStrInfo; AExclusions: TTokenSet):
+      string;
+
+    function FieldValue(I: TTokens; AExclusions: TTokenSet): string;
       {Gets value of a field.
         @param I [in] Field identifier.
         @return Value of field.
@@ -388,19 +396,25 @@ const
 
   ExcludeFields: array[TStrInfo] of set of TTokens = (
     // Those fields not permitted in info strings
-    [],               // Comments
-    [],               // CompanyName
-    [],               // FileDescription
-    [],               // FileVersion
-    [],               // InternalName
-    [],               // LegalCopyright
-    [],               // LegalTrademarks
-    [tkSHORTFNAME],   // OriginalFileName
-    [],               // PrivateBuild
-    [tkPRODUCTNAME],  // ProductName
-    [],               // ProductVersion
-    [tkSPECIALBUILD]  // SpecialBuild
+    [tkCOMMENTS],                         // Comments
+    [tkCOMPANYNAME],                      // CompanyName
+    [tkFILEDESCRIPTION],                  // FileDescription
+    [tkFILEVERSION],                      // FileVersion
+    [tkINTERNALNAME],                     // InternalName
+    [tkLEGALCOPYRIGHT],                   // LegalCopyright
+    [tkLEGALTRADEMARK],                   // LegalTrademarks
+    [tkORIGINALFILENAME, tkSHORTFNAME],   // OriginalFileName
+    [tkPRIVATEBUILD],                     // PrivateBuild
+    [tkPRODUCTNAME],                      // ProductName
+    [tkPRODUCTVERSION],                   // ProductVersion
+    [tkSPECIALBUILD]                      // SpecialBuild
   );
+
+  StrInfoFieldTokens: TTokenSet = [
+    tkCOMMENTS, tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
+    tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
+    tkPRODUCTNAME, tkPRODUCTVERSION, tkSPECIALBUILD, tkSHORTFNAME
+  ];
 
   FieldOpener = '<';
   FieldCloser = '>';
@@ -419,7 +433,17 @@ const
     FieldOpener + 'SHORTFNAME' + FieldCloser,
     FieldOpener + 'PRODUCTNAME' + FieldCloser,
     FieldOpener + 'SPECIALBUILD' + FieldCloser,
-    FieldOpener + FieldOpener + FieldCloser
+    FieldOpener + FieldOpener + FieldCloser,
+    FieldOpener + 'COMMENTS' + FieldCloser,
+    FieldOpener + 'COMPANYNAME' + FieldCloser,
+    FieldOpener + 'FILEDESCRIPTION' + FieldCloser,
+    FieldOpener + 'FILEVERSION' + FieldCloser,
+    FieldOpener + 'INTERNALNAME' + FieldCloser,
+    FieldOpener + 'LEGALCOPYRIGHT' + FieldCloser,
+    FieldOpener + 'LEGALTRADEMARKS' + FieldCloser,
+    FieldOpener + 'ORIGINALFILENAME' + FieldCloser,
+    FieldOpener + 'PRIVATEBUILD' + FieldCloser,
+    FieldOpener + 'PRODUCTVERSION' + FieldCloser
   );
 
   MacroOpener = FieldOpener + '%';
@@ -691,6 +715,31 @@ begin
   inherited Destroy;
 end;
 
+function TVInfo.DoEvaluateFields(StrInfoId: TStrInfo;
+  AExclusions: TTokenSet): string;
+var
+  TokenIdx: Integer;  // index of field token in string
+  Token: TTokens;     // loop control
+begin
+  AExclusions := AExclusions + ExcludeFields[StrInfoId];
+  // Process macros in strining info item
+  Result := ProcessMacros(StrInfo[StrInfoId]);
+  // Scan through all tokens, searching for each one in string turn
+  for Token := Low(TTokens) to High(TTokens) do
+  begin
+    // Repeatedly check output string for presence of a field's token until
+    // all instances have been replaced by value
+    repeat
+      // Check if field token is in result string
+      TokenIdx := Pos(Fields[Token], Result);
+      // There is a field token, replace it by its value
+      if TokenIdx > 0 then
+        Replace(Fields[Token], FieldValue(Token, AExclusions), Result);
+    until TokenIdx = 0;
+  end;
+  Result := TrimRight(Result);
+end;
+
 class function TVInfo.EncodeMacro(const Macro: TMacro): string;
 begin
   Result := MacroCmds[Macro.Cmd] + MacroCmdSep
@@ -698,29 +747,11 @@ begin
 end;
 
 function TVInfo.EvaluateFields(StrInfoId: TStrInfo): string;
-var
-  TokenIdx: Integer;  // index of field token in string
-  Token: TTokens;     // loop control
 begin
-  // Process macros in strining info item
-  Result := ProcessMacros(StrInfo[StrInfoId]);
-  // Scan through all tokens, searching for each one in string turn
-  for Token := Low(TTokens) to High(TTokens) do
-  begin
-    // Repeatedly check output string for presence of a field's token until all
-    // instances have been replaced by value
-    repeat
-      // Check if field token is in result string
-      TokenIdx := Pos(Fields[Token], Result);
-      // There is a field token, replace it by its value
-      if TokenIdx > 0 then
-        Replace(Fields[Token], FieldValue(Token), Result);
-    until TokenIdx = 0;
-  end;
-  Result := TrimRight(Result);
+  Result := DoEvaluateFields(StrInfoId, []);
 end;
 
-function TVInfo.FieldValue(I: TTokens): string;
+function TVInfo.FieldValue(I: TTokens; AExclusions: TTokenSet): string;
 
   function ParseVersionField(const Code: string; FieldNum: Byte): string;
   var
@@ -742,7 +773,11 @@ function TVInfo.FieldValue(I: TTokens): string;
     Result := IntToStr(FieldValue);
   end;
 
+resourcestring
+  sCircularRef = 'Circular reference while resolving %s field';
 begin
+  if I in AExclusions then
+    raise Exception.CreateFmt(sCircularRef, [Fields[I]]);
   // Return result dependant on token
   case I of
     tkF1: Result := ParseVersionField(fFileVersionNumberCode, 1);
@@ -754,10 +789,34 @@ begin
     tkP3: Result := ParseVersionField(fProductVersionNumberCode, 3);
     tkP4: Result := ParseVersionField(fProductVersionNumberCode, 4);
     tkYEAR: Result := YearToStr(Date, True);
-    tkSHORTFNAME: Result := RemoveExtension(EvaluateFields(siOriginalFileName));
-    tkPRODUCTNAME: Result := EvaluateFields(siProductName);
-    tkSPECIALBUILD: Result := EvaluateFields(siSpecialBuild);
-    tkDELIMITER: Result := FieldOpener;
+    tkSHORTFNAME:
+      Result := RemoveExtension(EvaluateFields(siOriginalFileName));
+    tkPRODUCTNAME:
+      Result := DoEvaluateFields(siProductName, AExclusions);
+    tkSPECIALBUILD: Result :=
+      DoEvaluateFields(siSpecialBuild, AExclusions);
+    tkDELIMITER:
+      Result := FieldOpener;
+    tkCOMMENTS:
+      Result := DoEvaluateFields(siComments, AExclusions);
+    tkCOMPANYNAME:
+      Result := DoEvaluateFields(siCompanyName, AExclusions);
+    tkFILEDESCRIPTION:
+      Result := DoEvaluateFields(siFileDescription, AExclusions);
+    tkFILEVERSION:
+      Result := DoEvaluateFields(siFileVersion, AExclusions);
+    tkINTERNALNAME:
+      Result := DoEvaluateFields(siInternalName, AExclusions);
+    tkLEGALCOPYRIGHT:
+      Result := DoEvaluateFields(siLegalCopyright, AExclusions);
+    tkLEGALTRADEMARK:
+      Result := DoEvaluateFields(siLegalTrademarks, AExclusions);
+    tkORIGINALFILENAME:
+      Result := DoEvaluateFields(siOriginalFileName, AExclusions);
+    tkPRIVATEBUILD:
+      Result := DoEvaluateFields(siPrivateBuild, AExclusions);
+    tkPRODUCTVERSION:
+      Result := DoEvaluateFields(siProductVersion, AExclusions);
   end;
 end;
 
