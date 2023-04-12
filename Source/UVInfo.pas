@@ -754,7 +754,7 @@ begin
     tkP3: Result := ParseVersionField(fProductVersionNumberCode, 3);
     tkP4: Result := ParseVersionField(fProductVersionNumberCode, 4);
     tkYEAR: Result := YearToStr(Date, True);
-    tkSHORTFNAME: Result := RemoveExtension(StrInfo[siOriginalFileName]);
+    tkSHORTFNAME: Result := RemoveExtension(EvaluateFields(siOriginalFileName));
     tkPRODUCTNAME: Result := EvaluateFields(siProductName);
     tkSPECIALBUILD: Result := EvaluateFields(siSpecialBuild);
     tkDELIMITER: Result := FieldOpener;
