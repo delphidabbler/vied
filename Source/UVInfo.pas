@@ -1589,8 +1589,12 @@ begin
   for I := Low(TStrInfo) to High(TStrInfo) do
   begin
     if StrInfo[I] <> '' then
-      SL.Add(Format('   VALUE "%s", "%s\000"',
-        [StrName[I], EvaluateFields(I)]));
+      SL.Add(
+        Format(
+          '   VALUE "%s", "%s\000"',
+          [StrName[I], BackslashEscape(EvaluateFields(I), '"\', '"\')]
+        )
+      );
   end;
   SL.Add('  }');
   SL.Add(' }');
