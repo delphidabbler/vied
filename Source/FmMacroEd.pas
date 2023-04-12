@@ -280,20 +280,7 @@ begin
 end;
 
 procedure TMacroEditor.edNameChange(Sender: TObject);
-var
-  CursorPos: Integer;
 begin
-  // Check macro name is valid
-  if TVInfo.IsValidMacroName(GetMacroNameFromCtrl) then
-    fCurrentName := GetMacroNameFromCtrl
-  else
-  begin
-    // Restore previous name
-    CursorPos := edName.SelStart;
-    edName.Text := fCurrentName;
-    edName.SelStart := CursorPos - 1;
-    ErrorBeep;
-  end;
   UpdateButtons;
 end;
 
@@ -433,9 +420,9 @@ begin
     SelValue := '';
   end;
 
-  CanUpdate := (EditNameLVIdx >= 0)
+  CanUpdate := (EditNameLVIdx >= 0) and TVInfo.IsValidMacroName(EditName)
     and ((EditValue <> SelValue) or (EditCmd <> SelCmd));
-  CanAdd := (EditNameLVIdx = -1) and (EditName <> '');
+  CanAdd := (EditNameLVIdx = -1) and TVInfo.IsValidMacroName(EditName);
   CanDelete := (EditNameLVIdx >= 0);
   if TVInfo.TryLookupMacroCmd(EditCmd, EditCmdCode)
     and (EditCmdCode in [mcExternal, mcImport])
