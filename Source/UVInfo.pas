@@ -265,7 +265,8 @@ type
       {Copies version information in a resource file (.rc) format to clipboard.
       }
     procedure SaveToResourceFile(const FileName: string);
-      {Saves version information to a resource (.rc) file.
+      {Saves version information to a resource (.rc) file in default ANSI
+      encoding.
         @param FileName [in] Name of output file.
       }
     function Analyse(const ErrList: TStringList): Boolean;
@@ -1345,31 +1346,17 @@ begin
 end;
 
 procedure TVInfo.SaveToResourceFile(const FileName: string);
-  {Saves version information to a resource (.rc) file.
+  {Saves version information to a resource (.rc) file in default ANSI encoding.
     @param FileName [in] Name of output file.
   }
 var
-  I: Integer;           // loop control
-  RCList: TStringList;  // string list containing lines of code for file
-  F: TextFile;          // identifiers the text file
+  RCList: TStringList;  // .rc source code lines
 begin
-  // Create string list to hold resource text and write contents of file to it
   RCList := TStringList.Create;
   try
     WriteAsRC(RCList);
-    // Open file for writing
-    AssignFile(F, FileName);
-    try
-      Rewrite(F);
-      // Write resource file lines to file
-      for I := 0 to RCList.Count - 1 do
-        WriteLn(F, RCList[I]);
-    finally
-      // Close the file
-      CloseFile(F);
-    end;
+    RCList.SaveToFile(FileName, TEncoding.Default);
   finally
-    // Free the string list
     RCList.Free;
   end;
 end;
