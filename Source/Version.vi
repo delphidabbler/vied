@@ -26,7 +26,7 @@ Language=2057
 Character Set=1252
 
 [String File Info]
-Comments=This program is released under an open source license. See the file \"License.rtf\" distributed with the program.
+Comments=This program is released under an open source license. See the file "License.rtf" distributed with the program.
 Company Name=DelphiDabbler
 File Description=Version Information Editor executable file <%filever>
 File Version=<%filever>
