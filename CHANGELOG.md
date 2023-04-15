@@ -16,6 +16,7 @@
   + "Include" macros: these macros refer to external files that in turn define on of more related macros.
 + UI changes to support macros, including a new macro editor and facility to view the available macros and their values.
 + Dotted quads are now acceptable version strings (e.g. 1.2.3.4) in addition to the comma separated values that were previously required (e.g. 1, 2, 3, 4).
++ `.vi` files written by v2.14.x now have a `FileVersion` field that specifies the file version as `1`. This is not backwards compatible with format used by v2.13.0 and earlier, which are retrospectively deemed to be version `0`.
 + String information item changes:
   + The 128 character limit has been lifted.
   + Trailing spaces are removed from strings.
