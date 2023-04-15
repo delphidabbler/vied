@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2023, Peter Johnson (www.delphidabbler.com).
  *
  * Main user interface and program logic for Version Information Editor.
 }
@@ -223,7 +223,7 @@ type
       {Checks if an external resource compiler has been specified and exists.
         @return True if compiler specified and exists, False if not.
       }
-    procedure SetCurrentFile(const FName: string);
+    procedure SetCurrentFile(const FName: string; const IsUTF8: Boolean);
       {Sets current file name and updates caption.
         @param FName [in] Current file name.
       }
@@ -319,9 +319,9 @@ uses
   SysUtils, ShellAPI, Math, IOUtils,
   // Project units
   UHelp, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
-  FmDropDownListEd, FmIdEd, FmNumberEd, FmResCompiler, FmResCompilerCheck,
-  FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd, FmResOutputDir,
-  FmMacroEd;
+  FmDropDownListEd, FmFileEncoding, FmIdEd, FmNumberEd, FmResCompiler,
+  FmResCompilerCheck, FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd,
+  FmResOutputDir, FmMacroEd;
 
 {$R *.DFM}
 
@@ -581,7 +581,8 @@ begin
   // Display result
   DisplayVI;
   // New file is untitled and unchanged
-  SetCurrentFile('');
+  fVerInfo.IsUTF8EncodedFile := Settings.ReadBool(siUTF8Encoding);
+  SetCurrentFile('', fVerInfo.IsUTF8EncodedFile);
   fChanged := False;
 end;
 
@@ -605,7 +606,7 @@ begin
         fVerInfo.LoadFromFile(FName);
         DisplayVI;
         // Set current file name to given name
-        SetCurrentFile(FName);
+        SetCurrentFile(FName, fVerInfo.IsUTF8EncodedFile);
         // Record that file hasn't been changed and that opened successfuly
         fChanged := False;
         Result := True;
@@ -634,7 +635,7 @@ begin
     // Get fVerInfo to write current settings to given file
     fVerInfo.SaveToFile(FName);
     // Set current file name to given name and note it's unchanged
-    SetCurrentFile(FName);
+    SetCurrentFile(FName, fVerInfo.IsUTF8EncodedFile);
     fChanged := False;
   end
   else
@@ -704,6 +705,7 @@ begin
   // Set user options in version info processor
   fVerInfo.Validating := Settings.ReadBool(siAutoValidate);
   fVerInfo.DescribeFileFlags := Settings.ReadBool(siDescribeFileFlags);
+  fVerInfo.IsUTF8EncodedFile := Settings.ReadBool(siUTF8Encoding);
   // Update menu items
   MOAutoValidate.Checked := Settings.ReadBool(siAutoValidate);
   MODescribeFileFlags.Checked := Settings.ReadBool(siDescribeFileFlags);
@@ -1704,7 +1706,7 @@ procedure TMainForm.MFNewClick(Sender: TObject);
     @param Sender [in] Not used.
   }
 begin
-  OpenPreferences
+  OpenPreferences;
 end;
 
 procedure TMainForm.MFOpenClick(Sender: TObject);
@@ -1986,12 +1988,14 @@ begin
     // Set check boxes to default values
     DBox.AutoValidate := Settings.ReadBool(siAutoValidate);
     DBox.DescribeFileFlags := Settings.ReadBool(siDescribeFileFlags);
+    DBox.UTF8EncodeVIFiles := Settings.ReadBool(siUTF8Encoding);
     // Display the dlg box and act on result
     if DBox.ShowModal = mrOK then
     begin
       // User clicked OK - update set up file
       Settings.WriteBool(siAutoValidate, DBox.AutoValidate);
       Settings.WriteBool(siDescribeFileFlags, DBox.DescribeFileFlags);
+      Settings.WriteBool(siUTF8Encoding, DBox.UTF8EncodeVIFiles);
     end;
   finally
     DBox.Free;
@@ -2130,6 +2134,7 @@ function TMainForm.SaveFileAs: Boolean;
   }
 var
   Ext: string;  // extension
+  UseUTF8: Boolean;
 begin
   // Assume we didn't save file
   Result := False;
@@ -2147,11 +2152,16 @@ begin
       if not FileExists(fSaveDlg.FileName)
         or MsgOKToOverwrite(fSaveDlg.FileName) then
       begin
-        // Save a .vi file and set result to true: remember dir used for next
-        // use of Save As
-        DoSave(fSaveDlg.FileName);
-        fSaveDlg.InitialDir := ExtractFilePath(fSaveDlg.FileName);
-        Result := True;
+        UseUTF8 := fVerInfo.IsUTF8EncodedFile;
+        if TFileEncodingDlg.GetFileEncodingFromUser(Self, UseUTF8) then
+        begin
+          fVerInfo.IsUTF8EncodedFile := UseUTF8;
+          // Save a .vi file and set result to true: remember dir used for next
+          // use of Save As
+          DoSave(fSaveDlg.FileName);
+          fSaveDlg.InitialDir := ExtractFilePath(fSaveDlg.FileName);
+          Result := True;
+        end;
       end
     end
     else
@@ -2169,18 +2179,24 @@ begin
   DoSavePreferences(PreferencesFileName);
 end;
 
-procedure TMainForm.SetCurrentFile(const FName: string);
+procedure TMainForm.SetCurrentFile(const FName: string; const IsUTF8: Boolean);
   {Sets current file name and updates caption.
     @param FName [in] Current file name.
   }
+const
+  Encoding: array[Boolean] of string = ('ANSI', 'UTF-8');
+var
+  TheCaption: string;
 begin
   // Record name
   fCurrentFile := FName;
   // Update caption with either name of file or [Untitled]
+  TheCaption := Application.Title + ' - ';
   if FName = '' then
-    Caption := Application.Title + ' - ' + sUntitled
+    TheCaption := TheCaption + sUntitled
   else
-    Caption := Application.Title + ' - ' + UpperCase(ExtractFileName(FName));
+    TheCaption := TheCaption + ExtractFileName(FName);
+  Caption := TheCaption + ' [' + Encoding[IsUTF8] + ']';
 end;
 
 procedure TMainForm.SetListItemValue(const AListItem: TListItem;

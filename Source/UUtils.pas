@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2023, Peter Johnson (www.delphidabbler.com).
  *
  * Miscellaneous support routines for Version Information Editor.
 }
@@ -51,13 +51,6 @@ function TrimSpaces(const Str: string): string;
     @return Trimmed string.
   }
 
-function YearToStr(const TheDate: TDateTime; const InFull: Boolean): string;
-  {Gets year part of a date as string.
-    @param TheDate [in] Date from which year is required.
-    @param InFull [in] True if four digit year require, False for 2 digit year.
-    @return Required year in required format.
-  }
-
 function RemoveExtension(const FileName: string): string;
   {Removes any extension from a file name.
     @param FileName [in] File name to be processed.
@@ -80,15 +73,26 @@ function UserAppDataFolder: string;
     @return Required folder.
   }
 
-///  <summary>Emits a beep to indicate an error.</summary>
-procedure ErrorBeep;
+///  <summary>Checks if two byte arrays are equal.</summary>
+///  <param name="BA1">TBytes [in] First byte array to be compared.</param>
+///  <param name="BA2">TBytes [in] Second byte array to be compared.</param>
+///  <returns>True if the two arrays are equal, False if not.</returns>
+///  <remarks>If both arrays are empty they are considered equal.</remarks>
+function IsEqualBytes(const BA1, BA2: TBytes): Boolean; overload;
+
+///  <summary>Escapes all characters from string S that are included in
+///  Escapable with the backslash character followed by the matching character
+///  in Escapes.</summary>
+///  <remarks>Escapable and Escapes must be the same length.</remarks>
+function BackslashEscape(const S, Escapable, Escapes: string): string;
+
 
 implementation
 
 
 uses
   // Delphi
-  Classes, Windows, ShlObj, ActiveX;
+  Classes, Windows, ShlObj, ActiveX, StrUtils;
 
 
 function NextField(TextLine: string; var StringStart: Integer;
@@ -174,70 +178,8 @@ procedure Replace(DelStr, InsStr: string; var S: string);
     @param S [in/out] In: String to be modified. Out: Modified string. S is
       not changed if DelStr is not a substring of S.
   }
-var
-  Start: Integer; // starting location of DelStr in S
 begin
-  // Find where DelStr begins in S, if it does
-  Start := Pos(DelStr, S);
-  // Check if DelStr is in S, quit if it isn't
-  if Start = 0 then
-    Exit;
-  // Delete DelStr from S
-  Delete(S, Start, Length(DelStr));
-  // Insert InsStr in S at same place DelStr was deleted
-  Insert(InsStr, S, Start);
-end;
-
-function TrimLeftSpaces(const Str: string): string;
-  {Trims spaces from left hand side of a string.
-    @param Str [in] String to be trimmed.
-    @return Trimmed string.
-  }
-var
-  Start: Integer;   // cursor into string searching for first non-space char
-  Finish: Integer;  // position of end of string
-  Done: Boolean;    // loop control flag
-begin
-  // Initialise Start to first char in string and Finish to length of string
-  Start := 1;
-  Finish := Length(Str);
-  // Initialise loop
-  Done := False;
-  // Loop searching for first non-space character before Finish cursor
-  while (Start <= Finish) and not Done do
-  begin
-    if Str[Start] <> ' ' then
-      Done := True
-    else
-      Start := Start + 1;
-  end;
-  // Return string from Start to Finish cursors
-  Result := Copy(Str, Start, Finish - Start + 1)
-end;
-
-function TrimRightSpaces(const Str: string): string;
-  {Trims spaces from right hand side of a string.
-    @param Str [in] String to be trimmed.
-    @return Trimmed string.
-  }
-var
-  Finish: Integer;  // cursor into string looking for last non-space char
-  Done: Boolean;    // loop control flag
-begin
-  // Initialise end of string to last character in string
-  Finish := Length(Str);
-  // Initialise loop
-  Done := False;
-  // Loop searching for last non-space character before start of string
-  while (Finish > 0) and not Done do
-  begin
-    if Str[Finish] <> ' ' then
-      Done := True
-    else
-      Finish := Finish - 1;
-  end;
-  // Return all string up to Finish cursor
-  Result := Copy(Str, 1, Finish)
+  S := StringReplace(S, DelStr, InsStr, []);
 end;
 
 function TrimSpaces(const Str: string): string;
@@ -246,20 +188,7 @@ function TrimSpaces(const Str: string): string;
     @return Trimmed string.
   }
 begin
-  Result := TrimLeftSpaces(TrimRightSpaces(Str));
-end;
-
-function YearToStr(const TheDate: TDateTime; const InFull: Boolean): string;
-  {Gets year part of a date as string.
-    @param TheDate [in] Date from which year is required.
-    @param InFull [in] True if four digit year require, False for 2 digit year.
-    @return Required year in required format.
-  }
-begin
-  if InFull then
-    Result := FormatDateTime('yyyy', TheDate)
-  else
-    Result := FormatDateTime('yy', TheDate);
+  Result := Trim(Str);
 end;
 
 function RemoveExtension(const FileName: string): string;
@@ -422,9 +351,58 @@ begin
   Result := SpecialFolderPath(CSIDL_APPDATA);
 end;
 
-procedure ErrorBeep;
+function IsEqualBytes(const BA1, BA2: TBytes): Boolean; overload;
+var
+  I: Integer;
 begin
-  MessageBeep(UINT(-1));
+  if Length(BA1) <> Length(BA2) then
+    Exit(False);
+  for I := 0 to Pred(Length(BA1)) do
+    if BA1[I] <> BA2[I] then
+      Exit(False);
+  Result := True;
+end;
+
+function BackslashEscape(const S, Escapable, Escapes: string): string;
+const
+  EscChar = '\';        // the C escape character
+var
+  EscCount: Integer;
+  Ch: Char;
+  PRes: PChar;
+  EscCharPos: Integer;
+begin
+  Assert(Length(Escapable) = Length(Escapes));
+  // Check for empty string and treat specially (empty string crashes main code)
+  if S = '' then
+  begin
+    Result := '';
+    Exit;
+  end;
+  // Count escapable characters in string
+  EscCount := 0;
+  for Ch in S do
+  begin
+    if ContainsStr(Escapable, Ch) then
+      Inc(EscCount);
+  end;
+  // Set size of result string and get pointer to it
+  SetLength(Result, Length(S) + EscCount);
+  PRes := PChar(Result);
+  // Replace escapable chars with the escaped version
+  for Ch in S do
+  begin
+    EscCharPos := AnsiPos(Ch, Escapable);
+    if EscCharPos > 0 then
+    begin
+      PRes^ := EscChar;
+      Inc(PRes);
+      PRes^ := Escapes[EscCharPos];
+    end
+    else
+      PRes^ := Ch;
+    Inc(PRes);
+  end;
 end;
 
 end.

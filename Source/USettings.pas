@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2023, Peter Johnson (www.delphidabbler.com).
  *
  * Handles configuration information for Version Information Editor.
 }
@@ -28,7 +28,8 @@ type
     siCompilerPath,       // path to external compiler
     siCompilerCmdLine,    // command line for external compiler
     siNoCompilerCheck,    // whether to check for res compiler at start up
-    siHasRun              // whether program has run before
+    siHasRun,             // whether program has run before
+    siUTF8Encoding        // whether .vi files are UTF-8 (true) or ANSI (false)
   );
 
   {
@@ -101,6 +102,7 @@ const
     Options                   user options
       %AutoValidate%            whether entries are validated automatically
       %DescribeFileFlags%       whether file flags are described or are numbers
+      %UTF8Encoding%            whether .vi is written in UTF-8 encoding
     Compiler                  information about external resource compiler
       %Path%                    path to external compiler
       %CmdLine%                 command line to pass to external compiler
@@ -154,6 +156,11 @@ const
       Key:        cBaseRegKey;
       ValName:    'HasRun';
       DefVal:     '0'
+    ),
+    ( // siUTF8Encoding
+      Key:        cOptionsKey;
+      ValName:    'UTF8Encoding';
+      DefVal:     '0';
     )
   );
 

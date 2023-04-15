@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2023, Peter Johnson (www.delphidabbler.com).
  *
  * VIEd HTML Help index file.
 -->
@@ -30,6 +30,10 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="choose compiler output folder dialogue box">
 		<param name="Local" value="HTML\dlg-compilerdir.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="choose .vi file encoding dialogue box">
+		<param name="Local" value="HTML\dlg-encoding.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="command line options">

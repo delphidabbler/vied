@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2023, Peter Johnson (www.delphidabbler.com).
  *
  * Engine of Version Information Editor program. Encapsulates version
  * information functionality in a class.
@@ -56,8 +56,15 @@ type
     Enumerated type listing tokens for all fields.
   }
   TTokens = (tkF1, tkF2, tkF3, tkF4, tkP1, tkP2, tkP3, tkP4, tkYEAR,
-      tkSHORTFNAME, tkPRODUCTNAME, tkSPECIALBUILD, tkDELIMITER);
+    tkSHORTFNAME, tkPRODUCTNAME, tkSPECIALBUILD, tkDELIMITER, tkCOMMENTS,
+    tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
+    tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
+    tkPRODUCTVERSION, tkMONTH, tkMONTH0, tkDAY, tkDAY0, thHOUR, tkHOUR0,
+    tkMINUTE, tkMINUTE0, tkSECOND, tkSECOND0, tkMILLISECOND, tkMILLISECOND0,
+    tkYEAR2
+  );
 
+  TTokenSet = set of TTokens;
 
   {
   TVInfo:
@@ -98,9 +105,11 @@ type
     fResolvedMacros: TStringList;
     // Value of Macros property (macros are unresolved)
     fMacros: TStrings;
+    // Value of ResOutputDir property
     fResOutputDir: string;
+    // Value of IsUTF8EncodedFile property
+    fIsUTF8EncodedFile: Boolean;
     fVIFile: string;
-      {Value of ResOutputDir property}
     procedure SetFileOS(AValue: LongInt);
       {Write access method for FileOS property.
         @param AValue [in] New property value.
@@ -179,7 +188,10 @@ type
     ///  </summary>
     function EvaluateFields(StrInfoId: TStrInfo): string;
 
-    function FieldValue(I: TTokens): string;
+    function DoEvaluateFields(StrInfoId: TStrInfo; AExclusions: TTokenSet):
+      string;
+
+    function FieldValue(I: TTokens; AExclusions: TTokenSet): string;
       {Gets value of a field.
         @param I [in] Field identifier.
         @return Value of field.
@@ -253,7 +265,8 @@ type
       {Copies version information in a resource file (.rc) format to clipboard.
       }
     procedure SaveToResourceFile(const FileName: string);
-      {Saves version information to a resource (.rc) file.
+      {Saves version information to a resource (.rc) file in default ANSI
+      encoding.
         @param FileName [in] Name of output file.
       }
     function Analyse(const ErrList: TStringList): Boolean;
@@ -348,6 +361,13 @@ type
     property ResOutputDir: string read fResOutputDir write fResOutputDir;
       {Default output directory of .res files: can be relative to .vi file
       folder}
+
+    ///  <summary>Flag true if current vi file was read from a UTF-8 encoded
+    ///  file or False if file was ANSI.</summary>
+    ///  <remarks>For a new document, the encoding depends on the preferred
+    ///  encoding format in settings.</remarks>
+    property IsUTF8EncodedFile: Boolean read fIsUTF8EncodedFile
+      write fIsUTF8EncodedFile;
   end;
 
 
@@ -356,9 +376,9 @@ implementation
 
 uses
   // Delphi
-  ClipBrd, IniFiles, StrUtils, IOUtils, Types, Character,
+  ClipBrd, IniFiles, StrUtils, IOUtils, Types, Character, Generics.Collections,
   // Project
-  UVerUtils, UUtils;
+  UFileIO, UVerUtils, UVIData, UUtils;
 
 
 const
@@ -379,19 +399,25 @@ const
 
   ExcludeFields: array[TStrInfo] of set of TTokens = (
     // Those fields not permitted in info strings
-    [],               // Comments
-    [],               // CompanyName
-    [],               // FileDescription
-    [],               // FileVersion
-    [],               // InternalName
-    [],               // LegalCopyright
-    [],               // LegalTrademarks
-    [tkSHORTFNAME],   // OriginalFileName
-    [],               // PrivateBuild
-    [tkPRODUCTNAME],  // ProductName
-    [],               // ProductVersion
-    [tkSPECIALBUILD]  // SpecialBuild
+    [tkCOMMENTS],                         // Comments
+    [tkCOMPANYNAME],                      // CompanyName
+    [tkFILEDESCRIPTION],                  // FileDescription
+    [tkFILEVERSION],                      // FileVersion
+    [tkINTERNALNAME],                     // InternalName
+    [tkLEGALCOPYRIGHT],                   // LegalCopyright
+    [tkLEGALTRADEMARK],                   // LegalTrademarks
+    [tkORIGINALFILENAME, tkSHORTFNAME],   // OriginalFileName
+    [tkPRIVATEBUILD],                     // PrivateBuild
+    [tkPRODUCTNAME],                      // ProductName
+    [tkPRODUCTVERSION],                   // ProductVersion
+    [tkSPECIALBUILD]                      // SpecialBuild
   );
+
+  StrInfoFieldTokens: TTokenSet = [
+    tkCOMMENTS, tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
+    tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
+    tkPRODUCTNAME, tkPRODUCTVERSION, tkSPECIALBUILD, tkSHORTFNAME
+  ];
 
   FieldOpener = '<';
   FieldCloser = '>';
@@ -410,38 +436,48 @@ const
     FieldOpener + 'SHORTFNAME' + FieldCloser,
     FieldOpener + 'PRODUCTNAME' + FieldCloser,
     FieldOpener + 'SPECIALBUILD' + FieldCloser,
-    FieldOpener + FieldOpener + FieldCloser
+    FieldOpener + FieldOpener + FieldCloser,
+    FieldOpener + 'COMMENTS' + FieldCloser,
+    FieldOpener + 'COMPANYNAME' + FieldCloser,
+    FieldOpener + 'FILEDESCRIPTION' + FieldCloser,
+    FieldOpener + 'FILEVERSION' + FieldCloser,
+    FieldOpener + 'INTERNALNAME' + FieldCloser,
+    FieldOpener + 'LEGALCOPYRIGHT' + FieldCloser,
+    FieldOpener + 'LEGALTRADEMARKS' + FieldCloser,
+    FieldOpener + 'ORIGINALFILENAME' + FieldCloser,
+    FieldOpener + 'PRIVATEBUILD' + FieldCloser,
+    FieldOpener + 'PRODUCTVERSION' + FieldCloser,
+    FieldOpener + 'MONTH' + FieldCloser,
+    FieldOpener + 'MONTH0' + FieldCloser,
+    FieldOpener + 'DAY' + FieldCloser,
+    FieldOpener + 'DAY0' + FieldCloser,
+    FieldOpener + 'HOUR' + FieldCloser,
+    FieldOpener + 'HOUR0' + FieldCloser,
+    FieldOpener + 'MINUTE' + FieldCloser,
+    FieldOpener + 'MINUTE0' + FieldCloser,
+    FieldOpener + 'SECOND' + FieldCloser,
+    FieldOpener + 'SECOND0' + FieldCloser,
+    FieldOpener + 'MILLISECOND' + FieldCloser,
+    FieldOpener + 'MILLISECOND0' + FieldCloser,
+    FieldOpener + 'YEAR2' + FieldCloser
   );
 
   MacroOpener = FieldOpener + '%';
 
-  // Names used in version information (.vi) files
-  // section names
-  FixedFileInfoSection = 'Fixed File Info';
-  VarFileInfoSection = 'Variable File Info';
-  StringFileInfoSection = 'String File Info';
-  ConfigSection = 'Configuration Details';
-  MacrosSection = 'Macros';
-  // value names
-  FileVersionNumberName = 'File Version #';
-  ProductVersionNumberName = 'Product Version #';
-  FileOSName = 'File OS';
-  FileTypeName = 'File Type';
-  FileSubTypeName = 'File Sub-Type';
-  FileFlagsMaskName = 'File Flags Mask';
-  FileFlagsName = 'File Flags';
-  LanguageName = 'Language';
-  CharacterSetName = 'Character Set';
-  IdentifierName = 'Identifier';
-  NumRCCommentsName = 'NumRCComments';
-  RCCommentLineNameFmt = 'RC Comment Line %d';
-  ResOutputDirName = 'ResOutputDir';
-
-  VIFileVersionName = 'FileVersion';
   // Current file version
   // - bump this each time file format changes in such a way that it can't
   //   safely be read by an earlier version of the program
-  VIFileVersion = 1;
+  // - this versioning was effectively introduced when the macros were added to
+  //   the file format: before that the file version is assumed to have been
+  //   zero, although the program didn't check the version then.
+  //  History:
+  //   v0 - everything up to v2.13.1
+  //   v1 - from v2.14.0: added Macros
+  //   v2 - from v2.15.0:
+  //        * allowed dash & underscore in macro names
+  //        * added numerous new fields
+  //        * permit UTF-8 formatted .vi files.
+  VIFileVersion = 2;
 
 resourcestring
   // Default VI and RC comments
@@ -686,6 +722,31 @@ begin
   inherited Destroy;
 end;
 
+function TVInfo.DoEvaluateFields(StrInfoId: TStrInfo;
+  AExclusions: TTokenSet): string;
+var
+  TokenIdx: Integer;  // index of field token in string
+  Token: TTokens;     // loop control
+begin
+  AExclusions := AExclusions + ExcludeFields[StrInfoId];
+  // Process macros in strining info item
+  Result := ProcessMacros(StrInfo[StrInfoId]);
+  // Scan through all tokens, searching for each one in string turn
+  for Token := Low(TTokens) to High(TTokens) do
+  begin
+    // Repeatedly check output string for presence of a field's token until
+    // all instances have been replaced by value
+    repeat
+      // Check if field token is in result string
+      TokenIdx := Pos(Fields[Token], Result);
+      // There is a field token, replace it by its value
+      if TokenIdx > 0 then
+        Replace(Fields[Token], FieldValue(Token, AExclusions), Result);
+    until TokenIdx = 0;
+  end;
+  Result := TrimRight(Result);
+end;
+
 class function TVInfo.EncodeMacro(const Macro: TMacro): string;
 begin
   Result := MacroCmds[Macro.Cmd] + MacroCmdSep
@@ -693,29 +754,11 @@ begin
 end;
 
 function TVInfo.EvaluateFields(StrInfoId: TStrInfo): string;
-var
-  TokenIdx: Integer;  // index of field token in string
-  Token: TTokens;     // loop control
 begin
-  // Process macros in strining info item
-  Result := ProcessMacros(StrInfo[StrInfoId]);
-  // Scan through all tokens, searching for each one in string turn
-  for Token := Low(TTokens) to High(TTokens) do
-  begin
-    // Repeatedly check output string for presence of a field's token until all
-    // instances have been replaced by value
-    repeat
-      // Check if field token is in result string
-      TokenIdx := Pos(Fields[Token], Result);
-      // There is a field token, replace it by its value
-      if TokenIdx > 0 then
-        Replace(Fields[Token], FieldValue(Token), Result);
-    until TokenIdx = 0;
-  end;
-  Result := TrimRight(Result);
+  Result := DoEvaluateFields(StrInfoId, []);
 end;
 
-function TVInfo.FieldValue(I: TTokens): string;
+function TVInfo.FieldValue(I: TTokens; AExclusions: TTokenSet): string;
 
   function ParseVersionField(const Code: string; FieldNum: Byte): string;
   var
@@ -737,7 +780,22 @@ function TVInfo.FieldValue(I: TTokens): string;
     Result := IntToStr(FieldValue);
   end;
 
+var
+  DateTimeNow: TDateTime;
+  Locale: TFormatSettings;
+
+  function DateFmtNow(const AFmtStr: string): string;
+  begin
+    Result := FormatDateTime(AFmtStr, DateTimeNow, Locale);
+  end;
+
+resourcestring
+  sCircularRef = 'Circular reference while resolving %s field';
 begin
+  if I in AExclusions then
+    raise Exception.CreateFmt(sCircularRef, [Fields[I]]);
+  DateTimeNow := Now;
+  Locale := TFormatSettings.Create;
   // Return result dependant on token
   case I of
     tkF1: Result := ParseVersionField(fFileVersionNumberCode, 1);
@@ -748,11 +806,48 @@ begin
     tkP2: Result := ParseVersionField(fProductVersionNumberCode, 2);
     tkP3: Result := ParseVersionField(fProductVersionNumberCode, 3);
     tkP4: Result := ParseVersionField(fProductVersionNumberCode, 4);
-    tkYEAR: Result := YearToStr(Date, True);
-    tkSHORTFNAME: Result := RemoveExtension(StrInfo[siOriginalFileName]);
-    tkPRODUCTNAME: Result := EvaluateFields(siProductName);
-    tkSPECIALBUILD: Result := EvaluateFields(siSpecialBuild);
-    tkDELIMITER: Result := FieldOpener;
+    tkYEAR: Result := DateFmtNow('yyyy');
+    tkYEAR2: Result := DateFmtNow('yy');
+    tkMONTH: Result := DateFmtNow('m');
+    tkMONTH0: Result := DateFmtNow('mm');
+    tkDAY: Result := DateFmtNow('d');
+    tkDAY0: Result := DateFmtNow('dd');
+    thHOUR: Result := DateFmtNow('h');
+    tkHOUR0: Result := DateFmtNow('hh');
+    tkMINUTE: Result := DateFmtNow('n');
+    tkMINUTE0: Result := DateFmtNow('nn');
+    tkSECOND: Result := DateFmtNow('s');
+    tkSECOND0: Result := DateFmtNow('ss');
+    tkMILLISECOND: Result := DateFmtNow('z');
+    tkMILLISECOND0: Result := DateFmtNow('zzz');
+    tkSHORTFNAME:
+      Result := RemoveExtension(EvaluateFields(siOriginalFileName));
+    tkPRODUCTNAME:
+      Result := DoEvaluateFields(siProductName, AExclusions);
+    tkSPECIALBUILD: Result :=
+      DoEvaluateFields(siSpecialBuild, AExclusions);
+    tkDELIMITER:
+      Result := FieldOpener;
+    tkCOMMENTS:
+      Result := DoEvaluateFields(siComments, AExclusions);
+    tkCOMPANYNAME:
+      Result := DoEvaluateFields(siCompanyName, AExclusions);
+    tkFILEDESCRIPTION:
+      Result := DoEvaluateFields(siFileDescription, AExclusions);
+    tkFILEVERSION:
+      Result := DoEvaluateFields(siFileVersion, AExclusions);
+    tkINTERNALNAME:
+      Result := DoEvaluateFields(siInternalName, AExclusions);
+    tkLEGALCOPYRIGHT:
+      Result := DoEvaluateFields(siLegalCopyright, AExclusions);
+    tkLEGALTRADEMARK:
+      Result := DoEvaluateFields(siLegalTrademarks, AExclusions);
+    tkORIGINALFILENAME:
+      Result := DoEvaluateFields(siOriginalFileName, AExclusions);
+    tkPRIVATEBUILD:
+      Result := DoEvaluateFields(siPrivateBuild, AExclusions);
+    tkPRODUCTVERSION:
+      Result := DoEvaluateFields(siProductVersion, AExclusions);
   end;
 end;
 
@@ -887,11 +982,17 @@ end;
 
 class function TVInfo.IsValidMacroName(const N: string): Boolean;
 var
-  Ch: Char;
+  Idx: Integer;
 begin
   Result := True;
-  for Ch in N do
-    if not TCharacter.IsLetterOrDigit(Ch) then
+  if N = '' then
+    Exit(False); //! fix part of issue #52
+  if not TCharacter.IsLetterOrDigit(N[1]) then
+    Exit(False); //! fix remainder of issue #52
+  //! permit '-' and '_' in name per issue #51
+  for Idx := 2 to Length(N) do
+    if not TCharacter.IsLetterOrDigit(N[Idx])
+      and (N[Idx] <> '-') and (N[Idx] <> '_')  then
       Exit(False);
 end;
 
@@ -900,121 +1001,111 @@ procedure TVInfo.LoadFromFile(const FileName: string);
     @param FileName [in] Name of file to be loaded.
   }
 var
-  Ini: TIniFile;  // ini file instance - .vi files use ini file format
-  F: TextFile;    // file identifier used to read VI comments
   I: TStrInfo;    // loop control for string info
   J: Integer;     // loop control for comments
   Line: string;   // line to receive comments
-  Done: Boolean;  // flag set true when done reading comments
-  MacroNames: TStringList;
-  MacroName: string;
+  FileContent: TFileContent;
+  VIData: TVIData;
+  ConfigDataSection: TVIDataSection;
+  FFIDataSection: TVIDataSection;
+  VarDataSection: TVIDataSection;
+  StrDataSection: TVIDataSection;
+  Entry: TPair<string,string>;
 resourcestring
   sUnknownFileVer = 'This .vi file''s format can''t be read by this version of '
     + 'VIEd - a later version is required.';
 begin
   fVIFile := FileName;
-  // ** Do not localise any string literals in this message
-  // Read VI comments from file
-  // open file
-  AssignFile(F, FileName);
-  Reset(F);
+
+  // Read file & record format
+  FileContent := TFileIO.ReadFile(FileName);
+  fIsUTF8EncodedFile := FileContent.IsUTF8;
+
+  VIData := TVIData.Create;
   try
-    // read in comments
-    fVIComments.Clear;
-    Done := False;
-    while not Eof(F) and not Done do
-    begin
-      ReadLn(F, Line);
-      // if line is comment, record it, else gone past end of comments
-      if Pos(';', Line) = 1 then
-        fVIComments.Add(Copy(Line, 2, MaxInt))
-      else
-        Done := Pos('[', Line) = 1;
-    end;
-  finally
-    // Close the file
-    CloseFile(F);
-  end;
-  // Create instance of ini file to use to write ini file style data
-  Ini := TIniFile.Create(FileName);
-  try
-    // Read and check file version
-    if Ini.ReadInteger(ConfigSection, VIFileVersionName, 0) > VIFileVersion then
+    // Parse the file content
+    TVIDataReader.Parse(FileContent.Content, VIData);
+
+    // Get VI comments
+    VIData.GetComments(fVIComments);
+
+    // Check if file version supported
+    ConfigDataSection := VIData.GetSection(dsConfig);
+    if StrToIntDef(
+      ConfigDataSection.GetValue(TVIDataIO.VIFileVersionName), 0
+    ) > VIFileVersion then
     begin
       Clear;
       raise Exception.Create(sUnknownFileVer);
     end;
+
     // Read macros
     fMacros.Clear;
-    MacroNames := TStringList.Create;
-    try
-      Ini.ReadSection(MacrosSection, MacroNames);
-      for MacroName in MacroNames do
-        fMacros.Add(
-          MacroName + MacroValueSep
-            + Ini.ReadString(MacrosSection, MacroName, '')
-        );
-    finally
-      MacroNames.Free;
-    end;
+    for Entry in VIData.GetSection(dsMacros) do
+      fMacros.Add(Entry.Key + MacroValueSep + Entry.Value);
     FixupMacros;
     ResolveMacros;
-    // Read version info stuff into properties: this automatically verifies data
+
+    // Read FFI
+    FFIDataSection := VIData.GetSection(dsFFI);
     // read in fixed file info
-    FileVersionNumberCode := Ini.ReadString(
-      FixedFileInfoSection,
-      FileVersionNumberName,
+    FileVersionNumberCode := FFIDataSection.GetValue(
+      TVIDataIO.FileVersionNumberName, VersionNumberToStr(DefVersionNumber)
+    );
+    ProductVersionNumberCode := FFIDataSection.GetValue(
+      TVIDataIO.ProductVersionNumberName,
       VersionNumberToStr(DefVersionNumber)
     );
-    ProductVersionNumberCode := Ini.ReadString(
-      FixedFileInfoSection,
-      ProductVersionNumberName,
-      VersionNumberToStr(DefVersionNumber)
+    FileOS := FFIDataSection.GetValueAsInt(TVIDataIO.FileOSName, DefFileOS);
+    FileType := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileTypeName, DefFileType
     );
-    FileOS := Ini.ReadInteger(FixedFileInfoSection, FileOSName, DefFileOS);
-    FileType := Ini.ReadInteger(
-      FixedFileInfoSection, FileTypeName, DefFileType
+    FileSubType := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileSubTypeName, DefaultFileSubType(FileType)
     );
-    FileSubType := Ini.ReadInteger(
-      FixedFileInfoSection, FileSubTypeName, DefaultFileSubType(FileType)
+    FileFlagsMask := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileFlagsMaskName, DefFileFlagsMask
     );
-    FileFlagsMask := Ini.ReadInteger(
-      FixedFileInfoSection, FileFlagsMaskName, DefFileFlagsMask
+    FileFlags := FFIDataSection.GetValueAsInt(
+      TVIDataIO.FileFlagsName, DefFileFlags
     );
-    FileFlags := Ini.ReadInteger(
-      FixedFileInfoSection, FileFlagsName, DefFileFlags
-    );
+
     // read in variable file info
-    LanguageCode := Ini.ReadInteger(
-      VarFileInfoSection, LanguageName, DefLanguageCode
+    VarDataSection := VIData.GetSection(dsVar);
+    LanguageCode := VarDataSection.GetValueAsInt(
+      TVIDataIO.LanguageName, DefLanguageCode
     );
-    CharSetCode := Ini.ReadInteger(
-      VarFileInfoSection, CharacterSetName, DefCharSetCode
+    CharSetCode := VarDataSection.GetValueAsInt(
+      TVIDataIO.CharacterSetName, DefCharSetCode
     );
+
     // read in string info
+    StrDataSection := VIData.GetSection(dsString);
     for I := Low(TStrInfo) to High(TStrInfo) do
-      StrInfo[I] := Ini.ReadString(
-        StringFileInfoSection, StrDesc[I], DefString
-      );
+      StrInfo[I] := StrDataSection.GetValue(StrDesc[I], DefString);
+
     // Read config section
     // read identifier
-    Identifier := Ini.ReadString(ConfigSection, IdentifierName, DefIdentifier);
+    Identifier := ConfigDataSection.GetValue(
+      TVIDataIO.IdentifierName, DefIdentifier
+    );
     // read RC comments - stripping | characters (used to preserve indentation)
     fRCComments.Clear;
-    for J := 0 to Ini.ReadInteger(ConfigSection, NumRCCommentsName, 0) - 1 do
+    for J := 0 to Pred(
+      ConfigDataSection.GetValueAsInt(TVIDataIO.NumRCCommentsName, 0)
+    ) do
     begin
-      Line := Ini.ReadString(
-        ConfigSection, Format(RCCommentLineNameFmt, [J]), ''
+      Line := ConfigDataSection.GetValue(
+        Format(TVIDataIO.RCCommentLineNameFmt, [J]), ''
       );
       if (Length(Line) > 0) and (Line[1] = '|') then
         Line := Copy(Line, 2, Length(Line) -1);
       fRCComments.Add(Line);
     end;
     // read default .res file output folder
-    fResOutputDir := Ini.ReadString(ConfigSection, ResOutputDirName, '');
+    fResOutputDir := ConfigDataSection.GetValue(TVIDataIO.ResOutputDirName, '');
   finally
-    // Free the instance of the ini file
-    Ini.Free;
+    VIData.Free;
   end;
 end;
 
@@ -1191,109 +1282,88 @@ procedure TVInfo.SaveToFile(const FileName: string);
     @param FileName [in] Name of saved file.
   }
 var
-  Ini: TIniFile;  // ini file instance - .vi files use ini file format
-  F: TextFile;    // file identifier used to read VI comments
   I: TStrInfo;    // loop control for string info
   J: Integer;     // loop control for comments
   M: Integer;     // loop control for macros
   FileNameChanged: Boolean;
+  VIData: TVIData;
+  FFIData: TVIDataSection;
+  VarData: TVIDataSection;
+  CfgData: TVIDataSection;
 begin
   FileNameChanged := not SameText(fVIFile, FileName);
   fVIFile := FileName;
 
-  // ** Do not localise any string literals in this message
-  // Read VI comments from file if there are any
-  if fVIComments.Count > 0 then
-  begin
-    // associate name of required file with file identifier
-    AssignFile(F, FileName);
-    // open file for writing
-    Rewrite(F);
-    try
-      // write out all comments preceeded by ';' char
-      for J := 0 to fVIComments.Count - 1 do
-        WriteLn(F, Format(';%s', [fVIComments[J]]));
-    finally
-      // close the file
-      CloseFile(F);
-    end;
-  end;
-  // Create an instance of the ini file class using the required file name
-  Ini := TIniFile.Create(FileName);
+  VIData := TVIData.Create;
   try
+    VIData.SetComments(fVIComments);
+
     // Write macros
     for M := 0 to Pred(fMacros.Count) do
-      Ini.WriteString(
-        MacrosSection, fMacros.Names[M], fMacros.ValueFromIndex[M]
+      VIData.GetSection(dsMacros).AddOrSetValue(
+        fMacros.Names[M], fMacros.ValueFromIndex[M]
       );
-    // Write version information
+
     // write fixed file info
-    Ini.WriteString(
-      FixedFileInfoSection, FileVersionNumberName, FileVersionNumberCode
+    FFIData := VIData.GetSection(dsFFI);
+    FFIData.AddOrSetValue(
+      TVIDataIO.FileVersionNumberName, FileVersionNumberCode
     );
-    Ini.WriteString(
-      FixedFileInfoSection, ProductVersionNumberName, ProductVersionNumberCode
+    FFIData.AddOrSetValue(
+      TVIDataIO.ProductVersionNumberName, ProductVersionNumberCode
     );
-    Ini.WriteInteger(FixedFileInfoSection, FileOSName, FileOS);
-    Ini.WriteInteger(FixedFileInfoSection, FileTypeName, FileType);
-    Ini.WriteInteger(FixedFileInfoSection, FileSubTypeName, FileSubType);
-    Ini.WriteInteger(FixedFileInfoSection, FileFlagsMaskName, FileFlagsMask);
-    Ini.WriteInteger(FixedFileInfoSection, FileFlagsName, FileFlags);
+    FFIData.AddOrSetValue(TVIDataIO.FileOSName, FileOS);
+    FFIData.AddOrSetValue(TVIDataIO.FileTypeName, FileType);
+    FFIData.AddOrSetValue(TVIDataIO.FileSubTypeName, FileSubType);
+    FFIData.AddOrSetValue(TVIDataIO.FileFlagsMaskName, FileFlagsMask);
+    FFIData.AddOrSetValue(TVIDataIO.FileFlagsName, FileFlags);
     // write variable file info
-    Ini.WriteInteger(VarFileInfoSection, LanguageName, LanguageCode);
-    Ini.WriteInteger(VarFileInfoSection, CharacterSetName, CharSetCode);
+    VarData := VIData.GetSection(dsVar);
+    VarData.AddOrSetValue(TVIDataIO.LanguageName, LanguageCode);
+    VarData.AddOrSetValue(TVIDataIO.CharacterSetName, CharSetCode);
     // write string info
     for I := Low(TStrInfo) to High(TStrInfo) do
-      Ini.WriteString(StringFileInfoSection, StrDesc[I], StrInfo[I]);
+      VIData.GetSection(dsString).AddOrSetValue(StrDesc[I], StrInfo[I]);
     // Write config section
+    CfgData := VIData.GetSection(dsConfig);
     // write identifier
-    Ini.WriteString(ConfigSection, IdentifierName, Identifier);
+    CfgData.AddOrSetValue(TVIDataIO.IdentifierName, Identifier);
     // write RC comments: first # of lines then write lines preceded by |
-    Ini.WriteInteger(ConfigSection, NumRCCommentsName, fRCComments.Count);
+    CfgData.AddOrSetValue(TVIDataIO.NumRCCommentsName, fRCComments.Count);
     for J := 0 to fRCComments.Count - 1 do
     begin
-      Ini.WriteString(
-        ConfigSection, Format(RCCommentLineNameFmt, [J]), '|' + fRCComments[J]
+      CfgData.AddOrSetValue(
+        Format(TVIDataIO.RCCommentLineNameFmt, [J]), '|' + fRCComments[J]
       );
     end;
     // write .res file default output folder
-    Ini.WriteString(ConfigSection, ResOutputDirName, fResOutputDir);
+    CfgData.AddOrSetValue(TVIDataIO.ResOutputDirName, fResOutputDir);
     // write .vi file version
-    Ini.WriteInteger(ConfigSection, VIFileVersionName, VIFileVersion);
+    CfgData.AddOrSetValue(TVIDataIO.VIFileVersionName, VIFileVersion);
+
+    TFileIO.WriteFile(
+      FileName,
+      TFileContent.Create(fIsUTF8EncodedFile, TVIDataWriter.Write(VIData))
+    );
   finally
-    // Free the ini file instance
-    Ini.Free;
+    VIData.Free;
   end;
   if FileNameChanged then
     ResolveMacros;
 end;
 
 procedure TVInfo.SaveToResourceFile(const FileName: string);
-  {Saves version information to a resource (.rc) file.
+  {Saves version information to a resource (.rc) file in default ANSI encoding.
     @param FileName [in] Name of output file.
   }
 var
-  I: Integer;           // loop control
-  RCList: TStringList;  // string list containing lines of code for file
-  F: TextFile;          // identifiers the text file
+  RCList: TStringList;  // .rc source code lines
 begin
-  // Create string list to hold resource text and write contents of file to it
   RCList := TStringList.Create;
   try
     WriteAsRC(RCList);
-    // Open file for writing
-    AssignFile(F, FileName);
-    try
-      Rewrite(F);
-      // Write resource file lines to file
-      for I := 0 to RCList.Count - 1 do
-        WriteLn(F, RCList[I]);
-    finally
-      // Close the file
-      CloseFile(F);
-    end;
+    RCList.SaveToFile(FileName, TEncoding.Default);
   finally
-    // Free the string list
     RCList.Free;
   end;
 end;
@@ -1463,6 +1533,7 @@ begin
   for I := Low(TTokens) to High(TTokens) do
     if not (I in ExcludeFields[Id]) then
       SL.Add(Fields[I]);
+  SL.Sort;
   // Add macros
   AddMacros(SL);
 end;
@@ -1535,8 +1606,12 @@ begin
   for I := Low(TStrInfo) to High(TStrInfo) do
   begin
     if StrInfo[I] <> '' then
-      SL.Add(Format('   VALUE "%s", "%s\000"',
-        [StrName[I], EvaluateFields(I)]));
+      SL.Add(
+        Format(
+          '   VALUE "%s", "%s\000"',
+          [StrName[I], BackslashEscape(EvaluateFields(I), '"\', '"\')]
+        )
+      );
   end;
   SL.Add('  }');
   SL.Add(' }');
