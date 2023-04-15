@@ -38,7 +38,7 @@ The `DELPHIROOT` environment variable must be set to the install directory of th
 
 ### DelphiDabbler Version Information Editor
 
-Yes, you need an executable version of the tool you are going to build! v2.14.0 or later is required. This tool is used to compile the program's version information (`.vi`) files into intermediate resource source (`.rc`) files.
+Yes, you need an executable version of the tool you are going to build! v2.15.0 or later is required. This tool is used to compile the program's version information (`.vi`) files into intermediate resource source (`.rc`) files.
 
 You can get the latest stable version from [https://delphidabbler.com/software/vied](https://delphidabbler.com/software/vied).
 
@@ -207,4 +207,4 @@ The makefile offers several options. They are:
 
 ## Copyright
 
-If you are planning to re-use or modify any of the code, please see `SourceCodeLicenses.txt` in the `Docs` directory for an overview of the various open source licenses that apply to the _Version Information Editor_ source code.
+If you are planning to re-use or modify any of the code, please see `SourceCodeLicenses.md` in the `Docs` directory for an overview of the various open source licenses that apply to the _Version Information Editor_ source code.

@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2023, Peter Johnson (www.delphidabbler.com).
  *
  * Engine of Version Information Editor program. Encapsulates version
  * information functionality in a class.
@@ -469,8 +469,15 @@ const
   //   safely be read by an earlier version of the program
   // - this versioning was effectively introduced when the macros were added to
   //   the file format: before that the file version is assumed to have been
-  //   zero, although the program didn't check the version then
-  VIFileVersion = 1;
+  //   zero, although the program didn't check the version then.
+  //  History:
+  //   v0 - everything up to v2.13.1
+  //   v1 - from v2.14.0: added Macros
+  //   v2 - from v2.15.0:
+  //        * allowed dash & underscore in macro names
+  //        * added numerous new fields
+  //        * permit UTF-8 formatted .vi files.
+  VIFileVersion = 2;
 
 resourcestring
   // Default VI and RC comments
