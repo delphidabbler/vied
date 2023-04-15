@@ -1,5 +1,27 @@
 # Change Log for Version Information Editor
 
+## v2.15.0 of 15 April 2023
+
+* Added new fields that resolve to the content of each string information item that didn't already have such an associated field [issue #49].
+* Added new fields for entering various components of dates into string information items, to complement existing `<YEAR>` field. There is a new field to enter 2 digit years and fields to enter the month number, day number, hour, minute, second and milliseconds, all with or without leading zeroes [issue #31].
+* Dashes and underscores are now permitted in macro names [issue #51]
+* The `.vi` file format now supports UTF-8 in addition to ANSI [issue #53]. User chooses format when saving and sets default format in user settings.
+* `.vi` file format bumped to v2: new fields, changed macro naming rules and UTF-8 format files mean the file format is not backward compatible.
+* Field names are now sorted alphabetically in drop-down lists.
+* Bug fixes:
+  * Empty text is no longer considered a valid macro name [issue #52]. 
+  * Non-ASCII characters are no longer being corrupted by the program because of erroneous encoding conversion [issue #53].
+  * The `<SHORTFNAME>` field is now resolved correctly. [issue #48].
+  * String information values containing quotes and backslashes are now escaped properly when written to `.rc` files [issue #57].
+  * Circular string field references are now detected and do not cause a stack overflow [issue #58].
+* Project file format updated for use with Delphi XE update 1.
+* Some refactoring.
+* Updated documentation:
+  * Converted some documentation `.txt` files to `.md` files in Markdown format [issues #39, #42, #43 & #44].
+  * Noted that releases v2.11.1 and v2.12.0 have been lost and are no longer available [issue #47].
+  * Updated and corrected various documents, including an error in `README.md` reported by _dummzeuch_.
+  * Help file updated re new fields, UTF-8 format .vi files, and change in macro naming rules.
+
 ## v2.14.2 of 11 April 2023
 
 * HOTFIX of bug introduced in the build of v2.14.1 that caused strings that delimited version numbers with dots instead of commas be rendered as 0.0.0.0 [issue #55].
