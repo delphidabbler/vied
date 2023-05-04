@@ -379,11 +379,13 @@
             &lt;SHORTFNAME&gt;
           </td>
           <td>
-            The value of the <em>Original File Name</em> string info item
-            without any extension (e.g. if <em>Original File Name</em> is
-            &quot;MYPROG.EXE&quot; then &lt;SHORTFNAME&gt; is set to
-            &quot;MYPROG&quot;). <strong>Note:</strong> This field is not valid
-            for use in the <em>Original File Name</em> item.
+            The value of the <em>Original File Name</em> string info stripped
+            of any extension. For file names with more than one extension just
+            the last extension is stripped. For e.g. if <em>Original File
+            Name</em> is &quot;Foo.exe&quot; then &lt;SHORTFNAME&gt; is set to
+            &quot;Foo&quot; while for &quot;Foo.Bar.exe&quot; &lt;SHORTFNAME&gt;
+            is set to &quot;Foo.Bar&quot;. <strong>Note:</strong> This field is
+            not valid for use in the <em>Original File Name</em> item.
           </td>
         </tr>
         <tr>
@@ -411,13 +413,13 @@
       resource file is rendered. 
     </p>
     <p>
-      <span class="warning">Warning:</span> Do not include any of the fields are
-      replaced with the content of a string information item within the same
-      item. For example don't use the <code>&lt;COMMENTS&gt;</code> field in the
-      <em>Comments</em> item. Doing so causes a circular reference error to be
-      reported. It is also possible to create a circular reference by defining
-      string information fields in terms of each other. For example setting the
-      following values in UI:
+      <span class="warning">Warning:</span> Do not include any of the fields 
+      that resolve to the content of a string information item within the same
+      string information item. For example don't use the
+      <code>&lt;COMMENTS&gt;</code> field in the <em>Comments</em> item. Doing
+      so causes a circular reference error to be reported. It is also possible
+      to create a circular reference by defining string information fields in
+      terms of each other. For example setting the following values:
     </p>
     <p class="indent">
       <em>Comments</em> = <code>foo &lt;FILEVERSION&gt; bar</code><br>
@@ -430,16 +432,16 @@
     <ol>
       <li>
         Parsing <em>Comments</em> requires replacing
-        <code>&lt;FILEVERSION&gt;</code> by the contents of <em>File
+        <code>&lt;FILEVERSION&gt;</code> with the contents of <em>File
         Version</em>, which requires:
       </li>
       <li>
-        Parsing <em>File Version</em> requires replacing
+        Parsing <em>File Version</em> which requires replacing
         <code>&lt;INTERNALNAME&gt;</code> by the contents of <em>Internal
         Name</em>, which requires:
       </li>
       <li>
-        Parsing <em>Internal Name</em> requires replacing
+        Parsing <em>Internal Name</em> which requires replacing
         <code>&lt;COMMENTS&gt;</code> by the conents of <em>Comments</em>, which
         takes us back to 1, and BOOM! we have a circular reference.
       </li>
