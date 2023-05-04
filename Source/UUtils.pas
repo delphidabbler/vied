@@ -94,6 +94,13 @@ uses
   // Delphi
   Classes, Windows, ShlObj, ActiveX, StrUtils;
 
+///  <summary>Finds the index of the last occurence of a character in a string.
+///  </summary>
+///  <param name="Ch">Char [in] Character to be found.</param>
+///  <param name="Str">string [in] String to be searched.</param>
+///  <returns>Integer. Required index. Zero if character is not in string.
+///  </returns>
+function LastIndexOfChar(const Ch: Char; const Str: string): Integer; forward;
 
 function NextField(TextLine: string; var StringStart: Integer;
   var Field: string; Separator: Char): Boolean;
@@ -191,21 +198,30 @@ begin
   Result := Trim(Str);
 end;
 
+function LastIndexOfChar(const Ch: Char; const Str: string): Integer;
+var
+  ChIdx: Integer;
+begin
+  Result := 0;    // 0 indicates not found
+  for ChIdx := Length(Str) downto 1 do
+  begin
+    if Str[ChIdx] = Ch then
+      Exit(ChIdx);
+  end;
+end;
+
 function RemoveExtension(const FileName: string): string;
   {Removes any extension from a file name.
     @param FileName [in] File name to be processed.
     @return File name without extension.
   }
 var
-  P: Byte;  // position of start of extension in FileName
+  DotIdx: Integer;
 begin
-  // Find position of start of extension, if any
-  P := Pos('.', FileName);
-  if P > 0 then
-    // There is an extension - remove it and return result
-    Result := Copy(FileName, 1, P - 1)
+  DotIdx := LastIndexOfChar('.', FileName);
+  if DotIdx > 0 then
+    Result := LeftStr(FileName, DotIdx - 1)
   else
-    // There is no extension - return whole file name
     Result := FileName;
 end;
 
