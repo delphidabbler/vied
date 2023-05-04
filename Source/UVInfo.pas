@@ -180,7 +180,6 @@ type
       }
     procedure SetMacros(SL: TStrings);
     function ProcessMacros(const S: string): string;
-    procedure ResolveMacros;
     function RenderVersionNumberFromCode(const Code: string): TPJVersionNumber;
 
     ///  <summary>Replaces all fields and macros in a given string info item by
@@ -236,6 +235,7 @@ type
     function AdjustFilePath(const FilePath: string): string;
     function HasUndefinedMacros: Boolean;
     function HasBadMacroFileReferences: Boolean;
+    procedure ResolveMacros;
   strict private
     ///  <summary>Removes macros with invalid names from Macros list.</summary>
     procedure FixupMacros;
@@ -1546,6 +1546,8 @@ var
   I: TStrInfo;  // loop control for string info
   J: Integer;   // loop control for comments
 begin
+  // Ensure macro External & Import macros re-read data in case changed
+  ResolveMacros;
   // ** Do not localise any string literals in this method
   // Clear the list
   SL.Clear;

@@ -1787,6 +1787,8 @@ begin
       Report.Add(sNotSaved)
     else
     begin
+      // Re-read any changed macro values from external files
+      fVerInfo.ResolveMacros;
       // Calculate width of table columns & rulings required
       NameColWidth := Length(sNameColHeader);
       ValueColWidth := Length(sValueColheader);
