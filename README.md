@@ -48,7 +48,7 @@ Any bug reports and feature requests can be made via the project's [issue tracke
 
 ## License
 
-Most of the original source code is licensed under the terms of the Mozilla Public License 2.0. For full details of source code licensing, including that for 3rd party code and the program's images, see `Docs/SourceCodeLicenses.txt`.
+Most of the original source code is licensed under the terms of the Mozilla Public License 2.0. For full details of source code licensing, including that for 3rd party code and the program's images, see `Docs/SourceCodeLicenses.md`.
 
 The license for the executable code can be found in `Docs/License.rtf`.
 
