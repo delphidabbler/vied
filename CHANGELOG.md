@@ -1,5 +1,12 @@
 # Change Log for Version Information Editor
 
+## v2.15.1 of 02 June 2023
+
+* Fixed bug where macros whose value are stored in a linked external file were not being reflected in output if the external files was updated. [issue #63]
+* Documentation:
+  * Update copyright date in license help topic [issue #61]
+  * Corrected minor error in `README.md`.
+
 ## v2.15.0 of 15 April 2023
 
 * Added new fields that resolve to the content of each string information item that didn't already have such an associated field [issue #49].
