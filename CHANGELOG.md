@@ -2,9 +2,11 @@
 
 ## v2.15.1 of 02 June 2023
 
-* Fixed bug where macros whose value are stored in a linked external file were not being reflected in output if the external files was updated. [issue #63]
+* Fixed bug in macros that get their values from external files where macro values were being updated when the content of the external files was changed [issue #63].
+* Fixed bug in `<SHORTFNAME>` field where file names containing more than one dot were not being shortened correctly [issue #62].
 * Documentation:
-  * Update copyright date in license help topic [issue #61]
+  * Updated copyright date in license help topic [issue #61].
+  * Updated help file re circular field references and operation of `<SHORTFNAME>` field.
   * Corrected minor error in `README.md`.
 
 ## v2.15.0 of 15 April 2023
