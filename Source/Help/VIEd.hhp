@@ -10,7 +10,7 @@
 [OPTIONS]
 Binary Index=No
 Compatibility=1.1
-Compiled file=..\..\Exe\VIEd.chm
+Compiled file=..\..\_build\help\VIEd.chm
 Contents file=TOC.hhc
 Default topic=HTML\index.htm
 Display compile progress=No
