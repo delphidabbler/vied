@@ -821,7 +821,9 @@ begin
     tkMILLISECOND: Result := DateFmtNow('z');
     tkMILLISECOND0: Result := DateFmtNow('zzz');
     tkSHORTFNAME:
-      Result := RemoveExtension(EvaluateFields(siOriginalFileName));
+      Result := RemoveExtension(
+        DoEvaluateFields(siOriginalFileName, AExclusions)
+      );
     tkPRODUCTNAME:
       Result := DoEvaluateFields(siProductName, AExclusions);
     tkSPECIALBUILD: Result :=

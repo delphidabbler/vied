@@ -42,7 +42,6 @@
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
 			<DCC_Optimize>false</DCC_Optimize>
 			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
-			<DCC_RangeChecking>true</DCC_RangeChecking>
 			<DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
 			<DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
 			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
