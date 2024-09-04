@@ -63,6 +63,4 @@ __history/
 # (we create them as required from .tplt files)
 *.dof
 # Build directories (Exe not actually needed since it is covered by *.exe above
-Bin
-Release
-Exe
+_build
