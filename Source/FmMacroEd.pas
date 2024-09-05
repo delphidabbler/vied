@@ -18,10 +18,11 @@ uses
   FmGenericOKDlg, ImgList, Controls, ExtCtrls, StdCtrls, ComCtrls,
   Classes, Buttons,
   // Project
+  UMacros,
   UVInfo;
 
 type
-  TMacro = TVInfo.TMacro;
+  TMacro = TMacros.TMacro;
   TMacroEditor = class(TGenericOKDlg)
     lvMacros: TListView;
     cbCmd: TComboBox;
@@ -113,7 +114,7 @@ begin
   GetMacroDetailsFromCtrls(Cmd, Name, Value);
   SetLength(fMacroDetails, Length(fMacroDetails) + 1);
   Idx := High(fMacroDetails);
-  if not TVInfo.TryLookupMacroCmd(Cmd, fMacroDetails[Idx].Cmd) then
+  if not TMacros.TryLookupMacroCmd(Cmd, fMacroDetails[Idx].Cmd) then
     raise Exception.CreateFmt(BugInvalidCmd, [Cmd]);
   fMacroDetails[Idx].Name := Name;
   fMacroDetails[Idx].Value := Value;
@@ -175,12 +176,12 @@ end;
 
 procedure TMacroEditor.btnOKClick(Sender: TObject);
 var
-  Macro: TVInfo.TMacro;
+  Macro: TMacros.TMacro;
 begin
   // Update macros from list view
   fMacros.Clear;
   for Macro in fMacroDetails do
-    fMacros.Add(TVInfo.EncodeMacro(Macro));
+    fMacros.Add(TMacros.EncodeMacro(Macro));
 end;
 
 procedure TMacroEditor.btnValueClick(Sender: TObject);
@@ -254,7 +255,7 @@ end;
 
 procedure TMacroEditor.DisplayMacros;
 var
-  Macro: TVInfo.TMacro;
+  Macro: TMacros.TMacro;
   LI: TListItem;
 begin
   lvMacros.Items.BeginUpdate;
@@ -263,7 +264,7 @@ begin
     for Macro in fMacroDetails do
     begin
       LI := lvMacros.Items.Add;
-      LI.Caption := TVInfo.MacroCmds[Macro.Cmd];
+      LI.Caption := TMacros.MacroCmds[Macro.Cmd];
       LI.SubItems.Add(Macro.Name);
       LI.SubItems.Add(Macro.Value);
     end;
@@ -296,7 +297,7 @@ begin
   inherited;
   HelpTopic := 'dlg-macros';
   fMacros := TStringList.Create;
-  for CmdName in TVInfo.MacroCmds do
+  for CmdName in TMacros.MacroCmds do
     cbCmd.Items.Add(CmdName);
 end;
 
@@ -381,7 +382,7 @@ begin
     fMacros.Assign(Value)
   else
     fMacros.Clear;
-  fMacroDetails := TVInfo.CrackMacros(fMacros);
+  fMacroDetails := TMacros.CrackMacros(fMacros);
   DisplayMacros;
   UpdateButtons;
 end;
@@ -389,7 +390,7 @@ end;
 procedure TMacroEditor.UpdateButtons;
 var
   EditCmd: string;
-  EditCmdCode: TVInfo.TMacroCmd;
+  EditCmdCode: TMacros.TMacroCmd;
   EditName: string;
   EditValue: string;
   EditNameLVIdx: Integer;
@@ -420,11 +421,11 @@ begin
     SelValue := '';
   end;
 
-  CanUpdate := (EditNameLVIdx >= 0) and TVInfo.IsValidMacroName(EditName)
+  CanUpdate := (EditNameLVIdx >= 0) and TMacros.IsValidMacroName(EditName)
     and ((EditValue <> SelValue) or (EditCmd <> SelCmd));
-  CanAdd := (EditNameLVIdx = -1) and TVInfo.IsValidMacroName(EditName);
+  CanAdd := (EditNameLVIdx = -1) and TMacros.IsValidMacroName(EditName);
   CanDelete := (EditNameLVIdx >= 0);
-  if TVInfo.TryLookupMacroCmd(EditCmd, EditCmdCode)
+  if TMacros.TryLookupMacroCmd(EditCmd, EditCmdCode)
     and (EditCmdCode in [mcExternal, mcImport])
     and (EditValue = '') then
   begin
@@ -443,7 +444,7 @@ begin
   btnDelete.Enabled := CanDelete;
 
   // Validate file name button
-  if not TVInfo.TryLookupMacroCmd(EditCmd, EditCmdCode) then
+  if not TMacros.TryLookupMacroCmd(EditCmd, EditCmdCode) then
   begin
     btnCheckFile.Visible := False;
     btnValue.Enabled := False;
@@ -475,7 +476,7 @@ begin
   EditIdx := IndexOfMacroName(Name);
   if EditIdx = -1 then
     raise Exception.CreateFmt(BugUpdate, [Name]);
-  if not TVInfo.TryLookupMacroCmd(Cmd, fMacroDetails[EditIdx].Cmd) then
+  if not TMacros.TryLookupMacroCmd(Cmd, fMacroDetails[EditIdx].Cmd) then
     raise Exception.CreateFmt(BugInvalidCmd, [Cmd]);
   fMacroDetails[EditIdx].Value := Value;
   UpdateMacros(EditIdx);

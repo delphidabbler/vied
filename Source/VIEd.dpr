@@ -42,7 +42,9 @@ uses
   FmMacroEd in 'FmMacroEd.pas' {MacroEditor},
   UVIData in 'UVIData.pas',
   UFileIO in 'UFileIO.pas',
-  FmFileEncoding in 'FmFileEncoding.pas' {FileEncodingDlg};
+  FmFileEncoding in 'FmFileEncoding.pas' {FileEncodingDlg},
+  UMacros in 'UMacros.pas',
+  UVIFile in 'UVIFile.pas';
 
 {$Resource Resources.res}
 {$Resource Version.res}

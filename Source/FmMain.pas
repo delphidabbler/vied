@@ -318,7 +318,7 @@ uses
   // Delphi
   SysUtils, ShellAPI, Math, IOUtils,
   // Project units
-  UHelp, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
+  UHelp, UMacros, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
   FmDropDownListEd, FmFileEncoding, FmIdEd, FmNumberEd, FmResCompiler,
   FmResCompilerCheck, FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd,
   FmResOutputDir, FmMacroEd;
@@ -913,7 +913,7 @@ begin
   Ed := TVerNumEditor.Create(Self);
   try
     Macros := TStringList.Create;
-    fVerInfo.AddMacros(Macros);
+    fVerInfo.Macros.ListResolvedNames(Macros);
     // Set required properties
     Ed.Kind := VKind;               // info for title
     Ed.VersionNumberCode := Current;      // default version number for editing
@@ -1462,11 +1462,11 @@ resourcestring
 begin
   Ed := TMacroEditor.Create(Self);
   try
-    Ed.Macros := fVerInfo.Macros;
-    Ed.RelativeFilePath := fVerInfo.RelativeMacroFilePath;
+    Ed.Macros := fVerInfo.Macros.Macros;
+    Ed.RelativeFilePath := fVerInfo.Macros.RelativeMacroFilePath;
     if Ed.ShowModal = mrOK then
     begin
-      fVerInfo.Macros := Ed.Macros;
+      fVerInfo.Macros.Macros := Ed.Macros;
       fChanged := True;
       if not fVerInfo.HasBeenSaved and (fVerInfo.Macros.Count > 0) then
         Display(sMacrosNotAvailable, mtWarning, [mbOK]);
@@ -1747,14 +1747,13 @@ procedure TMainForm.MFViewMacrosClick(Sender: TObject);
 var
   DBox: TViewListDlg;             // dialogue box instance
   Report: TStringList;            // report to be displayed in dialogue box
-  Idx: Integer;                   // loops through resolved macros
-  Macro: TVInfo.TMacro;           // enumerates macros as entered
-  Macros: TArray<TVInfo.TMacro>;  // array of macros as entered
+  ResMacro: TMacros.TResolvedMacro;
+  ResMacros: TArray<TMacros.TResolvedMacro>;
   NameColWidth: Integer;
   ValueColWidth: Integer;
   Ruling: string;
-  BadFiles: TStringList;
-  BadFile: string;
+  BadFileMacros: TArray<TMacros.TMacro>;
+  BadFileMacro: TMacros.TMacro;
 resourcestring
   sNoMacros = 'No macros defined';
   sNotSaved = '** Macros not available until the file has been saved';
@@ -1772,10 +1771,9 @@ resourcestring
 const
   ColumnFmt = '| %-*s | %-*s |';  // do not localise
 
-  {****
-     This is quick and dirty code - it really needs pulling out into a separate
-     form unit
-  ****}
+  { TODO: This is quick and dirty code - it really needs pulling out into a
+          separate form unit
+  }
 
 begin
   // Create report
@@ -1787,19 +1785,18 @@ begin
       Report.Add(sNotSaved)
     else
     begin
-      // Re-read any changed macro values from external files
-      fVerInfo.ResolveMacros;
+      // Re-read any changed macro values from external files and get array of
+      // them
+      fVerInfo.Macros.Resolve;
+      ResMacros := fVerInfo.Macros.GetAllResolved;
+
       // Calculate width of table columns & rulings required
       NameColWidth := Length(sNameColHeader);
       ValueColWidth := Length(sValueColheader);
-      for Idx := 0 to Pred(fVerInfo.ResolvedMacros.Count) do
+      for ResMacro in ResMacros do
       begin
-        NameColWidth := Max(
-          Length(fVerInfo.ResolvedMacros.Names[Idx]), NameColWidth
-        );
-        ValueColWidth := Max(
-          Length(fVerInfo.ResolvedMacros.ValueFromIndex[Idx]), ValueColWidth
-        );
+        NameColWidth := Max(Length(ResMacro.Macro), NameColWidth);
+        ValueColWidth := Max(Length(ResMacro.Value), ValueColWidth);
       end;
       Ruling := '|' + StringOfChar('-', NameColWidth + 2) + '|'
         + StringOfChar('-', ValueColWidth + 2) + '|';
@@ -1814,45 +1811,30 @@ begin
       Report.Add(Ruling);
 
       // Add details of resolved macros
-      for Idx := 0 to Pred(fVerInfo.ResolvedMacros.Count) do
+      for ResMacro in ResMacros do
+      begin
         Report.Add(
           Format(
             ColumnFmt,
-            [
-              NameColWidth,
-              fVerInfo.ResolvedMacros.Names[Idx],
-              ValueColWidth,
-              fVerInfo.ResolvedMacros.ValueFromIndex[Idx]
-            ]
+            [NameColWidth, ResMacro.Macro, ValueColWidth, ResMacro.Value]
           )
         );
+      end;
 
       // Add table footer
       Report.Add(Ruling);
     end;
 
-    BadFiles := TStringList.Create;
-    try
-      Macros := fVerInfo.CrackMacros(fVerInfo.Macros);
-      for Macro in Macros do
-      begin
-        if Macro.Cmd in [mcExternal, mcImport] then
-        begin
-          if not TFile.Exists(fVerInfo.AdjustFilePath(Macro.Value)) then
-            BadFiles.Add(Macro.Value);
-        end;
-      end;
-      if BadFiles.Count > 0 then
-      begin
-        Report.Add('');
-        Report.Add(sBadFilesPrefix);
-        for BadFile in BadFiles do
-          Report.Add('  • ' + BadFile);
-        Report.Add('');
-        Report.Add(sBadFilesSuffix);
-      end;
-    finally
-      BadFiles.Free;
+    // Get list of invalid file references in macros
+    BadFileMacros := fVerInfo.Macros.GetInvalidFileMacros;
+    if Length(BadFileMacros) > 0 then
+    begin
+      Report.Add('');
+      Report.Add(sBadFilesPrefix);
+      for BadFileMacro in BadFileMacros do
+        Report.Add('  • ' + BadFileMacro.Value);
+      Report.Add('');
+      Report.Add(sBadFilesSuffix);
     end;
 
     // Display report in dialogue box
@@ -2020,6 +2002,11 @@ begin
   try
     // Record input file: error if not present or doesn't exist
     InFile := ParamStr(2);
+    {TODO: Revise how errors are handled & add new code for invalid version
+           .vi file version. A lot of this code could be moved into UVInfo's
+           file loading code that could raise an exception the passes the error
+           code. This could then be handled here to get the exit code.
+    }
     if (InFile = '') or not FileExists(InFile) then
     begin
       ExitCode := 1;  // error 1 => missing in file
@@ -2033,7 +2020,7 @@ begin
     // Load input file
     try
       fVerInfo.LoadFromFile(InFile);
-      if fVerInfo.HasBadMacroFileReferences then
+      if fVerInfo.Macros.HasBadMacroFileReferences then
       begin
         ExitCode := 4;
         Exit;

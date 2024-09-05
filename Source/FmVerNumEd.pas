@@ -95,7 +95,7 @@ uses
   // Delphi
   SysUtils, StrUtils, Math, Dialogs,
   // Project
-  UMsgDlgs, UVerUtils, UVInfo;
+  UMsgDlgs, UMAcros, UVerUtils, UVInfo;
 
 {$R *.DFM}
 
@@ -266,7 +266,7 @@ end;
 
 function TVerNumEditor.IsMacroInUse(const Text: string): Boolean;
 begin
-  Result := TVInfo.ContainsMacro(Text);
+  Result := TMacros.ContainsMacro(Text);
 end;
 
 procedure TVerNumEditor.SetValidMacros(Macros: TStrings);
