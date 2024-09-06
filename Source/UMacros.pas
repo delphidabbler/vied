@@ -14,31 +14,52 @@ unit UMacros;
 interface
 
 uses
+  // VCL
   SysUtils,
   Classes,
   Generics.Collections,
-
+  // Project
   UVIFile;
 
 type
+  ///  <summary>Class that encapsulates all macros.</summary>
   TMacros = class(TObject)
   strict private
     var
+      ///  <summary>Value of <c>Macros</c> property.</summary>
       fMacros: TStrings;
+      ///  <summary>Value of <c>Resolved</c> property.</summary>
       fResolved: TStrings;
+      ///  <summary>Reference to object encapsulating a .vi file.</summary>
       fVIFile: TVIFile;
+    ///  <summary>Write accessor for <c>Macros</c> property.</summary>
     procedure SetMacros(const Value: TStrings);
+    ///  <summary>Adjusts the given file path to make rooted.</summary>
+    ///  <remarks>File paths that are already rooted are unchanged. Relative
+    ///  file paths adjusted relative to the directory of the .vi file, if
+    ///  saved, other wise they remain relative.</remarks>
     function AdjustFilePath(const FilePath: string): string;
   public
     type
+      ///  <summary>Enumeration of the identifiers of valid commands.</summary>
       TMacroCmd = (mcDefine, mcExternal, mcImport);
+      ///  <summary>Record containing constituent parts of an un-resolved macro.
+      ///  </summary>
       TMacro = record
+        ///  <summary>Macro command type.</summary>
         Cmd: TMacroCmd;
+        ///  <summary>Unresolved macro name.</summary>
         Name: string;
+        ///  <summary>Unresolved macro value</summary>
+        ///  <remarks>May be an actual value or a file reference.</remarks>
         Value: string;
       end;
+      ///  <summary>Record containing constituent parts of a resolved macro.
+      ///  </summary>
       TResolvedMacro = record
+        ///  <summary>Resolved macro name.</summary>
         Macro: string;
+        ///  <summary>Resolved macro value.</summary>
         Value: string;
       end;
     const
@@ -48,46 +69,120 @@ type
                 MacroOpener = TFields.FieldOpener + '%'
                 MacroCloser = TFields.FieldCloser
       }
+      ///  <summary>Character sequence that begins a macro reference in text.
+      ///  </summary>
       MacroOpener = '<%';
+      ///  <summary>Character that ends a macro reference in text.</summary>
       MacroCloser = '>';
+      ///  <summary>Character that separates a macro command from a macro name
+      ///  in text.</summary>
       MacroCmdSep = ':';
+      ///  <summary>Character that separates a macro name from its value in
+      ///  text.</summary>
       MacroValueSep = '=';
+      ///  <summary>Text that introduces a Define macro.</summary>
       DefineMacroCmd = 'Define';
+      ///  <summary>Text that introduces an External macro.</summary>
       ExternalMacroCmd = 'External';
+      ///  <summary>Test that introduces an Import macro.</summary>
       ImportMacroCmd = 'Import';
+      ///  <summary>Character that separates the two parts of a resolved macro
+      ///  name defined by an Import macro.</summary>
       ImportMacroSeparator = '.';
+      ///  <summary>Array of recognised macro command types as they appear in
+      ///  text.</summary>
       MacroCmds: array[TMacroCmd] of string = (
         DefineMacroCmd, ExternalMacroCmd, ImportMacroCmd
       );
 
   strict private
+
+    ///  <summary>Checks is a given macro command type is one that references a
+    ///  file.</summary>
     class function IsFileReferenceCommand(const ACmd: TMacroCmd): Boolean;
       inline;
+
+    ///  <summary>Enumerates all un-resolved macros and calls a callback
+    ///  function for each one.</summary>
+    ///  <remarks>Iff the callback function returns <c>False</c> then the
+    ///  enumeration is aborted.</remarks>
     function EnumBadMacroFileRefs(ACallback: TFunc<TMacro,Boolean>): Boolean;
 
   public
 
+    ///  <summary>Object constructor.</summary>
+    ///  <param name="VIFIle">[in] Object representing the .vi file containing
+    ///  the macros.</param>
     constructor Create(VIFile: TVIFile);
+
+    ///  <summary>Object destructor.</summary>
     destructor Destroy; override;
 
+    ///  <summary>Checks if the name <c>N</c> is a valid macro name.</summary>
     class function IsValidMacroName(const N: string): Boolean;
+
+    ///  <summary>Iterates through each unresolved macro in the given list,
+    ///  parses each one into its component parts and returns an array of the
+    ///  parsed macro parts.</summary>
+    ///  <param name="Macros">[in] String list containing an array of
+    ///  un-resolved macros as strings.</param>
+    ///  <returns><c>TArray&lt;TMacro&gt;</c>. Array of macros decomposed into
+    ///  their constituent parts.</returns>
+    ///  <exception><c>Exception</c> is raised if any of the macros are
+    ///  malformed.</exception>
     class function CrackMacros(const Macros: TStrings): TArray<TMacro>;
-    class function EncodeMacro(const Macro: TMacros.TMacro): string;
+
+    ///  <summary>Creates and returns a string composed of the given macro's
+    ///  command type, name and value, using the correct separators.</summary>
+    class function EncodeMacro(const Macro: TMacro): string;
+
+    ///  <summary>Looks up a macro command in the list of valid commands.
+    ///  </summary>
+    ///  <param name="CmdStr">[in] String representation of the macro command.
+    ///  </param>
+    ///  <param name="Cmd">[out] Set to the identifier of the command if found.
+    ///  Undefined if not found.</param>
+    ///  <returns><c>Boolean</c>. <c>True</c> if the command is valid.
+    ///  <c>False</c> if not.</returns>
     class function TryLookupMacroCmd(const CmdStr: string;
       out Cmd: TMacroCmd): Boolean;
+
+    ///  <summary>Checks if <c>Code</c> contains one or more macros.</summary>
     class function ContainsMacro(const Code: string): Boolean;
 
+    // TODO: Make RelativeMacroFilePath inline or refactor out
+    // TODO: Rename RelativeMacroFilePath as RelativeMacroFileDir
+    ///  <summary>Returns the directory of the .vi file to which all relative
+    ///  macro file references relate.</summary>
+    ///  <remarks>Returns the empty string if the .vi file has not been saved.
+    ///  </remarks>
     function RelativeMacroFilePath: string;
 
+    ///  <summary>String list containing all un-resolved macros.</summary>
     property Macros: TStrings read fMacros write SetMacros;
+
+    ///  <summary>String list containing all resolved macros.</summary>
+    ///  <remarks>Will be empty until the <c>Resolve</c> method is called.
+    ///  </remarks>
     property Resolved: TStrings read fResolved;
 
+    ///  <summary>Clears the list of unresolved macros.</summary>
     procedure Clear;
+
+    ///  <summary>Adds the given un-resolved macro to the <c>Macros</c> list.
+    ///  </summary>
     procedure Add(const Macro: string);
+
+    ///  <summary>Returns the number of macros in the unresolved macro list.
+    ///  </summary>
     function Count: Integer;
+
     { TODO: Rename following method it gets macro details at position Idx in
             fMacros[], split into Cmd:Name (Key) and Value parts.
     }
+    ///  <summary>Gets the un-resolved macro at the given index in the
+    ///  <c>Macros</c> list, splits the command/name part from the value, then
+    ///  returns them as a tuple.</summary>
     function GetNameAndValue(Idx: Integer): TPair<string,string>;
 
     ///  <summary>Processes the macro definitions, reads in external and
@@ -97,29 +192,42 @@ type
     ///  No error is reported in this case.</remarks>
     procedure Resolve;
 
-    ///  <summary>Append names of all resolved macros to a given string
+    ///  <summary>Appends the names of all resolved macros to a given string
     ///  list.</summary>
     procedure ListResolvedNames(const AList: TStrings);
 
-    ///  <summary>Get list of all resolved macros and return as array of TMacro
-    ///  records.</summary>
+    ///  <summary>Get list of all resolved macros and returns as an array of
+    ///  <c>TMacro</c> records.</summary>
     function GetAllResolved: TArray<TResolvedMacro>;
 
+    ///  <summary>Evaluates any and all the resolved macros in the given string
+    ///  and replaces them with their values.</summary>
     function EvalResolvedMacros(const ACodeStr: string): string;
 
+    ///  <summary>Returns a list of all macros that reference non-existent
+    ///  files.</summary>
     function GetInvalidFileMacros: TArray<TMacro>;
+
+    ///  <summary>Checks if any macros reference non-existent files.</summary>
     function HasBadMacroFileReferences: Boolean;
+
+    ///  <summary>Validates macros.</summary>
+    ///  <param name="AErrorList">[in] String list that receives any error
+    ///  information.</param>
+    ///  <returns><c>True</c> if no errors are found, <c>False</c> otherwise.
+    ///  </returns>
     function Validate(const AErrorList: TStrings): Boolean;
   end;
 
 implementation
 
 uses
+  // VCL
   Types,
   Character,
   StrUtils,
   IOUtils,
-
+  // Project
   UUtils;
 
 { TMacros }

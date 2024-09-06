@@ -35,27 +35,25 @@ interface
 
 uses
   // Delphi
-  SysUtils, Classes, Windows,
+  SysUtils,
+  Classes,
+  Windows,
   // DelphiDabbler library
   PJVersionInfo,
   // Project
-  UMacros, UVIFile;
+  UMacros,
+  UVIFile;
 
 
 type
 
-  {
-  TStrInfo:
-    Enumerated type listing all string-info items.
-  }
+  ///  <summary>Enumerated type of all standard string information items.
+  ///  </summary>
   TStrInfo = (siComments, siCompanyName, siFileDescription, siFileVersion,
     siInternalName, siLegalCopyright, siLegalTrademarks, siOriginalFileName,
     siPrivateBuild, siProductName, siProductVersion, siSpecialBuild);
 
-  {
-  TTokens:
-    Enumerated type listing tokens for all fields.
-  }
+  ///  <summary>Enumerated type of tokens for all fields.</summary>
   TTokens = (tkF1, tkF2, tkF3, tkF4, tkP1, tkP2, tkP3, tkP4, tkYEAR,
     tkSHORTFNAME, tkPRODUCTNAME, tkSPECIALBUILD, tkDELIMITER, tkCOMMENTS,
     tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
@@ -65,192 +63,197 @@ type
     tkYEAR2
   );
 
+  ///  <summary>Set of field tokens.</summary>
   TTokenSet = set of TTokens;
 
-  {
-  TVInfo:
-    Engine for version info processing.
-  }
+  ///  <summary>Class that encapsulates version information, inputs it from a
+  ///  .vi file and outputs it in various formats.</summary>
   TVInfo = class(TObject)
-  private
-    // Property values
-    fFileVersionNumberCode: string;
-    fProductVersionNumberCode: string;
-    fFileOS: LongInt;
-      {Value of FileOS property}
-    fFileType: LongInt;
-      {Value of FileType property}
-    fFileSubType: LongInt;
-      {Value of FileSubType property}
-    fFileFlagsMask: LongInt;
-      {Value of FileFlagsMask property}
-    fFileFlags: LongInt;
-      {Value of FileFlags property}
-    fLanguageCode: Word;
-      {Value of LanguageCode property}
-    fCharSetCode: Word;
-      {Value of CharSetCode property}
-    fValidating: Boolean;
-      {Value of Validating property}
-    fDescribeFileFlags: Boolean;
-      {Value of DescribeFileFlags property}
-    fStrInfo: TStringList;
-      {Value of StrInfo property}
-    fIdentifier: string;
-      {Value of Identifier property}
-    fRCComments: TStringList;
-      {Value of RCComments property}
-    fVIComments: TStringList;
-      {Value of VIComments property}
-    fMacros: TMacros;
-    // Value of ResOutputDir property
-    fResOutputDir: string;
-    // Value of IsUTF8EncodedFile property
-    fIsUTF8EncodedFile: Boolean;
-    fVIFile: TVIFile;
-    procedure SetFileOS(AValue: LongInt);
-      {Write access method for FileOS property.
-        @param AValue [in] New property value.
-      }
-    procedure SetFileType(AValue: LongInt);
-      {Write access method for FileType property.
-        @param AValue [in] New property value.
-      }
-    procedure SetFileSubType(AValue: LongInt);
-      {Write access method for FileSubType property.
-        @param AValue [in] New property value.
-      }
-    procedure SetFileFlagsMask(AValue: LongInt);
-      {Write access method for FileFlagsMask property.
-        @param AValue [in] New property value.
-      }
-    procedure SetFileFlags(AValue: LongInt);
-      {Write access method for FileFlags property.
-        @param AValue [in] New property value.
-      }
-    procedure SetLanguageCode(AValue: Word);
-      {Write access method for LanguageCode property.
-        @param AValue [in] New property value.
-      }
-    procedure SetCharSetCode(AValue: Word);
-      {Write access method for CharSetCode property.
-        @param AValue [in] New property value.
-      }
-    function GetStrName(AnId: TStrInfo): string;
-      {Read accessor for StrName property.
-        @param AnId [in] String info item id.
-        @return Value of property for AnId.
-      }
-    function GetStrDesc(AnId: TStrInfo): string;
-      {Read accessor for StrDesc property.
-        @param AnId [in] String info item id.
-        @return Value of property for AnId.
-      }
-    function GetStrRequired(AnId: TStrInfo): Boolean;
-      {Read accessor for StrRequired property. Finds if a string is required to
-      have a value.
-        @param AnId [in] String info item id.
-        @return Property value for AnId.
-      }
-    function GetStrPermitted(AnId: TStrInfo): Boolean;
-      {Read access  method for StrPermitted property. Finds if a string is
-      permitted to have a value.
-        @param AnId [in] String info item id.
-        @return Value of property for AnId.
-      }
-    function GetStrInfo(AnId: TStrInfo): string;
-      {Read accessor for StrInfo property.
-        @param AnId [in] String info item id.
-        @return Value of property for AnId.
-      }
-    procedure SetStrInfo(AnId: TStrInfo; AStr: string);
-      {Write access method for StrInfo property.
-        @param AnId [in] String info item id.
-        @param AStr [in] New property value for AnId.
-      }
-    procedure SetRCComments(SL: TStringList);
-      {Write access method for RCComments property.
-        @param SL [in] String list containing new property value.
-      }
-    procedure SetVIComments(SL: TStringList);
-      {Write access method for VIComments property.
-        @param SL [in] String list containing new property value.
-      }
+  strict private
+    var
 
+      // Property values
+
+      fFileVersionNumberCode: string;
+      fProductVersionNumberCode: string;
+      fFileOS: LongInt;
+      fFileType: LongInt;
+      fFileSubType: LongInt;
+      fFileFlagsMask: LongInt;
+      fFileFlags: LongInt;
+      fLanguageCode: Word;
+      fCharSetCode: Word;
+      fValidating: Boolean;
+      fDescribeFileFlags: Boolean;
+      fStrInfo: TStringList;
+      fIdentifier: string;
+      fRCComments: TStringList;
+      fVIComments: TStringList;
+      fResOutputDir: string;
+      fIsUTF8EncodedFile: Boolean;
+
+      // Other fields
+
+      ///  <summary>Object encapsulating macros.</summary>
+      fMacros: TMacros;
+      ///  <summary>Object encapsulating a .vi file.</summary>
+      fVIFile: TVIFile;
+
+    // Property access methods
+
+    ///  <summary>Write accessor for the <c>FileOS</c> property.</summary>
+    procedure SetFileOS(AValue: LongInt);
+
+    ///  <summary>Write accessor for the <c>FileType</c> property.</summary>
+    procedure SetFileType(AValue: LongInt);
+
+    ///  <summary>Write accessor for the <c>FileSubType</c> property.</summary>
+    procedure SetFileSubType(AValue: LongInt);
+
+    ///  <summary>Write accessor for the <c>FileFlagsMask</c> property.
+    ///  </summary>
+    procedure SetFileFlagsMask(AValue: LongInt);
+
+    ///  <summary>Write accessor for the <c>FileFlags</c> property.</summary>
+    procedure SetFileFlags(AValue: LongInt);
+
+    ///  <summary>Write accessor for the <c>LanguageCode</c> property.</summary>
+    procedure SetLanguageCode(AValue: Word);
+
+    ///  <summary>Write accessor for the <c>CharSetCode</c> property.</summary>
+    procedure SetCharSetCode(AValue: Word);
+
+    ///  <summary>Read accessor for the <c>StrName</c> property.</summary>
+    function GetStrName(AnId: TStrInfo): string;
+
+    ///  <summary>Read accessor for the <c>StrDesc</c> property.</summary>
+    function GetStrDesc(AnId: TStrInfo): string;
+
+    ///  <summary>Read accessor for the <c>StrRequired</c> property.</summary>
+    function GetStrRequired(AnId: TStrInfo): Boolean;
+
+    ///  <summary>Read accessor for the <c>StrPermitted</c> property.</summary>
+    function GetStrPermitted(AnId: TStrInfo): Boolean;
+
+    ///  <summary>Read accessor for the <c>StrRequired</c> property.</summary>
+    function GetStrInfo(AnId: TStrInfo): string;
+
+    ///  <summary>Write accessor for the <c>StrInfo</c> property.</summary>
+    procedure SetStrInfo(AnId: TStrInfo; AStr: string);
+
+    ///  <summary>Write accessor for the <c>RCComments</c> property.</summary>
+    procedure SetRCComments(SL: TStringList);
+
+    ///  <summary>Write accessor for the <c>VIComments</c> property.</summary>
+    procedure SetVIComments(SL: TStringList);
+
+    ///  <summary>Converts the given <c>Code</c> string into a version number,
+    ///  after evaluating any macros contained in <c>Code</c>.</summary>
+    ///  <remarks>If any parts of the version number can't be converted to a
+    ///  number then that part is set to zero. No error is reported.</remarks>
     function RenderVersionNumberFromCode(const Code: string): TPJVersionNumber;
 
-    ///  <summary>Replaces all fields and macros in a given string info item by
-    ///  their values then returns result with trailing spaces trimmed.
-    ///  </summary>
+    ///  <summary>Parses string info item <c>StrInfoId</c>, recursively finding,
+    ///  evaluating and replacing any fields and macros.</summary>
     function EvaluateFields(StrInfoId: TStrInfo): string;
 
+    ///  <summary>Parses string info item <c>StrInfoId</c>, recursively finding,
+    ///  evaluating and replacing any fields and macros. If any fields are
+    ///  contained in <c>AExclusions</c> then an exception is raised.</summary>
     function DoEvaluateFields(StrInfoId: TStrInfo; AExclusions: TTokenSet):
       string;
 
+    ///  <summary>Evaluates the given field <c>I</c>, recursively replacing all
+    ///  field and macro references, raising an exception if any embedded field
+    ///  containing is one of the excluded fields per <c>AExclusions</c>.
+    ///  </summary>
     function FieldValue(I: TTokens; AExclusions: TTokenSet): string;
-      {Gets value of a field.
-        @param I [in] Field identifier.
-        @return Value of field.
-      }
 
     ///  <summary>Checks if any undefined macros are referenced anywhere in the
     ///  version information.</summary>
     ///  <remarks>Since this check uses information not available in the TMacros
     ///  the check must be done in TVinfo.</remarks>
     function HasUndefinedMacros: Boolean;
+
   public
+
     const
+
       // Default version information values
+
+      ///  <summary>Default version number used for file and product versions.
+      ///  </summary>
       DefVersionNumber: TPJVersionNumber = (V1: 0; V2: 0; V3: 0; V4: 0);
+
+      ///  <summary>Default value for <c>FileOS</c> property.</summary>
       DefFileOS = VOS__WINDOWS32;
+
+      ///  <summary>Default value for <c>FileType</c> property.</summary>
       DefFileType = VFT_APP;
+
+      ///  <summary>Default value for <c>FileFlagsMask</c> property.</summary>
       DefFileFlagsMask = 0;
+
+      ///  <summary>Default value for <c>FileFlags</c> property.</summary>
       DefFileFlags = 0;
+
+      ///  <summary>Default value for <c>LanguageCode</c> property.</summary>
       DefLanguageCode = $0809;    // UK English
+
+      ///  <summary>Default value for <c>CharSetCode</c> property.</summary>
       DefCharSetCode = 1200;      // Unicode
+
+      ///  <summary>Default value for all string information items.</summary>
       DefString = '';
+
+      ///  <summary>Default identifier used in the VERSIONINFO resource
+      ///  statement.</summary>
       DefIdentifier = 'VERINFO';
+
   public
+
+    ///  <summary>Object constructor.</summary>
     constructor Create;
-      {Class constructor. Sets up object.
-      }
+
+    ///  <summary>Object destructor.</summary>
     destructor Destroy; override;
-      {Class destructor. Tears down object.
-      }
+
+    ///  <summary>Clears version information in memory and resets to default
+    ///  values.</summary>
     procedure Clear;
-      {Clears version info in memory. Resets to default values.
-      }
+
+    ///  <summary>Writes version information in resource file (.rc) format to a
+    ///  string list.</summary>
     procedure WriteAsRC(const SL: TStringList);
-      {Writes resource file (.rc) format to a stringlist.
-        @param SL [in] Receives source code.
-      }
+
+    ///  <summary>Reads version information from a given .vi format file.
+    ///  </summary>
     procedure LoadFromFile(const FileName: string);
-      {Reads version information from a (.vi) file.
-        @param FileName [in] Name of file to be loaded.
-      }
+
+    ///  <summary>Saves version information to a .vi format file.</summary>
     procedure SaveToFile(const FileName: string);
-      {Saves version information to a version information (.vi) file.
-        @param FileName [in] Name of saved file.
-      }
+
+    ///  <summary>Copies version information in resource file (.rc) format to
+    ///  the clipboard.</summary>
     procedure CopyToClipBoard;
-      {Copies version information in a resource file (.rc) format to clipboard.
-      }
+
+    ///  <summary>Saves version information in resource file (.rc) in default
+    ///  ANSI encoding.</summary>
     procedure SaveToResourceFile(const FileName: string);
-      {Saves version information to a resource (.rc) file in default ANSI
-      encoding.
-        @param FileName [in] Name of output file.
-      }
+
+    ///  <summary>Analyses current version information in memory and checks its
+    ///  validity.</summary>
+    ///  <param name="ErrList">[in] String list receives any error messages
+    ///  unless nil.</param>
+    ///  <returns><c>Boolean</c>. True if the information is valid and
+    ///  consistent, False otherwise.</returns>
     function Analyse(const ErrList: TStringList): Boolean;
-      {Analyses current version information in memory and checks its validity.
-        @param ErrList [in] Receives any error messages unless nil.
-        @return True if the information is valid and consistent, False
-          otherwise.
-      }
+
+    ///  <summary>Gets a list of valid fields for a string info item.</summary>
+    ///  <param name="Id">Id of the string info item.</param>
+    ///  <param name="SL">Receives list of permitted fields for the string info
+    ///  item.</param>
     procedure ValidFields(const Id: TStrInfo; const SL: TStringList);
-      {Gets a list of valid fields for a string info item.
-        @param Id [in] Id of string info item.
-        @param SL [in] Receives list of permitted fields for string info item.
-      }
 
     ///  <summary>Checks whether version information has been saved to file.
     ///  </summary>
@@ -261,76 +264,103 @@ type
 
     // Fixed File Info properties
 
-    // file version number code (includes any macros)
+    ///  <summary>File version number code, including any macros.</summary>
     property FileVersionNumberCode: string read fFileVersionNumberCode
       write fFileVersionNumberCode;
-    // product version number code (includes any macros)
+
+    ///  <summary>Product version number code, includes any macros.</summary>
     property ProductVersionNumberCode: string read fProductVersionNumberCode
       write fProductVersionNumberCode;
 
+    ///  <summary>Identifies the operating system.</summary>
     property FileOS: LongInt read fFileOS write SetFileOS;
-      {Identifies operating system}
+
+    ///  <summary>Identifies the file type.</summary>
     property FileType: LongInt read fFileType write SetFileType;
-      {Identifies file type}
+
+    ///  <summary>Identifies the file sub-type. The meaning or validity depends
+    ///  on the <c>FileType</c> property.</summary>
     property FileSubType: LongInt read fFileSubType write SetFileSubType;
-      {Identifies and file sub-type. Meaning or validity depends on FileType
-      property}
+
+    ///  <summary>Mask that defines valid values of the <c>FileFlags</c>
+    ///  property.</summary>
     property FileFlagsMask: LongInt read fFileFlagsMask write SetFileFlagsMask;
-      {Mask that defines valid values of FileFlags property}
+
+    ///  <summary>Bitmask of file flags.</summary>
     property FileFlags: LongInt read fFileFlags write SetFileFlags;
-      {Bitmask of file flags}
 
     // Variable File Info properties
 
+    ///  <summary>Identifies the version information language.</summary>
     property LanguageCode: Word read fLanguageCode write SetLanguageCode;
-      {Identifies language of version information}
+
+    ///  <summary>Identifies the version information character set.</summary>
     property CharSetCode: Word read fCharSetCode write SetCharSetCode;
-      {Identifies character set of version information}
 
     // String Info properties
 
+    ///  <summary>Names of the standard string information items.</summary>
     property StrName[AnId: TStrInfo]: string read GetStrName;
-      {Names of string info items}
+
+    ///  <summary>Descriptions of the standard string information items.
+    ///  </summary>
     property StrDesc[AnId: TStrInfo]: string read GetStrDesc;
-      {Descriptions of string info items}
+
+    ///  <summary>Flags showing if a string information item is required under
+    ///  the Microsoft guidelines.</summary>
     property StrRequired[AnId: TStrInfo]: Boolean read GetStrRequired;
-      {Flag showing if a string info item is required}
+
+    ///  <summary>Flags showing if a string information item is permitted (by
+    ///  File Flags etc).</summary>
     property StrPermitted[AnId: TStrInfo]: Boolean read GetStrPermitted;
-      {Flag showing if a string info item is permitted (by File Flags etc)}
+
+    ///  <summary>Values of the string information items.</summary>
     property StrInfo[AnId: TStrInfo]: string read GetStrInfo write SetStrInfo;
-      {Value of string info items}
 
     // Other properties
 
+    ///  <summary>Identifier used in the VERSIONINFO resource statement.
+    ///  </summary>
     property Identifier: string read fIdentifier write fIdentifier;
-      {Identifier used in the VERSIONINFO resource statement}
-    property RCComments: TStringList read fRCComments write SetRCComments;
-      {Lines of comments (excluding /* and */) which should be written to a
-      resource file}
-    property VIComments: TStringList read fVIComments write SetVIComments;
-      {Lines of comments (excluding leading ';' characters) which should be
-      written to a version information file}
 
-    ///  <summary>Reference to object that manages macros.</summary>
+    ///  <summary>Lines of comments which should be written to a resource file.
+    ///  </summary>
+    ///  <remarks>The opening <c>/*</c> and <c>*/</c> are not included in the
+    ///  lines.</remarks>
+    property RCComments: TStringList read fRCComments write SetRCComments;
+
+    ///  <summary>Lines of comments (excluding the leading <c>;</c> character)
+    ///  which should be to a version information file.</summary>
+    property VIComments: TStringList read fVIComments write SetVIComments;
+
+    ///  <summary>Object that manages macros.</summary>
     property Macros: TMacros read fMacros;
 
+    ///  <summary>Flag that indicates whether assignment to version information
+    ///  properties should be validated according to the Microsoft rules.
+    ///  </summary>
     property Validating: Boolean read fValidating write fValidating;
-      {Flag true when assignments to version information properties should be
-      validated and False if not}
+
+    ///  <summary>Flag that determines whether file flags should be output as a
+    ///  string of symbolic descriptive constants (<c>True</c>) or as hex
+    ///  numnbers (<c>False</c>).</summary>
     property DescribeFileFlags: Boolean read fDescribeFileFlags
       write fDescribeFileFlags;
-      {Flag true when file flags should be output as a string of symbolic
-      constants and false when File Flags are described by hex numbers}
-    property ResOutputDir: string read fResOutputDir write fResOutputDir;
-      {Default output directory of .res files: can be relative to .vi file
-      folder}
 
-    ///  <summary>Flag true if current vi file was read from a UTF-8 encoded
-    ///  file or False if file was ANSI.</summary>
+    ///  <summary>Default output directory of binary resource (.res) files.
+    ///  </summary>
+    ///  <remarks>If the directory is not a rooted path it is taken as relative
+    ///  to the directory containing the .vi file.</remarks>
+    property ResOutputDir: string read fResOutputDir write fResOutputDir;
+
+    ///  <summary>Flag that indicates wether the .vi file was read from, or
+    ///  should be written to, a UTF-8 encoded file (<c>True</c>) or a file in
+    ///  default ANSI encoding (<c>False</c>).</summary>
     ///  <remarks>For a new document, the encoding depends on the preferred
-    ///  encoding format in settings.</remarks>
+    ///  encoding format per settings.</remarks>
     property IsUTF8EncodedFile: Boolean read fIsUTF8EncodedFile
       write fIsUTF8EncodedFile;
+
   end;
 
 
@@ -339,29 +369,41 @@ implementation
 
 uses
   // Delphi
-  ClipBrd, IniFiles, StrUtils, IOUtils, Types, Character, Generics.Collections,
+  ClipBrd,
+  IniFiles,
+  StrUtils,
+  IOUtils,
+  Types,
+  Character,
+  Generics.Collections,
   // Project
-  UFileIO, UVerUtils, UVIData, UUtils;
+  UFileIO,
+  UVerUtils,
+  UVIData,
+  UUtils;
 
 
 const
 
+  ///  <summary>Names of the standard string information items.</summary>
+  ///  <remarks>Do not localise.</remarks>
   StringInfoNames: array[TStrInfo] of string = (
-    // Names of all string file info strings   ** do not localise
     'Comments', 'CompanyName', 'FileDescription', 'FileVersion',
     'InternalName', 'LegalCopyright', 'LegalTrademarks', 'OriginalFileName',
     'PrivateBuild', 'ProductName', 'ProductVersion', 'SpecialBuild'
   );
 
+  ///  <summary>Descriptions of the standard string information items.</summary>
+  ///  <remarks>Do not localise.</remarks>
   StringInfoDescs: array[TStrInfo] of string = (
-    // Description of all string info strings  ** do not localise
     'Comments', 'Company Name', 'File Description', 'File Version',
     'Internal Name','Legal Copyright', 'Legal Trademark', 'Original File Name',
     'Private Build', 'Product Name', 'Product Version', 'Special Build'
   );
 
+  ///  <summary>Those fields not permitted in each string information item.
+  ///  </summary>
   ExcludeFields: array[TStrInfo] of set of TTokens = (
-    // Those fields not permitted in info strings
     [tkCOMMENTS],                         // Comments
     [tkCOMPANYNAME],                      // CompanyName
     [tkFILEDESCRIPTION],                  // FileDescription
@@ -376,17 +418,21 @@ const
     [tkSPECIALBUILD]                      // SpecialBuild
   );
 
+  ///  <summary>Tokens that represent standard string information items.
+  ///  </summary>
   StrInfoFieldTokens: TTokenSet = [
     tkCOMMENTS, tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
     tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
     tkPRODUCTNAME, tkPRODUCTVERSION, tkSPECIALBUILD, tkSHORTFNAME
   ];
 
+  ///  <summary>Character that begins a field reference in text.</summary>
   FieldOpener = '<';
+  ///  <summary>Character that ends a field reference in text.</summary>
   FieldCloser = '>';
 
+  ///  <summary>List of supported field names.</summary>
   Fields: array[TTokens] of string = (
-    // List of field names
     FieldOpener + '#F1' + FieldCloser,
     FieldOpener + '#F2' + FieldCloser,
     FieldOpener + '#F3' + FieldCloser,
@@ -425,19 +471,19 @@ const
     FieldOpener + 'YEAR2' + FieldCloser
   );
 
-  // Current file version
-  // - bump this each time file format changes in such a way that it can't
-  //   safely be read by an earlier version of the program
-  // - this versioning was effectively introduced when the macros were added to
-  //   the file format: before that the file version is assumed to have been
-  //   zero, although the program didn't check the version then.
-  //  History:
-  //   v0 - everything up to v2.13.1
-  //   v1 - from v2.14.0: added Macros
-  //   v2 - from v2.15.0:
-  //        * allowed dash & underscore in macro names
-  //        * added numerous new fields
-  //        * permit UTF-8 formatted .vi files.
+  ///  <summary>Current file version.</summary>
+  ///  <remarks>
+  ///  <para>Bump this each time file format changes in such a way that it can't
+  ///  safely be read by an earlier version of the program.</para>
+  ///  <para>This versioning was effectively introduced when the macros were
+  ///  added to the file format: before that the file version is assumed to have
+  ///  been zero, although the program didn't check the version then.</para>
+  ///  <para>History:</para>
+  ///  <para>* v0 - everything up to v2.13.1</para>
+  ///  <para>* v1 - from v2.14.0: added Macros</para>
+  ///  <para>* v2 - from v2.15.0: allowed dash &amp; underscore in macro names;
+  ///  added numerous new fields; permitted UTF-8 formatted .vi files.</para>
+  ///  </remarks>
   VIFileVersion = 2;
 
 resourcestring
@@ -448,29 +494,22 @@ resourcestring
   sRCComment2 = 'Produced by Version Information Editor from DelphiDabbler';
 
 const
-  // Record default VI and RC comments
+  ///  <summary>Comments written to .vi files by default.</summary>
   DefaultVIComments: array[0..1] of string = (sVIComment1, sVIComment2);
+  ///  <summary>Comments written to .rc files by default.</summary>
   DefaultRCComments: array[0..1] of string = (sRCComment1, sRCComment2);
 
 
 { TVInfo }
 
 function TVInfo.Analyse(const ErrList: TStringList): Boolean;
-  {Analyses current version information in memory and checks its validity.
-    @param ErrList [in] Receives any error messages unless nil.
-    @return True if the information is valid and consistent, False otherwise.
-  }
 
-  // ---------------------------------------------------------------------------
+  // Records that an error has been found and adds decription to the error list.
   procedure ErrorFound(Str: string);
-    {Records that an error has been found and adds decription to the error list.
-      @param Str [in] Description of error.
-    }
   begin
     Result := False;
     if ErrList <> nil then ErrList.Add(Str);
   end;
-  // ---------------------------------------------------------------------------
 
 var
   I: TStrInfo;  // loop control
@@ -526,8 +565,6 @@ begin
 end;
 
 procedure TVInfo.Clear;
-  {Clears version info in memory. Resets to default values.
-  }
 var
   I: TStrInfo;  // loop control for string info
   J: Integer;   // loop control for default comments
@@ -565,10 +602,8 @@ begin
 end;
 
 procedure TVInfo.CopyToClipBoard;
-  {Copies version information in a resource file (.rc) format to clipboard.
-  }
 var
-  RCList: TStringList;          // string list to hold resource file code
+  RCList: TStringList;  // string list to hold resource file code
 begin
   RCList := TStringList.Create;
   try
@@ -580,8 +615,6 @@ begin
 end;
 
 constructor TVInfo.Create;
-  {Class constructor. Sets up object.
-  }
 begin
   inherited Create;
   fVIFile := TVIFile.Create;
@@ -594,8 +627,6 @@ begin
 end;
 
 destructor TVInfo.Destroy;
-  {Class destructor. Tears down object.
-  }
 begin
   fMacros.Free;
   fVIComments.Free;
@@ -608,8 +639,8 @@ end;
 function TVInfo.DoEvaluateFields(StrInfoId: TStrInfo;
   AExclusions: TTokenSet): string;
 var
-  TokenIdx: Integer;  // index of field token in string
-  Token: TTokens;     // loop control
+  TokenIdx: Integer;
+  Token: TTokens;
 begin
   AExclusions := AExclusions + ExcludeFields[StrInfoId];
   // Process macros in string info item
@@ -637,6 +668,7 @@ end;
 
 function TVInfo.FieldValue(I: TTokens; AExclusions: TTokenSet): string;
 
+  // Parses a version information field
   function ParseVersionField(const Code: string; FieldNum: Byte): string;
   var
     VerNum: TPJVersionNumber;
@@ -662,6 +694,7 @@ var
   DateTimeNow: TDateTime;
   Locale: TFormatSettings;
 
+  // Format the current time
   function DateFmtNow(const AFmtStr: string): string;
   begin
     Result := FormatDateTime(AFmtStr, DateTimeNow, Locale);
@@ -732,38 +765,21 @@ begin
 end;
 
 function TVInfo.GetStrDesc(AnId: TStrInfo): string;
-  {Read accessor for StrDesc property.
-    @param AnId [in] String info item id.
-    @return Value of property for AnId.
-  }
 begin
   Result := StringInfoDescs[AnId];
 end;
 
 function TVInfo.GetStrInfo(AnId: TStrInfo): string;
-  {Read accessor for StrInfo property.
-    @param AnId [in] String info item id.
-    @return Value of property for AnId.
-  }
 begin
   Result := fStrInfo.Values[StringInfoNames[AnId]];
 end;
 
 function TVInfo.GetStrName(AnId: TStrInfo): string;
-  {Read accessor for StrName property.
-    @param AnId [in] String info item id.
-    @return Value of property for AnId.
-  }
 begin
   Result := StringInfoNames[AnId];
 end;
 
 function TVInfo.GetStrPermitted(AnId: TStrInfo): Boolean;
-  {Read access method for StrPermitted property. Finds if a string is permitted
-  to have a value.
-    @param AnId [in] String info item id.
-    @return Value of property for AnId.
-  }
 begin
   case AnId of
     siComments, siCompanyName, siFileDescription, siFileVersion, siInternalName,
@@ -783,11 +799,6 @@ begin
 end;
 
 function TVInfo.GetStrRequired(AnId: TStrInfo): Boolean;
-  {Read accessor for StrRequired property. Finds if a string is required to have
-  a value.
-    @param AnId [in] String info item id.
-    @return Property value for AnId.
-  }
 begin
   case AnId of
     siComments, siLegalCopyright, siLegalTrademarks:
@@ -827,13 +838,10 @@ begin
 end;
 
 procedure TVInfo.LoadFromFile(const FileName: string);
-  {Reads version information from a (.vi) file.
-    @param FileName [in] Name of file to be loaded.
-  }
 var
-  I: TStrInfo;    // loop control for string info
-  J: Integer;     // loop control for comments
-  Line: string;   // line to receive comments
+  I: TStrInfo;
+  J: Integer;
+  Line: string;
   FileContent: TFileContent;
   VIData: TVIData;
   ConfigDataSection: TVIDataSection;
@@ -939,25 +947,20 @@ end;
 function TVInfo.RenderVersionNumberFromCode(const Code: string):
   TPJVersionNumber;
 begin
-  // TODO: replace by call to RenderVersionNumberFromCode ?
   Result := StrToVersionNumber(fMacros.EvalResolvedMacros(Code));
 end;
 
 procedure TVInfo.SaveToFile(const FileName: string);
-  {Saves version information to a version information (.vi) file.
-    @param FileName [in] Name of saved file.
-  }
 var
-  I: TStrInfo;    // loop control for string info
-  J: Integer;     // loop control for comments
-  M: Integer;     // loop control for macros
+  I: TStrInfo;
+  J: Integer;
+  M: Integer;
   FileNameChanged: Boolean;
   VIData: TVIData;
   FFIData: TVIDataSection;
   VarData: TVIDataSection;
   CfgData: TVIDataSection;
 begin
-  // TODO: make following a method of TVIFile
   FileNameChanged := not SameText(fVIFile.Name, FileName);
 
   VIData := TVIData.Create;
@@ -1019,9 +1022,6 @@ begin
 end;
 
 procedure TVInfo.SaveToResourceFile(const FileName: string);
-  {Saves version information to a resource (.rc) file in default ANSI encoding.
-    @param FileName [in] Name of output file.
-  }
 var
   RCList: TStringList;  // .rc source code lines
 begin
@@ -1035,9 +1035,6 @@ begin
 end;
 
 procedure TVInfo.SetCharSetCode(AValue: Word);
-  {Write access method for CharSetCode property.
-    @param AValue [in] New property value.
-  }
 begin
   if (not Validating) or ValidCharCode(AValue) then
     fCharSetCode := AValue
@@ -1046,9 +1043,6 @@ begin
 end;
 
 procedure TVInfo.SetFileFlags(AValue: LongInt);
-  {Write access method for FileFlags property.
-    @param AValue [in] New property value.
-  }
 begin
   if Validating then
   begin
@@ -1067,9 +1061,6 @@ begin
 end;
 
 procedure TVInfo.SetFileFlagsMask(AValue: LongInt);
-  {Write access method for FileFlagsMask property.
-    @param AValue [in] New property value.
-  }
 begin
   if (not Validating) or ValidFileFlagsMask(AValue) then
     // Either we're not validating or we are and the value is OK - record value
@@ -1083,9 +1074,6 @@ begin
 end;
 
 procedure TVInfo.SetFileOS(AValue: LongInt);
-  {Write access method for FileOS property.
-    @param AValue [in] New property value.
-  }
 begin
   if (not Validating) or ValidFileOS(AValue) then
     fFileOS := AValue
@@ -1094,9 +1082,6 @@ begin
 end;
 
 procedure TVInfo.SetFileSubType(AValue: LongInt);
-  {Write access method for FileSubType property.
-    @param AValue [in] New property value.
-  }
 begin
   if (not Validating) or ValidFileSubType(fFileType, AValue) then
     fFileSubType := AValue
@@ -1105,9 +1090,6 @@ begin
 end;
 
 procedure TVInfo.SetFileType(AValue: LongInt);
-  {Write access method for FileType property.
-    @param AValue [in] New property value.
-  }
 begin
   if (not Validating) or ValidFileType(AValue) then
     // Either we're not validating or we are and the value is OK - record value
@@ -1121,9 +1103,6 @@ begin
 end;
 
 procedure TVInfo.SetLanguageCode(AValue: Word);
-  {Write access method for LanguageCode property.
-    @param AValue [in] New property value.
-  }
 begin
   if (not Validating) or ValidLangCode(AValue) then
     fLanguageCode := AValue
@@ -1132,18 +1111,11 @@ begin
 end;
 
 procedure TVInfo.SetRCComments(SL: TStringList);
-  {Write access method for RCComments property.
-    @param SL [in] String list containing new property value.
-  }
 begin
   fRCComments.Assign(SL);
 end;
 
 procedure TVInfo.SetStrInfo(AnId: TStrInfo; AStr: string);
-  {Write access method for StrInfo property.
-    @param AnId [in] String info item id.
-    @param AStr [in] New property value for AnId.
-  }
 begin
   if (not Validating) or StrPermitted[AnId] then
     fStrInfo.Values[StringInfoNames[AnId]] := AStr
@@ -1152,20 +1124,13 @@ begin
 end;
 
 procedure TVInfo.SetVIComments(SL: TStringList);
-  {Write access method for VIComments property.
-    @param SL [in] String list containing new property value.
-  }
 begin
   fVIComments.Assign(SL);
 end;
 
 procedure TVInfo.ValidFields(const Id: TStrInfo; const SL: TStringList);
-  {Gets a list of valid fields for a string info item.
-    @param Id [in] Id of string info item.
-    @param SL [in] Receives list of permitted fields for string info item.
-  }
 var
-  I: TTokens; // loop control
+  I: TTokens;
 begin
   // Clear the list
   SL.Clear;
@@ -1179,12 +1144,9 @@ begin
 end;
 
 procedure TVInfo.WriteAsRC(const SL: TStringList);
-  {Writes resource file (.rc) format to a stringlist.
-    @param SL [in] Receives source code.
-  }
 var
-  I: TStrInfo;  // loop control for string info
-  J: Integer;   // loop control for comments
+  I: TStrInfo;
+  J: Integer;
 begin
   // Ensure macro External & Import macros re-read data in case changed
   fMacros.Resolve;

@@ -13,6 +13,7 @@ unit UVIFile;
 interface
 
 uses
+  // Project
   UFileIO;
 
 type
@@ -49,6 +50,7 @@ type
 implementation
 
 uses
+  // VCL
   IOUtils;
 
 { TVIFile }
