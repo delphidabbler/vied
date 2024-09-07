@@ -32,6 +32,7 @@ type
       fResolved: TStrings;
       ///  <summary>Reference to object encapsulating a .vi file.</summary>
       fVIFile: TVIFile;
+
     ///  <summary>Write accessor for <c>Macros</c> property.</summary>
     procedure SetMacros(const Value: TStrings);
     ///  <summary>Adjusts the given file path to make rooted.</summary>
@@ -42,7 +43,7 @@ type
   public
     type
       ///  <summary>Enumeration of the identifiers of valid commands.</summary>
-      TMacroCmd = (mcDefine, mcExternal, mcImport);
+      TMacroCmd = (mcDefine, mcExternal, mcImport, mcEnv);
       ///  <summary>Record containing constituent parts of an un-resolved macro.
       ///  </summary>
       TMacro = record
@@ -84,15 +85,21 @@ type
       DefineMacroCmd = 'Define';
       ///  <summary>Text that introduces an External macro.</summary>
       ExternalMacroCmd = 'External';
-      ///  <summary>Test that introduces an Import macro.</summary>
+      ///  <summary>Text that introduces an Import macro.</summary>
       ImportMacroCmd = 'Import';
+      ///  <summary>Text that introduces an Env macro.</summary>
+      EnvMacroCmd = 'Env';
       ///  <summary>Character that separates the two parts of a resolved macro
       ///  name defined by an Import macro.</summary>
       ImportMacroSeparator = '.';
+      {TODO: replace const names in MacroCmds with literal text then delete
+             the consts above: they are only used in MacroCmds and just clutter
+             the class definition.
+      }
       ///  <summary>Array of recognised macro command types as they appear in
       ///  text.</summary>
       MacroCmds: array[TMacroCmd] of string = (
-        DefineMacroCmd, ExternalMacroCmd, ImportMacroCmd
+        DefineMacroCmd, ExternalMacroCmd, ImportMacroCmd, EnvMacroCmd
       );
 
   strict private
@@ -227,7 +234,10 @@ uses
   Character,
   StrUtils,
   IOUtils,
+  Generics.Defaults,
   // Project
+  UMutableEnvVars,
+  UParams,
   UUtils;
 
 { TMacros }
@@ -491,9 +501,12 @@ var
   FileLines: TStringList;
   FileIdx: Integer;
   Macro: TMacros.TMacro;
+  EnvVarName: string;
+  EnvVars: TMutableEnvVars;
+
 begin
   {
-    Macros have three forms in the ini file:
+    Macros have four forms in the ini file:
 
       1) Define - Define:Name=Value
          Resolved by stripping "Def:" from the name and storing Name & Value.
@@ -507,6 +520,15 @@ begin
          macro name in the .ini file, but doesn't itself resolve to a resolved
          macro name). The file FileName must have lines in the format Name=Value
          and a new resolved macro is created for each Name/Value pair.
+
+      4) Env - (1) Env:Name (2) Env:Name=Value
+         Resolved by stripping "Env:" from the name. In case (1) the environment
+         variable name is the same as Name. In case (2) Name is an alias for
+         the environment variable whose name is stored in Value. The macro's
+         value is resolved by getting environment variable's value. If the
+         environment variable does not exist then the macro is given an empty
+         value.
+
 
     All macro names:
 
@@ -527,8 +549,9 @@ begin
     reported.
   }
 
-  // Clear any existing resolved macros
+  // Clear any existing resolved macros and associated data structures
   fResolved.Clear;
+  EnvVars := TParams.EnvVars;
 
   // Do nothing
   if not fVIFile.IsSaved then
@@ -577,6 +600,18 @@ begin
           finally
             FileLines.Free;
           end;
+        end;
+
+        mcEnv:
+        begin
+          if Macro.Value = '' then
+            EnvVarName := Macro.Name    // macro name = env var name
+          else
+            EnvVarName := Macro.Value;  // macro name is alias for env var name
+          if EnvVars.Contains(EnvVarName) then
+            StoreResolvedMacro(Macro.Name, EnvVars.GetValue(EnvVarName))
+          else
+            StoreResolvedMacro(Macro.Name, '');
         end;
 
         else ; // ignore any unrecognised commands

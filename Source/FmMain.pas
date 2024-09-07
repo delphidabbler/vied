@@ -319,6 +319,7 @@ uses
   SysUtils, ShellAPI, Math, IOUtils,
   // Project units
   UHelp, UMacros, UMsgDlgs, UVerUtils, UUtils, USettings, UResCompiler,
+  UParams,
   FmDropDownListEd, FmFileEncoding, FmIdEd, FmNumberEd, FmResCompiler,
   FmResCompilerCheck, FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd,
   FmResOutputDir, FmMacroEd;
@@ -713,26 +714,23 @@ begin
   MFNewClick(Self);
   // Process command line
   // Set initial dir of Open, Export and Save As dialog boxes to first parameter
-  // unless param is -silent
-  if ParamCount > 0 then
-  begin
-    // If first param is -makerc we need to create an .rc file from .vi file
-    // name passed as second parameter. We do this without displaying main
-    // window and we close program immediately
-    if ParamStr(1) = '-makerc' then
+  // unless param is -makerc
+  {TODO: Change parameter processing to allow for -D options}
+  TParams.ParseCommandLine;
+  case TParams.Mode of
+    TParams.TMode.Normal:
+    begin
+      fOpenDlg.InitialDir := TParams.FileDlgInitialDir;
+      fSaveDlg.InitialDir := TParams.FileDlgInitialDir;
+      fExportDlg.InitialDir := TParams.FileDlgInitialDir;
+    end;
+    TParams.TMode.MakeRC:
     begin
       // prevent window from showing
       Application.ShowMainForm := False;
       // post message that processes file and closes window (can't close in
       // FormCreate)
       PostMessage(Handle, MSG_SILENT, 0, 0);
-    end
-    else
-    begin
-      // First param is considered to be default path for various file dialogs
-      fOpenDlg.InitialDir := ParamStr(1);
-      fSaveDlg.InitialDir := ParamStr(1);
-      fExportDlg.InitialDir := ParamStr(1);
     end;
   end;
 end;
@@ -2001,22 +1999,22 @@ begin
   ExitCode := 0;
   try
     // Record input file: error if not present or doesn't exist
-    InFile := ParamStr(2);
+    InFile := TParams.VIFileName;
     {TODO: Revise how errors are handled & add new code for invalid version
            .vi file version. A lot of this code could be moved into UVInfo's
            file loading code that could raise an exception the passes the error
            code. This could then be handled here to get the exit code.
     }
-    if (InFile = '') or not FileExists(InFile) then
+    if (InFile = '') or not TFile.Exists(InFile) then
     begin
       ExitCode := 1;  // error 1 => missing in file
       Exit;
     end;
     // Record output file: either 3rd on command line or same as InFile with
     // .vi extension
-    OutFile := ParamStr(3);
+    OutFile := TParams.RCFileName;
     if OutFile = '' then
-      OutFile := ChangeFileExt(InFile, cRCExt);
+      OutFile := TPath.ChangeExtension(InFile, cRCExt);
     // Load input file
     try
       fVerInfo.LoadFromFile(InFile);

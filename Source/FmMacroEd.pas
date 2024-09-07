@@ -96,6 +96,7 @@ resourcestring
   sUpdateBtnCaption = '&Update';
   sFileEditCaption = '&File:';
   sValueEditCaption = '&Value:';
+  sEnvEditCaption = 'Al&ias for:';
   sBadFileBtnCaption = 'No such file';
   sGoodFileBtnCaption = 'Vie&w File...';
 
@@ -452,6 +453,7 @@ begin
   end
   else
   begin
+    // Show check file button if macro references a file
     btnCheckFile.Visible := EditCmdCode in [mcExternal, mcImport];
     btnValue.Enabled := btnCheckFile.Visible;
     if btnCheckFile.Visible then
@@ -460,10 +462,14 @@ begin
       btnCheckFile.Caption := sGoodFileBtnCaption
     else
       btnCheckFile.Caption := sBadFileBtnCaption;
-    if EditCmdCode in [mcExternal, mcImport] then
-      lblValue.Caption := sFileEditCaption
-    else
-      lblValue.Caption := sValueEditCaption;
+    case EditCmdCode of
+      mcDefine:
+        lblValue.Caption := sValueEditCaption;
+      mcExternal, mcImport:
+        lblValue.Caption := sFileEditCaption;
+      mcEnv:
+        lblValue.Caption := sEnvEditCaption;
+    end;
   end;
 end;
 

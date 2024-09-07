@@ -44,7 +44,9 @@ uses
   UFileIO in 'UFileIO.pas',
   FmFileEncoding in 'FmFileEncoding.pas' {FileEncodingDlg},
   UMacros in 'UMacros.pas',
-  UVIFile in 'UVIFile.pas';
+  UVIFile in 'UVIFile.pas',
+  UParams in 'UParams.pas',
+  UMutableEnvVars in 'UMutableEnvVars.pas';
 
 {$Resource Resources.res}
 {$Resource Version.res}
