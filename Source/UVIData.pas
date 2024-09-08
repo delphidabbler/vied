@@ -228,6 +228,7 @@ uses
   RTLConsts,
   StrUtils,
   // Project
+  UComparers,
   UUtils;
 
 { TVIData }
@@ -493,18 +494,7 @@ end;
 constructor TVIDataSection.Create;
 begin
   inherited Create;
-  fEntries := TDictionary<string,string>.Create(
-    TDelegatedEqualityComparer<string>.Create(
-      function(const Left, Right: string): Boolean
-      begin
-        Result := SameText(Left, Right, loInvariantLocale);
-      end,
-      function(const Value: string): Integer
-      begin
-        Result := ElfHash(Value);
-      end
-    )
-  );
+  fEntries := TDictionary<string,string>.Create(TStringEqualityComparer.Create);
 end;
 
 destructor TVIDataSection.Destroy;

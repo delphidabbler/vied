@@ -35,7 +35,7 @@ uses
   Generics.Defaults,
   Windows,
 
-  UUtils;
+  UComparers;
 
 { TMutableEnvVars }
 
@@ -58,21 +58,7 @@ end;
 constructor TMutableEnvVars.Create;
 begin
   inherited Create;
-  fEnvVars := TDictionary<string,string>.Create(
-    { TODO: Create new TTextComparer object to replace following comparer.
-            Put in its own unit along with a similar TStringComparer for use in
-            UVIData.}
-    TDelegatedEqualityComparer<string>.Create(
-      function (const Left, Right: string): Boolean
-      begin
-        Result := SameText(Left, Right, loInvariantLocale);
-      end,
-      function (const S: string): Integer
-      begin
-        Result := ElfHash(LowerCase(S));
-      end
-    )
-  );
+  fEnvVars := TDictionary<string,string>.Create(TTextEqualityComparer.Create);
 end;
 
 destructor TMutableEnvVars.Destroy;
