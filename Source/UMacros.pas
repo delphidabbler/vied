@@ -628,6 +628,7 @@ begin
     fMacros.Assign(Value)
   else
     fMacros.Clear;
+  Resolve;
 end;
 
 class function TMacros.TryLookupMacroCmd(const CmdStr: string;
