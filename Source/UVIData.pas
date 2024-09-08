@@ -230,24 +230,6 @@ uses
   // Project
   UUtils;
 
-///  <summary>String has function.</summary>
-///  <remarks>Sourced from https://www.scalabium.com/faq/dct0136.htm.</summary>
-function ElfHash(const Value: string): Integer;
-var
-  I: Integer; // loops thru string
-  X: Integer; // stores interim results
-begin
-  Result := 0;
-  for I := 1 to Length(Value) do
-  begin
-    Result := (Result shl 4) + Ord(Value[I]);
-    X := Result and $F0000000;
-    if (X <> 0) then
-      Result := Result xor (X shr 24);
-    Result := Result and (not X);
-  end;
-end;
-
 { TVIData }
 
 procedure TVIData.AddComment(const AComment: string);

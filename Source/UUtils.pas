@@ -86,6 +86,11 @@ function IsEqualBytes(const BA1, BA2: TBytes): Boolean; overload;
 ///  <remarks>Escapable and Escapes must be the same length.</remarks>
 function BackslashEscape(const S, Escapable, Escapes: string): string;
 
+///  <summary>String hash function.</summary>
+///  <remarks>Sourced from https://www.scalabium.com/faq/dct0136.htm.</remarks>
+function ElfHash(const Value: string): Integer;
+
+
 
 implementation
 
@@ -418,6 +423,22 @@ begin
     else
       PRes^ := Ch;
     Inc(PRes);
+  end;
+end;
+
+function ElfHash(const Value: string): Integer;
+var
+  I: Integer; // loops thru string
+  X: Integer; // stores interim results
+begin
+  Result := 0;
+  for I := 1 to Length(Value) do
+  begin
+    Result := (Result shl 4) + Ord(Value[I]);
+    X := Result and $F0000000;
+    if (X <> 0) then
+      Result := Result xor (X shr 24);
+    Result := Result and (not X);
   end;
 end;
 
