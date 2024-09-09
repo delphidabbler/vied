@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2024, Peter Johnson (www.delphidabbler.com).
 -->
 <html>
   <head>
@@ -22,11 +22,61 @@
       This topic describes the options available when Version Information Editor
       is started from the command line.
     </p>
+    <p>
+      VIEd has two different modes of operation:
+    </p>
+    <ol>
+      <li>
+        Normal operation: the program displays the usual GUI, just as if it was
+        started from the Windows start menu.
+      </li>
+      <li>
+        Silent operation: the program displays no UI, carries out an operation
+        then terminates.
+      </li>
+    </ol>
+    <p>
+      Each mode is further described in the following sections.
+    </p>
+    <p class="indent">
+      <strong>Note 1:</strong> In the following command line examples a pair of
+      square brackets encloses an optional item, e.g.
+      <code>[optional-item]</code> and a pair of braces enclose an optional item
+      that may be repeated any number of times, e.g.
+      <code>{optionally-repeating-item}</code>.
+    </p>
+    <p class="indent">
+      <strong>Note 2:</strong> Any command line parameter must be quoted if it
+      contains spaces, e.g. <code>&quot;C:\Program Files&quot;</code> or
+      <code>&quot;-E:name=alice smith&quot;</code>.
+    </p>
     <h2>
-      Window-less (&quot;silent&quot;) operation
+      Normal operation
     </h2>
     <p>
-      The program can export a <a
+      VIEd is started in normal mode from the command line mode using the
+      command line:
+    </p>
+    <pre class="indent source-code">vied [file-dlg-directory] {-E:name=value}</pre>
+    <p>
+      where:
+    </p>
+    <ul>
+      <li>
+        The optional <code>file-dlg-directory</code> specifies the default
+        directory used for all file open dialogue boxes displayed by the
+        program.
+      </li>
+      <li>
+        Each of the optional <code>-E:name=value</code> commands define or
+        overwrite an environment variable. See below for details.
+      </li>
+    </ul>
+    <h2>
+      Silent operation
+    </h2>
+    <p>
+      VIEd can be configured to export a <a
         href="whatis-resfile.htm"
       >resource source (.rc) file</a> from a native <a
         href="whatis-vifile.htm"
@@ -37,49 +87,133 @@
     <p>
       The required command line is:
     </p>
-    <pre class="indent">vied -makerc vifilename [rcfilename]</pre>
+    <pre class="indent source-code">vied -makerc vi-file-name [rc-file-name] {-E:name=value}</pre>
     <p>
-      <code>-makerc</code> must be the first parameter and the name of the .vi
-      file to be processed must be the second parameter. Put this name in quotes
-      if it contains spaces. The third (optional) parameter is the name of the
-      .rc file to be generated, again in quotes if necessary. If the third
-      parameter is not provided the generated .rc will have the same name as the
-      .vi file, but with the extension changed to .rc.
+      where:
     </p>
+    <ul>
+      <li>
+        <code>-makerc</code> informs VIEd to silently export an .rc file. This
+        command must be the 1st parameter.
+      </li>
+      <li>
+        <code>vi-file-name</code> is the name of the .vi file to be processed.
+      </li>
+      <li>
+        The optional <code>rc-file-name</code> parameter is the name of the .rc
+        file to be generated. If this parameter is not provided the generated
+        .rc file will have the same name as the .vi file, but with the extension
+        changed to .rc.
+      </li>
+      <li>
+        Each of the optional <code>-E:name=value</code> commands define or
+        overwrite an environment variable. See below for details.
+      </li>
+    </ul>
     <p>
-      Once the file has been generated, or if there is an error, the program
-      terminates. The program retrurns one of the following exit codes:
+      Once the .rc file has been generated, or if there is an error, the program
+      terminates. One of the following exit codes will be returned:
     </p>
     <ul class="unspaced">
       <li>
-        0 &ndash; the program completed successfully.
+        <code>0</code> &ndash; the program completed successfully.
       </li>
       <li>
-        1 &ndash; error: the input file does not exist.
+        <code>1</code> &ndash; error: the input file does not exist.
       </li>
       <li>
-        2 &ndash; error: there was a problem loading the .vi file.
+        <code>2</code> &ndash; error: there was a problem loading the .vi file.
       </li>
       <li>
-        3 &ndash; error: there was a problem converting and/or writing the .rc
-        file.
+        <code>3</code> &ndash; error: there was a problem converting and/or
+        writing the .rc file.
       </li>
       <li>
-        4 &ndash; error: one or more external files referenced from macros does
-        not exist.
+        <code>4</code> &ndash; error: one or more external files referenced by
+        macros do not exist.
       </li>
     </ul>
     <h2>
-      Default file paths
+      <code>-E</code> parameters
     </h2>
     <p>
-      If a directory path is passed as the only parameter on the command line
-      this is used as the default directory for all the program's file dialogue
-      boxes.
+      As noted above, <code>-E</code> parameters can be absent or can be
+      repeated as many times as required. Each parameter either defines a new
+      environment variable&dagger; or changes the value of an existing one.
     </p>
     <p>
-      The default directory may be overridden by the program if another path
-      would make more sense.
+      Each <code>-E</code> parameter has the following format:
     </p>
+    <pre class="indent source-code">-E:name=param</pre>
+    <p>
+      where
+    </p>
+    <ol>
+      <li>
+        <code>name</code> is the name of the environment variable. 
+      </li>
+      <li>
+        <code>value</code> is the value of the environment variable.
+      </li>
+    </ol>
+    <p>
+      If <code>name</code> is the name of an existing environment variable, it's
+      value is overwritten by <code>value</code> while if no such enviroment
+      variable exists a new one is created with the given name and
+      value.&dagger;
+    </p>
+    <p>
+      <code>-E</code> parameters are used to modify or create enviroment
+      variables that are referenced by 
+      <a href="whatis-fields.htm#macros"><em>Env</em> macros</a>. There is no
+      reason to use <code>-E</code> parameters for enviroment variable not used
+      by macros.
+    </p>
+    <p class="indent">
+      &dagger; When the program starts a copy of the system environment
+      variables is made. When an <code>-E</code> parameter is used it is only
+      the program's copy of the environment variables that is updated, not the
+      system enviroment variable provided by Windows.
+    </p>
+    <h2>
+      Examples
+    </h2>
+    <ol>
+      <li>
+        <pre class="source-code">vied</pre>
+        <p>
+          Starts the program normally in its default state. A GUI is displayed.
+          No environment variables are created or updated.
+        </p>
+      </li>
+      <li>
+        <pre class="source-code">vied -E:alice=true</pre>
+        <p>
+          Starts the program normally in its default state. A GUI is displayed.
+          The environment variable <code>alice</code> will be available to
+          macros.
+        </p>
+      </li>
+      <li>
+        <pre class="source-code">vied C:\foo\bar -E:Question=42 -E:Answer=56</pre>
+        <p>
+          Starts the program normally. A GUI is displayed. File open dialogue
+          boxes will open with the <code>C:\foo\bar</code> folder selected.
+          Environment variables <code>Question</code> and <code>Answer</code>
+          will be available to macros.
+        </p>
+      </li>
+      <li>
+        <pre class="source-code">vied -makerc C:\foo\bar.vi "C:\new foo\bar.rc" "-E:ProgramFiles=C:\My Program Files"</pre>
+        <p>
+          Starts the program in silent mode and generates .rc file
+          <code>C:\new foo\bar.rc</code> from <code>C:\foo\bar.vi</code>. The
+          Windows standard <code>ProgramFiles</code> environment variable will
+          be visible to macros with its value changed to <code>C:\My Program
+          Files</code>. Note the use of quotes to surround parameters containing
+          spaces.
+        </p>
+      </li>
+    </ol>
   </body>
 </html>
