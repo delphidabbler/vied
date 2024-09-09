@@ -483,8 +483,9 @@ const
   ///  <para>* v1 - from v2.14.0: added Macros</para>
   ///  <para>* v2 - from v2.15.0: allowed dash &amp; underscore in macro names;
   ///  added numerous new fields; permitted UTF-8 formatted .vi files.</para>
+  ///  <para>* v3 - from v2.16.0: added support for Env type macros.</para>
   ///  </remarks>
-  VIFileVersion = 2;
+  VIFileVersion = 3;
 
 resourcestring
   // Default VI and RC comments
