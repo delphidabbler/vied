@@ -40,6 +40,8 @@ Information on how to install the program is in `Docs/ReadMe.txt`.
 
 The change log is in `CHANGELOG.md` in the repository root.
 
+The program's .vi file format is documented in `Docs\vi-file-format.md`.
+
 Finally, the program has a Web page at <https://delphidabbler.com/software/vied>.
 
 ## Bugs and Feature Requests
