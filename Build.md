@@ -10,17 +10,18 @@ Development, debugging and testing of the executable program can take place enti
 
 ### Libraries & Components
 
-Several DelphiDabbler libraries and components are required to compile _VIEd_. They are:
+Several DelphiDabbler components are required to compile _VIEd_. They are:
 
 *   [Version Information Component](https://delphidabbler.com/software/verinfo) v3.3 or later.
 *   [About Box Component](https://delphidabbler.com/software/aboutbox) v3.5.1 or later.
 *   [Drop Files Components](https://delphidabbler.com/software/dropfiles) v5.0.2 or later.
 *   [Window State Components](https://delphidabbler.com/software/wdwstate) v5.3.1 or later.
+
+These must all be installed into the Delphi component palette since they are required at design time. The easiest way to do this is to install everything into the Delphi user design time package. [See here](http://www.delphidabbler.com/url/install-comp) if you need help doing this.
+
+In addition, the following DelphiDabbler library unit must either be added to a suitable package or placed somewhere on Delphi's include path:
+
 *   [Shell Folders Unit](https://delphidabbler.com/software/shellfolders) v2.3 or later.
-
-These components must be installed into the Delphi component palette since they are required at design time.
-
-All the components and classes must be installed in the same directory, so the easiest thing to do is to install everything into the Delphi user design time package. [See here](http://www.delphidabbler.com/url/install-comp) if you need help doing this.
 
 ### Tools
 
@@ -33,7 +34,7 @@ Tools marked with an asterisk are required when compiling from the IDE: compiles
 | Delphi XE | Later Delphi compilers may be suitable, but none have been tested. |
 | MSBuild | This tool is installed with Delphi. Used directly by `Deploy.bat` to build _VIEd_. |
 | BRCC32 * | This tool is installed with Delphi. Used in pre-build events to create `.res` files from custom `.rc` files. |
-| Version Information Editor * † | v2.15.1 or later is required. Used in pre-build events create an `.rc` file containing version information from `.vi` files. [Download here](https://github.com/delphidabbler/vied/releases). |
+| Version Information Editor * † | v2.15.1 or later is required. Used in pre-build events to create an resource source file containing version information from `.vi` files. [Download here](https://github.com/delphidabbler/vied/releases). |
 | HHC | This tool is the command line compiler supplied with Microsoft HTML Help Workshop. Used in `Deploy.bat` to compile the help file. |
 | Inno Setup | v5.6.1 or later Unicode version (not v6). Used by `Deploy.bat` to create the installer. [Download here](https://www.innosetup.com/). |
 | InfoZip's Zip tool | Used by `Deploy.bat` to create the release zip file. [Download here](https://delphidabbler.com/extras/info-zip). |
@@ -52,16 +53,16 @@ All environment variables are required when creating releases using `Deploy.bat`
 | Environment Variables | Notes |
 |-----------------------|-------|
 | MSBuild specific variables | The `rsvars.bat` script in the `Bin` sub-directory of the Delphi installation directory sets these variables to the required values. |
-| `ZipRoot` | Set this to the directory where the InfoZip Zip tool was installed. |
-| `VIEdRoot` * | Set this to the directory where Version Information Editor was installed (the `DelphiDabbler\VIEd` subdirectory of the 32 bit program files directory, by default). |
+| `ZipRoot` | Set this to the directory where the InfoZip Zip tool is installed. |
+| `VIEdRoot` * | Set this to the directory where Version Information Editor is installed (the `DelphiDabbler\VIEd` subdirectory of the 32 bit program files directory, by default). |
 | `HHCRoot` | Set this to the directory where the HTML Help Workshop HHC command line compiler is installed. |
-| `InnoSetupRoot` | Set this to the directory where the Unicode version of Inno Setup 5 was installed. |
+| `InnoSetupRoot` | Set this to the directory where the Unicode version of Inno Setup 5 is installed. |
 
 You can configure the environment using a batch file similar to the following:
 
 ```batch
-:: set path to Delphi 12 installation (change directory if not using Delphi 12)
-set DELPHIROOT=C:\Program Files (x86)\Embarcadero\Studio\23.0
+:: set path to Delphi XE installation (change directory if not using Delphi XE)
+set DELPHIROOT=C:\Program Files (x86)\Embarcadero\RAD Studio\8.0
 
 :: set environment variables required by MSBuild
 call "%DELPHIROOT%\Bin\rsvars.bat"
@@ -75,7 +76,7 @@ set HHCRoot=C:\Program Files (x86)\HTML Help Workshop
 
 ## Source Code
 
-Download the _VIEd_ source code from the ['delphidabbler/vied'](https://github.com/delphidabbler/vied) GitHub repository. You can either clone it using Git or download a zip file containing the source.
+Download the _VIEd_ source code from the [`delphidabbler/vied`](https://github.com/delphidabbler/vied) GitHub repository. You can either clone it using Git or download a zip file containing the source.
 
 After obtaining the source code you should have the following directory structure:
 </p>
@@ -124,10 +125,10 @@ All compiler output is placed in a `_build` directory. This directory is ignored
   |       |   +-- exe       - contains the debug executable file
   |       |
   |       +-- Release       - directory containing release binaries
-  |       |   |
-  |       |   +-- bin       - contains intermediate binary release files
-  |       |   |
-  |       |   +-- exe       - contains the release executable file
+  |           |
+  |           +-- bin       - contains intermediate binary release files
+  |           |
+  |           +-- exe       - contains the release executable file
   |
   +-- Docs                  - documentation
   ⁞
@@ -214,7 +215,7 @@ git clean -fxd
 
 to remove all unwanted files.
 
-> :warning: Running the above command will remove the `_build` directory and all its contents, so ensure you copy any wanted files from there beforehand. The command will also remove Delphi's `__history` directory.
+> ⚠️ Running the above command will remove the `_build` directory and all its contents, so ensure you copy any wanted files from there beforehand. The command will also remove Delphi's `__history` directory.
 
 ## License
 
