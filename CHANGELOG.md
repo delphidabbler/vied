@@ -1,10 +1,35 @@
 # Change Log for Version Information Editor
 
+## v2.16.0 of 12 September 2024
+
+* Added new _Env_ macro type that makes environment variable values available for use in .vi files [issue #67].
+* Added new `-E` command line parameter that can define a new variable available to _Env_ macros, or can overwrite an existing environment variable value [issue #67]. 
+* Bumped `.vi` file format version to v3. The addition of _Env_ macros means that the format is not backwards compatible [issue #81].
+* Fixed potential bug when reading section names in `.vi` files [issue #78].
+* Fixed potential bug in parsing the `<SHORTFNAME>` field [issue #66].
+* Refactoring:
+  * Extracted macro handling code out of the `UVinfo` unit into a new `UMacros` unit [issue #71].
+  * Moved the file .vi reading and writing code from `UVinfo` into a new `UVIFile` unit.
+* Completely revised the build and release process [issue #70]:
+  * Added new `Deploy.bat` script to automate the release process.
+  * Added ability to build all required resources from within the IDE.
+  * Removed the redundant make and config files.
+  * Updated `.gitgnore` re changes to build directory and temporary file names.
+* Updated documentation:
+  * Documented the .vi file format [issue #77].
+  * Fixed error in v2.15.1 release notes in `CHANGELOG.md` [issue #65].
+  * Rewrote `Build.md` re new build process.
+  * Minor edits and corrections.
+  * Help file updated re the new _Env_ macro type.
+* Minor changes to source and executable code licenses, including bumping copyright year.
+
 ## v2.15.1 of 02 June 2023
 
-* Fixed bug where macros whose value are stored in a linked external file were not being reflected in output if the external files was updated. [issue #63]
+* Fixed bug in macros that get their values from external files where macro values were being updated when the content of the external files was changed [issue #63].
+* Fixed bug in `<SHORTFNAME>` field where file names containing more than one dot were not being shortened correctly [issue #62].
 * Documentation:
-  * Update copyright date in license help topic [issue #61]
+  * Updated copyright date in license help topic [issue #61].
+  * Updated help file re circular field references and operation of `<SHORTFNAME>` field.
   * Corrected minor error in `README.md`.
 
 ## v2.15.0 of 15 April 2023

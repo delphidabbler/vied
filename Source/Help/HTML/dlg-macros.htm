@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2024, Peter Johnson (www.delphidabbler.com).
 -->
 <html>
   <head>
@@ -31,13 +31,13 @@
     <p>
       A list of any currently defined macros is displayed at the top of the
       window in the <em>Macros</em> list view. The <em>Command</em>,
-      <em>Name</em> and <em>Value / File</em> controls are edit controls used to
-      define or edit a macro. The <em>Value / File</em> control's caption
-      depends on which command is selected: it displays <em>Value</em> when a
-      <strong>Define</strong> command is selected in the <em>Command</em>
-      drop-down or it displays <em>File</em> whenever either the
-      <strong>External</strong> or <strong>Include</strong> commands are
-      specified.
+      <em>Name</em> and <em>Value / Alias / File</em> controls are edit controls
+      are used to define or edit a macro. The <em>Value / Alias / File</em>
+      control's caption depends on which command is selected: it displays
+      <em>Value</em> when a <strong>Define</strong> command is selected in the
+      <em>Command</em> drop-down, <em>Alias for</em> for an <em>Env</em> command
+      or <em>File</em> whenever either the <strong>External</strong> or
+      <strong>Include</strong> commands are specified.
     </p>
     <p>
       Selecting a macro from the <em>Macros</em> list copies its properties into
@@ -76,6 +76,14 @@
           may be left empty if desired.
         </p>
         <p>
+          When an <em>Env</em> macro is being created if the name of the macro
+          is also the name of an environment variable then nothing needs to be
+          entered in the <em>Alias for</em> edit box. However, if the macro name
+          is an alias for a differently named environment variable you should
+          enter the environment variable's name in the <em>Alias for</em> edit
+          box.
+        </p>
+        <p>
           When either an <em>External</em> or an <em>Import</em> macro are being
           added a valid file name must be entered in the <em>File</em> edit box.
           You may also click the button to the right of the edit box and select
@@ -112,6 +120,11 @@
         <p>
           For a <em>Define</em> macro you can edit or delete its value in the
           <em>Value</em> edit box.
+        </p>
+        <p>
+          For an <em>Env</em> macro you can change the environment variable that
+          the macro is an alias for in the <em>Alias for</em> edit box or can
+          clear the edit box if the macro is not an alias.
         </p>
         <p>
           In the case of <em>External</em> or <em>Import</em> macros you may

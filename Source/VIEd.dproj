@@ -2,7 +2,7 @@
 		<PropertyGroup>
 			<ProjectGuid>{CCDC3255-D8FE-404E-AC84-B7C215C29E69}</ProjectGuid>
 			<MainSource>VIEd.dpr</MainSource>
-			<Config Condition="'$(Config)'==''">Base</Config>
+			<Config Condition="'$(Config)'==''">Debug</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<ProjectVersion>12.3</ProjectVersion>
 			<Base>True</Base>
@@ -13,19 +13,43 @@
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
 			<Base>true</Base>
 		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
+			<DCC_UsePackage>vclx;vcl;VclSmp;rtl;vclimg;svnui;svn;bdertl;TeeUI;TeeDB;Tee;vclactnband;vcldb;dbrtl;vcldbx;vcltouch;xmlrtl;dsnap;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;inet;intrawebdb_110_150;Intraweb_110_150;vclie;inetdb;webdsnap;websnap;inetdbbde;inetdbxpress;soaprtl;dbexpress;DbxCommonDriver;DbxClientDriver;AzureCloud;DBXInterBaseDriver;DBXMySQLDriver;dbxcds;DDabLib</DCC_UsePackage>
+			<BRCC_OutputDir>..\_build\$(Platform)\$(Config)\bin</BRCC_OutputDir>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
-			<DCC_UnitSearchPath>..\Bin;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_UnitSearchPath>..\_build\$(Platform)\$(Config)\bin;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_EXPLICIT_STRING_CAST>true</DCC_EXPLICIT_STRING_CAST>
 			<DCC_DependencyCheckOutputName>..\Exe\VIEd.exe</DCC_DependencyCheckOutputName>
-			<DCC_ExeOutput>..\Exe</DCC_ExeOutput>
+			<DCC_ExeOutput>..\_build\$(Platform)\$(Config)\exe</DCC_ExeOutput>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
 			<DCC_CVT_WIDENING_STRING_LOST>true</DCC_CVT_WIDENING_STRING_LOST>
 			<DCC_CVT_ACHAR_TO_WCHAR>true</DCC_CVT_ACHAR_TO_WCHAR>
 			<DCC_EXPLICIT_STRING_CAST_LOSS>true</DCC_EXPLICIT_STRING_CAST_LOSS>
 			<DCC_Platform>x86</DCC_Platform>
-			<DCC_DcuOutput>..\Bin</DCC_DcuOutput>
-			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
+			<DCC_DcuOutput>..\_build\$(Platform)\$(Config)\bin</DCC_DcuOutput>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_Optimize>false</DCC_Optimize>
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+			<DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
+			<DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+			<DCC_DebugInformation>false</DCC_DebugInformation>
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
 		</PropertyGroup>
 		<ItemGroup>
 			<DelphiCompile Include="VIEd.dpr">
@@ -94,12 +118,34 @@
 			<DCCReference Include="FmFileEncoding.pas">
 				<Form>FileEncodingDlg</Form>
 			</DCCReference>
+			<DCCReference Include="UMacros.pas"/>
+			<DCCReference Include="UVIFile.pas"/>
+			<DCCReference Include="UParams.pas"/>
+			<DCCReference Include="UMutableEnvVars.pas"/>
+			<DCCReference Include="UComparers.pas"/>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
 			</BuildConfiguration>
 		</ItemGroup>
 		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
 		<Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+		<PropertyGroup>
+			<PreBuildEvent><![CDATA[DEL "..\_build\$(Platform)\$(Config)\bin\Version.res"
+
+"$(VIEDROOT)\VIEd.exe" -makerc  .\Version.vi .\Version.virc
+"$(BDSBIN)\BRCC32" -fo "..\_build\$(Platform)\$(Config)\bin\Version.res" .\Version.virc
+
+"$(BDSBIN)\BRCC32" -fo "..\_build\$(Platform)\$(Config)\bin\Resources.res" .\Resources.rc]]></PreBuildEvent>
+			<PostBuildEvent><![CDATA[DEL .\Version.virc]]></PostBuildEvent>
+		</PropertyGroup>
 		<ProjectExtensions>
 			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
 			<Borland.ProjectType>VCLApplication</Borland.ProjectType>

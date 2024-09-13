@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2023, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2024, Peter Johnson (www.delphidabbler.com).
  *
  * Version Information Editor project file.
 }
@@ -42,7 +42,12 @@ uses
   FmMacroEd in 'FmMacroEd.pas' {MacroEditor},
   UVIData in 'UVIData.pas',
   UFileIO in 'UFileIO.pas',
-  FmFileEncoding in 'FmFileEncoding.pas' {FileEncodingDlg};
+  FmFileEncoding in 'FmFileEncoding.pas' {FileEncodingDlg},
+  UMacros in 'UMacros.pas',
+  UVIFile in 'UVIFile.pas',
+  UParams in 'UParams.pas',
+  UMutableEnvVars in 'UMutableEnvVars.pas',
+  UComparers in 'UComparers.pas';
 
 {$Resource Resources.res}
 {$Resource Version.res}

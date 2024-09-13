@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2023, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2024, Peter Johnson (www.delphidabbler.com).
 -->
 <html>
   <head>
@@ -458,6 +458,11 @@
       them.
     </p>
     <p>
+      <span class="warning">Warning:</span> Macro values may not reference other
+      macros, but can reference fields. See the <em>Combining Macros &
+      Fields</em> section below for details.
+    </p>
+    <p>
       Macros are created and edited in the <a href="dlg-macros.htm">Macros</a>
       dialogue box. Information about macros is stored with your version
       information data in a .vi file.
@@ -485,7 +490,7 @@
       <li><code>#</code></li>
     </ul>
     <p>
-      There are three types of macro: <em>Define</em>,
+      There are four types of macro: <em>Define</em>, <em>Env</em>,
       <em>External</em> and <em>Include</em>. Each is explained below.
     </p>
     <h3>
@@ -495,13 +500,74 @@
       This is the most simple type of macro definition. It simply maps a macro
       name to a value. So, if <em>Define</em> macro <code>myDef</code> is
       defined as &quot;Foo&quot; then every occurence of
-      <code>&lt;%myDef&gt;</code >is replaced by &quot;Foo&quot; when the
+      <code>&lt;%myDef&gt;</code> is replaced by &quot;Foo&quot; when the
       version information resource is generated.
     </p>
     <p>
       The purpose of this type of macro is to enable a single value that is used
       in multiple places to be defined in one place.
     </p>
+    <h3>
+      Env
+    </h3>
+    <p>
+      The <em>Env</em> enables system environment variables to be used in
+      version information.
+    </p>
+    <p>
+      If this macro has only a name (i.e. its value is empty), then that name is
+      considered the be name of an environment variable. When the macro has a
+      non-empty value then its value is taken to be the name of an environment
+      variable and the macro name is alias for it. In the latter case the
+      environment variable is referred to by the alias in <em>VIEd</em>, but
+      when the macro is evaluated the value of the aliased environment variable
+      is used. Aliases are useful when either the name of an environment 
+      variable clashes with an existing macro name or when the environment
+      variable has a name that is not valid as a macro name (see example 2
+      below).
+    </p>
+    <p>
+      If the environment variable has no value then the associated <em>Env</em>
+      macro is evaluated as an empty string.
+    </p>
+    <p>
+      Environment variable values can be overidden by passing a 
+      <a href="cmdline.htm">command line option</a>, which has the form
+      <code>-E:name=value</code>. If this is done then any environment variable
+      <code>&lt;%name&gt;</code> will have its value changed to
+      <code>value</code> when an associated macro is evaluated. The actual
+      environment variable's value will not be changed.
+    </p>
+    <p>
+      Both <em>Env</em> macro names and environment variable names are case
+      insensitive.
+    </p>
+    <h4>
+      Examples
+    </h4>
+    <ol>
+      <li>
+        Defining a macro with name <code>ProgramFiles</code> and an empty value
+        will create a macro <code>&lt;%ProgramFiles&gt;</code> that evaluates to
+        the value of the <code>ProgramFiles</code> environment variable.
+      </li>
+      <li>
+        Defining a macro with name <code>ProgramFiles32</code> and value 
+        <code>ProgramFiles(x86)</code> will create the macro
+        <code>&lt;%ProgramFiles32&gt;</code> that evaluates to the value of the
+        <code>ProgramFiles(x86)</code> environment variable. Note that
+        <code>ProgramFiles(x86)</code> is not a valid macro name, so the alias
+        is necessary.
+      </li>
+      <li>
+        Suppose we have an environment variable <code>Foo</code>, with value
+        <em>42</em> and we define an <em>Env</em> macro <code>foo</code> that
+        refers to the environment variable. When <code>&lt;%foo&gt;</code> is
+        evaluated it will have value <code>42</code>. If we now pass the command
+        line option <code>-E:Foo=56</code> to <em>VIEd</em> then
+        <code>&lt;%foo&gt;</code> will evaluate to <code>56</code> instead.
+      </li>
+    </ol>
     <h3>
       External
     </h3>
@@ -591,15 +657,16 @@ answer=Bloggs</pre>
         paths until the .vi file has been saved.
       </li>
       <li>
-        Like all macros, the names of those defined in <em>Include</em> files
-        are restricted to alphabetic and numeric characters.
+        The names of macros defined in <em>Include</em> files must be valid
+        macro names as defined above.
       </li>
     </ol>
+    <h2>
+      Combining Macros &amp; Fields
+    </h2>
     <p>
-      Note that you may include references to other fields in the value of a
-      macro (but you can't reference other macros). This type of macro is useful
-      whenever definitions in the form <code>name=value</code> are referenced in
-      more than one source code file. For example:
+      You may include references to fields in the value of a macro, but you can't
+      reference other macros. For example:
     </p>
     <p class="indent">
       Create a <em>Define</em> macro <code>A</code> with value

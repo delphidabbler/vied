@@ -4,7 +4,7 @@
 
 Version Information Editor enables version information to be edited. It also creates version information resource source (`.rc`) files. The program stores details of the version information in its own project (`.vi`) files. Simple macros can be used to help automate the updating of version information files.
 
-The program can also create binary resource (`.res`) files containing version information. To do this it needs to be configured to use a 3rd party resource compiler such as Borland's BRCC32.
+The program can also create binary resource (`.res`) files containing version information. To do this it needs to be configured to use a 3rd party resource compiler such as Embarcadero's BRCC32.
 
 A command line switch, `-makerc`, is supported that silently creates a `.rc` file from a native `.vi` file passed on the command line. The program them exits without displaying a window. This option has been made available so that Version Information Editor can be used in automated build processes.
 
@@ -14,7 +14,7 @@ VIEd requires Windows XP and later.
 
 ## Source Code
 
-VIEd is written in Object Pascal and targeted at Delphi XE, although any later Delphi compiler may suffice.
+VIEd is written in Object Pascal and is compiled with Delphi XE, although any later Delphi compiler may suffice.
 
 See `Build.md` in the repo root for information about how to build the program from source code.
 
@@ -22,7 +22,7 @@ See `Build.md` in the repo root for information about how to build the program f
 
 Contributions are welcome.
 
-I use the [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/) branching model.
+The [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/) branching model is used.
 
 To contribute please fork the project and create a new branch off `develop` that is named `feature/your-feature-name`. Create a pull request for your feature branch when you're ready. Pull requests must be configured to merge to the `develop` branch, not `master`.
 
@@ -39,6 +39,8 @@ For help using the program the first port of call should be the program's compre
 Information on how to install the program is in `Docs/ReadMe.txt`.
 
 The change log is in `CHANGELOG.md` in the repository root.
+
+The program's .vi file format is documented in `Docs/vi-file-format.md`.
 
 Finally, the program has a Web page at <https://delphidabbler.com/software/vied>.
 

@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2023, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2024, Peter Johnson (www.delphidabbler.com).
  *
  * Miscellaneous support routines for Version Information Editor.
 }
@@ -85,6 +85,11 @@ function IsEqualBytes(const BA1, BA2: TBytes): Boolean; overload;
 ///  in Escapes.</summary>
 ///  <remarks>Escapable and Escapes must be the same length.</remarks>
 function BackslashEscape(const S, Escapable, Escapes: string): string;
+
+///  <summary>String hash function.</summary>
+///  <remarks>Sourced from https://www.scalabium.com/faq/dct0136.htm.</remarks>
+function ElfHash(const Value: string): Integer;
+
 
 
 implementation
@@ -418,6 +423,22 @@ begin
     else
       PRes^ := Ch;
     Inc(PRes);
+  end;
+end;
+
+function ElfHash(const Value: string): Integer;
+var
+  I: Integer; // loops thru string
+  X: Integer; // stores interim results
+begin
+  Result := 0;
+  for I := 1 to Length(Value) do
+  begin
+    Result := (Result shl 4) + Ord(Value[I]);
+    X := Result and $F0000000;
+    if (X <> 0) then
+      Result := Result xor (X shr 24);
+    Result := Result and (not X);
   end;
 end;
 

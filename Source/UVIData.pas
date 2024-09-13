@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2023, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2023-2024, Peter Johnson (www.delphidabbler.com).
  *
  * Encapsulates the version information data file format.
 }
@@ -228,25 +228,8 @@ uses
   RTLConsts,
   StrUtils,
   // Project
+  UComparers,
   UUtils;
-
-///  <summary>String has function.</summary>
-///  <remarks>Sourced from https://www.scalabium.com/faq/dct0136.htm.</summary>
-function ElfHash(const Value: string): Integer;
-var
-  I: Integer; // loops thru string
-  X: Integer; // stores interim results
-begin
-  Result := 0;
-  for I := 1 to Length(Value) do
-  begin
-    Result := (Result shl 4) + Ord(Value[I]);
-    X := Result and $F0000000;
-    if (X <> 0) then
-      Result := Result xor (X shr 24);
-    Result := Result and (not X);
-  end;
-end;
 
 { TVIData }
 
@@ -511,18 +494,7 @@ end;
 constructor TVIDataSection.Create;
 begin
   inherited Create;
-  fEntries := TDictionary<string,string>.Create(
-    TDelegatedEqualityComparer<string>.Create(
-      function(const Left, Right: string): Boolean
-      begin
-        Result := SameText(Left, Right, loInvariantLocale);
-      end,
-      function(const Value: string): Integer
-      begin
-        Result := ElfHash(Value);
-      end
-    )
-  );
+  fEntries := TDictionary<string,string>.Create(TStringEqualityComparer.Create);
 end;
 
 destructor TVIDataSection.Destroy;

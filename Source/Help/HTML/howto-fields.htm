@@ -4,7 +4,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2011-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2011-2024, Peter Johnson (www.delphidabbler.com).
 -->
 <html>
   <head>
@@ -244,6 +244,59 @@ build=123</pre>
       2022 the string will be &quot;Copyright 2022 My Company&quot;, and the
       following year it will change to &quot;Copyright 2023 My Company&quot;.
     </p>
+    <h3>
+      Create custom private builds
+    </h3>
+    <p>
+      Suppose you are creating private builds of your program for Alice &amp;
+      Bob. You want their names to be recorded in the <code>PrivateBuild</code>
+      string information item, but you don't want to modify any files for each
+      such build.
+    </p>
+    <p>
+      This can be achieved using an <em>Env</em> macro as follows:
+    </p>
+    <ul>
+      <li>
+        Create an <em>Env</em> macro named <code>customer</code> with an empty
+        value.
+      </li>
+      <li>
+        Set the <code>Private Build</code> string information item's value to
+        <code>&lt;%customer&gt;</code>.
+      </li>
+      <li>
+        Save the .vi file
+      </li>
+    </ul>
+    <p>
+      Now, to create a private build for Alice do one of the following:
+    </p>
+    <ol>
+      <li>
+        <p>
+          Create an environment variable <code>CUSTOMER=Alice</code>. Now run
+          VIEd and load the .vi file. When the .rc file is rendered the
+          <code>&lt;%customer&gt;</code> macro will evaluate to
+          &quot;Alice&quot; and the <code>SpecialBuild</code> string information
+          item will therefore be set to &quot;Alice&quot;.
+        </p>
+      </li>
+      <li>
+        <p>
+          Run VIEd from the command line like this: 
+        </p>
+        <pre class="source-code">vied -E:Customer=Alice</pre>
+        <p>
+          Now load the .vi file. The result will be the same as in 1 above.
+        </p>
+      </li>
+    </ol>
+    <p>
+      To generate version information for Bob's private build, repeat the above
+      but with environment variable <code>CUSTOMER=Bob</code> or command line:
+    </p>
+    <pre class="source-code">vied -E:Customer=Bob</pre>
     <h2>
       Checking Results
     </h2>

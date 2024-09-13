@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2024, Peter Johnson (www.delphidabbler.com).
  *
  * Version number editor dialogue box.
 }
@@ -95,7 +95,7 @@ uses
   // Delphi
   SysUtils, StrUtils, Math, Dialogs,
   // Project
-  UMsgDlgs, UVerUtils, UVInfo;
+  UMsgDlgs, UMAcros, UVerUtils, UVInfo;
 
 {$R *.DFM}
 
@@ -266,7 +266,7 @@ end;
 
 function TVerNumEditor.IsMacroInUse(const Text: string): Boolean;
 begin
-  Result := TVInfo.ContainsMacro(Text);
+  Result := TMacros.ContainsMacro(Text);
 end;
 
 procedure TVerNumEditor.SetValidMacros(Macros: TStrings);

@@ -59,10 +59,6 @@ __history/
 # unit files
 *.dcu
 
-# project option files for Delphi 7
-# (we create them as required from .tplt files)
-*.dof
-# Build directories (Exe not actually needed since it is covered by *.exe above
-Bin
-Release
-Exe
+# Build directories and interim files
+_build
+*.virc
