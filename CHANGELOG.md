@@ -25,7 +25,7 @@
 
 ## v2.15.1 of 02 June 2023
 
-* Fixed bug in macros that get their values from external files where macro values were being updated when the content of the external files was changed [issue #63].
+* Fixed bug in macros that get their values from external files where macro values were not being updated when the content of the external files was changed [issue #63].
 * Fixed bug in `<SHORTFNAME>` field where file names containing more than one dot were not being shortened correctly [issue #62].
 * Documentation:
   * Updated copyright date in license help topic [issue #61].
