@@ -29,12 +29,12 @@
 ::   5) Set the HHCRoot environment variable to the directory where the
 ::      Microsoft Help Compiler is installed.
 ::   6) Change directory to that where this script is located.
-::   7) Run the script by entering Deploy with no parameters
+::   7) Run the script by entering Deploy with no parameters.
 ::
 :: The script does the following:
 ::
 ::   1) Builds the VIEd executable using MSBuild, Delphi and a previously
-::      release copy of VIEd.
+::      released copy of VIEd.
 ::   2) Uses PowerShell to extract the release version from version information
 ::      embedded in the VIEd executable. This is used to set the version of
 ::      the setup program and to name the setup program and zip file.

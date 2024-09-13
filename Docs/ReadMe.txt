@@ -90,8 +90,8 @@ Choose the release you want from those listed and download an archive containing
 the required source code.
 
 Git users can fork the project and clone the repository. The master branch
-contains the source code of the latest release while the develop is more up to
-date with later, unpublished, changes. The develop branch may be unstable.
+contains the source code of the latest release while the develop branch is more
+up to date with later, unpublished, changes. The develop branch may be unstable.
 
 Notes on how to compile Version Information Editor from source code can be found
 in the file Build.md in the root of the repository. Note that, up to v2.14.0,
