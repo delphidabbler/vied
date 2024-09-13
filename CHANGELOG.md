@@ -1,6 +1,6 @@
 # Change Log for Version Information Editor
 
-## v2.16.0 of 12 September 2024
+## v2.16.0 of 13 September 2024
 
 * Added new _Env_ macro type that makes environment variable values available for use in .vi files [issue #67].
 * Added new `-E` command line parameter that can define a new variable available to _Env_ macros, or can overwrite an existing environment variable value [issue #67]. 
