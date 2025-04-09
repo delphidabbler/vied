@@ -44,8 +44,8 @@
 #define AppPublisher "DelphiDabbler"
 #define AppName "Version Information Editor"
 #define Copyright GetStringFileInfo(ExeProg, LEGAL_COPYRIGHT)
-#define WebAddress "www.delphidabbler.com"
-#define WebURL "http://" + WebAddress + "/"
+#define WebAddress "delphidabbler.com"
+#define WebURL "https://" + WebAddress + "/"
 #define AppURL WebURL + "vied"
 #define FullAppVersion AppVersion + AppVersionSuffix
 #define RootPath SourcePath + "..\"
