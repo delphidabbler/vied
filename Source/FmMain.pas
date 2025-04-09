@@ -958,9 +958,9 @@ procedure TMainForm.Init;
   end;
 
 
-  procedure AddStringItem(StrInfoId: TStrInfo);
+  procedure AddStringItem(StrInfoId: TStrInfoId);
 
-    function CreateEditProc(StrInfoId: TStrInfo): TVIItemUpdateCallback;
+    function CreateEditProc(StrInfoId: TStrInfoId): TVIItemUpdateCallback;
     begin
       Result := procedure(const VI: TVInfo)
       var
@@ -969,49 +969,49 @@ procedure TMainForm.Init;
         StrList := TStringList.Create;
         try
           // build list of valid fields for the item
-          VI.ValidFields(StrInfoId, StrList);
+          VI.ValidStrInfoFields(StrInfoId, StrList);
           // decide if we can enter a string
           //   only if we're not validating *or*
           //   we are validating and string is permitted
-          if (not VI.Validating) or VI.StrPermitted[StrInfoId] then
-            VI.StrInfo[StrInfoId] := GetString(
-              VI.StrDesc[StrInfoId],
-              VI.StrInfo[StrInfoId],
-              VI.StrRequired[StrInfoId] and VI.Validating,
+          if (not VI.Validating) or VI.IsStrInfoItemPermitted(StrInfoId) then
+            VI.StrInfoValue[StrInfoId] := GetString(
+              VI.StrInfoDesc[StrInfoId],
+              VI.StrInfoValue[StrInfoId],
+              VI.IsStrInfoItemRequired(StrInfoId) and VI.Validating,
               StrList
             )
-          else if VI.StrInfo[StrInfoId] = '' then
+          else if VI.StrInfoValue[StrInfoId] = '' then
             // string not permitted and there is no string - prevent edit
-            MsgNeedFileFlag(VI.StrDesc[StrInfoId])
-          else if MsgDeleteInvalidText(VI.StrDesc[StrInfoId]) then
+            MsgNeedFileFlag(VI.StrInfoDesc[StrInfoId])
+          else if MsgDeleteInvalidText(VI.StrInfoDesc[StrInfoId]) then
             // string not permitted, there is a value, user accepts deletion
-            VI.StrInfo[StrInfoId] := '';
+            VI.StrInfoValue[StrInfoId] := '';
         finally
           StrList.Free;
         end;
       end
     end;
 
-    function CreateDeleteProc(StrInfoId: TStrInfo): TVIItemUpdateCallback;
+    function CreateDeleteProc(StrInfoId: TStrInfoId): TVIItemUpdateCallback;
     begin
       Result := procedure(const VI: TVInfo)
       begin
-        VI.StrInfo[StrInfoId] := TVInfo.DefString;
+        VI.StrInfoValue[StrInfoId] := TVInfo.DefStringInfoValue;
       end
     end;
 
-    function CreateDisplayProc(StrInfoId: TStrInfo): TVIItemRenderCallback;
+    function CreateDisplayProc(StrInfoId: TStrInfoId): TVIItemRenderCallback;
     begin
       Result := function(const VI: TVInfo): string
       begin
-        Result := VI.StrInfo[StrInfoId];
+        Result := VI.StrInfoValue[StrInfoId];
       end
     end;
 
   begin
     AddItem(
       lvgiStringInfo,
-      fVerInfo.StrDesc[StrInfoId],
+      fVerInfo.StrInfoDesc[StrInfoId],
       CreateEditProc(StrInfoId),
       CreateDeleteProc(StrInfoId),
       CreateDisplayProc(StrInfoId)
@@ -1019,7 +1019,7 @@ procedure TMainForm.Init;
   end;
 
 var
-  I: TStrInfo;  // loop control for string info
+  I: TStrInfoId;  // loop control for string info
 resourcestring
   sFileVersion = 'File Version #';
   sProductVersion = 'Product Version #';
@@ -1353,7 +1353,7 @@ begin
       end
     );
     // Add String info to list
-    for I := Low(TStrInfo) to High(TStrInfo) do
+    for I := Low(TStrInfoId) to High(TStrInfoId) do
       AddStringItem(I);
   finally
     DisplayListView.Items.EndUpdate;
@@ -1864,7 +1864,7 @@ begin
     DBox := TViewListDlg.Create(Self);
     try
       // Get the list of recource file statements and copy to dialogue box
-      fVerInfo.WriteASRC(List);
+      fVerInfo.WriteRCSource(List);
       DBox.List := List;
       // Set the dlg box's caption and description
       DBox.Title := sViewRCTitle;

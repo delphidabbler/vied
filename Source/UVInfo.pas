@@ -49,22 +49,22 @@ type
 
   ///  <summary>Enumerated type of all standard string information items.
   ///  </summary>
-  TStrInfo = (siComments, siCompanyName, siFileDescription, siFileVersion,
+  TStrInfoId = (siComments, siCompanyName, siFileDescription, siFileVersion,
     siInternalName, siLegalCopyright, siLegalTrademarks, siOriginalFileName,
     siPrivateBuild, siProductName, siProductVersion, siSpecialBuild);
 
   ///  <summary>Enumerated type of tokens for all fields.</summary>
-  TTokens = (tkF1, tkF2, tkF3, tkF4, tkP1, tkP2, tkP3, tkP4, tkYEAR,
-    tkSHORTFNAME, tkPRODUCTNAME, tkSPECIALBUILD, tkDELIMITER, tkCOMMENTS,
-    tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
-    tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
-    tkPRODUCTVERSION, tkMONTH, tkMONTH0, tkDAY, tkDAY0, thHOUR, tkHOUR0,
-    tkMINUTE, tkMINUTE0, tkSECOND, tkSECOND0, tkMILLISECOND, tkMILLISECOND0,
-    tkYEAR2
+  TFieldToken = (ftF1, ftF2, ftF3, ftF4, ftP1, ftP2, ftP3, ftP4, ftYEAR,
+    ftSHORTFNAME, ftPRODUCTNAME, ftSPECIALBUILD, ftDELIMITER, ftCOMMENTS,
+    ftCOMPANYNAME, ftFILEDESCRIPTION, ftFILEVERSION, ftINTERNALNAME,
+    ftLEGALCOPYRIGHT, ftLEGALTRADEMARK, ftORIGINALFILENAME, ftPRIVATEBUILD,
+    ftPRODUCTVERSION, ftMONTH, ftMONTH0, ftDAY, ftDAY0, ftHOUR, ftHOUR0,
+    ftMINUTE, ftMINUTE0, ftSECOND, ftSECOND0, ftMILLISECOND, ftMILLISECOND0,
+    ftYEAR2
   );
 
   ///  <summary>Set of field tokens.</summary>
-  TTokenSet = set of TTokens;
+  TFieldTokenSet = set of TFieldToken;
 
   ///  <summary>Class that encapsulates version information, inputs it from a
   ///  .vi file and outputs it in various formats.</summary>
@@ -124,22 +124,16 @@ type
     procedure SetCharSetCode(AValue: Word);
 
     ///  <summary>Read accessor for the <c>StrName</c> property.</summary>
-    function GetStrName(AnId: TStrInfo): string;
+    function GetStrInfoName(AnId: TStrInfoId): string;
 
-    ///  <summary>Read accessor for the <c>StrDesc</c> property.</summary>
-    function GetStrDesc(AnId: TStrInfo): string;
-
-    ///  <summary>Read accessor for the <c>StrRequired</c> property.</summary>
-    function GetStrRequired(AnId: TStrInfo): Boolean;
-
-    ///  <summary>Read accessor for the <c>StrPermitted</c> property.</summary>
-    function GetStrPermitted(AnId: TStrInfo): Boolean;
+    ///  <summary>Read accessor for the <c>StrInfoDesc</c> property.</summary>
+    function GetStrInfoDesc(AnId: TStrInfoId): string;
 
     ///  <summary>Read accessor for the <c>StrRequired</c> property.</summary>
-    function GetStrInfo(AnId: TStrInfo): string;
+    function GetStrInfoValue(AnId: TStrInfoId): string;
 
     ///  <summary>Write accessor for the <c>StrInfo</c> property.</summary>
-    procedure SetStrInfo(AnId: TStrInfo; AStr: string);
+    procedure SetStrInfoValue(AnId: TStrInfoId; AStr: string);
 
     ///  <summary>Write accessor for the <c>RCComments</c> property.</summary>
     procedure SetRCComments(SL: TStringList);
@@ -154,20 +148,16 @@ type
     function RenderVersionNumberFromCode(const Code: string): TPJVersionNumber;
 
     ///  <summary>Parses string info item <c>StrInfoId</c>, recursively finding,
-    ///  evaluating and replacing any fields and macros.</summary>
-    function EvaluateFields(StrInfoId: TStrInfo): string;
-
-    ///  <summary>Parses string info item <c>StrInfoId</c>, recursively finding,
     ///  evaluating and replacing any fields and macros. If any fields are
     ///  contained in <c>AExclusions</c> then an exception is raised.</summary>
-    function DoEvaluateFields(StrInfoId: TStrInfo; AExclusions: TTokenSet):
-      string;
+    function EvaluateStrInfoFields(StrInfoId: TStrInfoId;
+      AExclusions: TFieldTokenSet): string;
 
     ///  <summary>Evaluates the given field <c>I</c>, recursively replacing all
     ///  field and macro references, raising an exception if any embedded field
     ///  containing is one of the excluded fields per <c>AExclusions</c>.
     ///  </summary>
-    function FieldValue(I: TTokens; AExclusions: TTokenSet): string;
+    function FieldValue(I: TFieldToken; AExclusions: TFieldTokenSet): string;
 
     ///  <summary>Checks if any undefined macros are referenced anywhere in the
     ///  version information.</summary>
@@ -204,7 +194,7 @@ type
       DefCharSetCode = 1200;      // Unicode
 
       ///  <summary>Default value for all string information items.</summary>
-      DefString = '';
+      DefStringInfoValue = '';
 
       ///  <summary>Default identifier used in the VERSIONINFO resource
       ///  statement.</summary>
@@ -224,7 +214,7 @@ type
 
     ///  <summary>Writes version information in resource file (.rc) format to a
     ///  string list.</summary>
-    procedure WriteAsRC(const SL: TStringList);
+    procedure WriteRCSource(const SL: TStringList);
 
     ///  <summary>Reads version information from a given .vi format file.
     ///  </summary>
@@ -253,7 +243,15 @@ type
     ///  <param name="Id">Id of the string info item.</param>
     ///  <param name="SL">Receives list of permitted fields for the string info
     ///  item.</param>
-    procedure ValidFields(const Id: TStrInfo; const SL: TStringList);
+    procedure ValidStrInfoFields(const Id: TStrInfoId; const SL: TStringList);
+
+     ///  <summary>Checks if the given string information item is permitted (by
+    ///  File Flags etc).</summary>
+    function IsStrInfoItemPermitted(AnId: TStrInfoId): Boolean;
+
+    ///  <summary>Checks if the given string information item is required under
+    ///  the Microsoft guidelines.</summary>
+    function IsStrInfoItemRequired(AnId: TStrInfoId): Boolean;
 
     ///  <summary>Checks whether version information has been saved to file.
     ///  </summary>
@@ -300,22 +298,15 @@ type
     // String Info properties
 
     ///  <summary>Names of the standard string information items.</summary>
-    property StrName[AnId: TStrInfo]: string read GetStrName;
+    property StrInfoName[AnId: TStrInfoId]: string read GetStrInfoName;
 
     ///  <summary>Descriptions of the standard string information items.
     ///  </summary>
-    property StrDesc[AnId: TStrInfo]: string read GetStrDesc;
-
-    ///  <summary>Flags showing if a string information item is required under
-    ///  the Microsoft guidelines.</summary>
-    property StrRequired[AnId: TStrInfo]: Boolean read GetStrRequired;
-
-    ///  <summary>Flags showing if a string information item is permitted (by
-    ///  File Flags etc).</summary>
-    property StrPermitted[AnId: TStrInfo]: Boolean read GetStrPermitted;
+    property StrInfoDesc[AnId: TStrInfoId]: string read GetStrInfoDesc;
 
     ///  <summary>Values of the string information items.</summary>
-    property StrInfo[AnId: TStrInfo]: string read GetStrInfo write SetStrInfo;
+    property StrInfoValue[AnId: TStrInfoId]: string read
+      GetStrInfoValue write SetStrInfoValue;
 
     // Other properties
 
@@ -387,7 +378,7 @@ const
 
   ///  <summary>Names of the standard string information items.</summary>
   ///  <remarks>Do not localise.</remarks>
-  StringInfoNames: array[TStrInfo] of string = (
+  StringInfoNames: array[TStrInfoId] of string = (
     'Comments', 'CompanyName', 'FileDescription', 'FileVersion',
     'InternalName', 'LegalCopyright', 'LegalTrademarks', 'OriginalFileName',
     'PrivateBuild', 'ProductName', 'ProductVersion', 'SpecialBuild'
@@ -395,7 +386,7 @@ const
 
   ///  <summary>Descriptions of the standard string information items.</summary>
   ///  <remarks>Do not localise.</remarks>
-  StringInfoDescs: array[TStrInfo] of string = (
+  StringInfoDescs: array[TStrInfoId] of string = (
     'Comments', 'Company Name', 'File Description', 'File Version',
     'Internal Name','Legal Copyright', 'Legal Trademark', 'Original File Name',
     'Private Build', 'Product Name', 'Product Version', 'Special Build'
@@ -403,27 +394,27 @@ const
 
   ///  <summary>Those fields not permitted in each string information item.
   ///  </summary>
-  ExcludeFields: array[TStrInfo] of set of TTokens = (
-    [tkCOMMENTS],                         // Comments
-    [tkCOMPANYNAME],                      // CompanyName
-    [tkFILEDESCRIPTION],                  // FileDescription
-    [tkFILEVERSION],                      // FileVersion
-    [tkINTERNALNAME],                     // InternalName
-    [tkLEGALCOPYRIGHT],                   // LegalCopyright
-    [tkLEGALTRADEMARK],                   // LegalTrademarks
-    [tkORIGINALFILENAME, tkSHORTFNAME],   // OriginalFileName
-    [tkPRIVATEBUILD],                     // PrivateBuild
-    [tkPRODUCTNAME],                      // ProductName
-    [tkPRODUCTVERSION],                   // ProductVersion
-    [tkSPECIALBUILD]                      // SpecialBuild
+  ExcludedStrInfoFields: array[TStrInfoId] of set of TFieldToken = (
+    [ftCOMMENTS],                         // Comments
+    [ftCOMPANYNAME],                      // CompanyName
+    [ftFILEDESCRIPTION],                  // FileDescription
+    [ftFILEVERSION],                      // FileVersion
+    [ftINTERNALNAME],                     // InternalName
+    [ftLEGALCOPYRIGHT],                   // LegalCopyright
+    [ftLEGALTRADEMARK],                   // LegalTrademarks
+    [ftORIGINALFILENAME, ftSHORTFNAME],   // OriginalFileName
+    [ftPRIVATEBUILD],                     // PrivateBuild
+    [ftPRODUCTNAME],                      // ProductName
+    [ftPRODUCTVERSION],                   // ProductVersion
+    [ftSPECIALBUILD]                      // SpecialBuild
   );
 
-  ///  <summary>Tokens that represent standard string information items.
+  ///  <summary>Field tokens that represent standard string information items.
   ///  </summary>
-  StrInfoFieldTokens: TTokenSet = [
-    tkCOMMENTS, tkCOMPANYNAME, tkFILEDESCRIPTION, tkFILEVERSION, tkINTERNALNAME,
-    tkLEGALCOPYRIGHT, tkLEGALTRADEMARK, tkORIGINALFILENAME, tkPRIVATEBUILD,
-    tkPRODUCTNAME, tkPRODUCTVERSION, tkSPECIALBUILD, tkSHORTFNAME
+  StrInfoFieldTokens: TFieldTokenSet = [
+    ftCOMMENTS, ftCOMPANYNAME, ftFILEDESCRIPTION, ftFILEVERSION, ftINTERNALNAME,
+    ftLEGALCOPYRIGHT, ftLEGALTRADEMARK, ftORIGINALFILENAME, ftPRIVATEBUILD,
+    ftPRODUCTNAME, ftPRODUCTVERSION, ftSPECIALBUILD, ftSHORTFNAME
   ];
 
   ///  <summary>Character that begins a field reference in text.</summary>
@@ -432,7 +423,7 @@ const
   FieldCloser = '>';
 
   ///  <summary>List of supported field names.</summary>
-  Fields: array[TTokens] of string = (
+  Fields: array[TFieldToken] of string = (
     FieldOpener + '#F1' + FieldCloser,
     FieldOpener + '#F2' + FieldCloser,
     FieldOpener + '#F3' + FieldCloser,
@@ -513,7 +504,7 @@ function TVInfo.Analyse(const ErrList: TStringList): Boolean;
   end;
 
 var
-  I: TStrInfo;  // loop control
+  I: TStrInfoId;  // loop control
 resourcestring
   // Error messages
   sInvalidOS = 'Invalid OS';
@@ -550,14 +541,14 @@ begin
   if not ValidCharCode(fCharSetCode) then
     ErrorFound(sInvalidCharSetCode);
   // Check all string info items
-  for I := Low(TStrInfo) to High(TStrInfo) do
+  for I := Low(TStrInfoId) to High(TStrInfoId) do
   begin
     // check if string is required and isn't there
-    if (StrInfo[I] = '') and StrRequired[I] then
-      ErrorFound(Format(sStrValueRequired, [StrDesc[I]]));
+    if (StrInfoValue[I] = '') and IsStrInfoItemRequired(I) then
+      ErrorFound(Format(sStrValueRequired, [StrInfoDesc[I]]));
     // check if string isn't permitted and is there
-    if (StrInfo[I] <> '') and not StrPermitted[I] then
-      ErrorFound(Format(sStrValueNotAllowed, [StrDesc[I]]));
+    if (StrInfoValue[I] <> '') and not IsStrInfoItemPermitted(I) then
+      ErrorFound(Format(sStrValueNotAllowed, [StrInfoDesc[I]]));
   end;
   if not fMacros.Validate(ErrList) then
     Result := False;
@@ -567,7 +558,7 @@ end;
 
 procedure TVInfo.Clear;
 var
-  I: TStrInfo;  // loop control for string info
+  I: TStrInfoId;  // loop control for string info
   J: Integer;   // loop control for default comments
 begin
   // Reset Fixed File Info to default values
@@ -582,8 +573,8 @@ begin
   fLanguageCode := DefLanguageCode;
   fCharSetCode := DefCharSetCode;
   // Reset string info to default values
-  for I := Low(TStrInfo) to High(TStrInfo) do
-    fStrInfo.Values[StringInfoNames[I]] := DefString;
+  for I := Low(TStrInfoId) to High(TStrInfoId) do
+    fStrInfo.Values[StringInfoNames[I]] := DefStringInfoValue;
   // Reset identifier
   fIdentifier := DefIdentifier;
   // Reset comment string lists to default values
@@ -608,7 +599,7 @@ var
 begin
   RCList := TStringList.Create;
   try
-    WriteAsRC(RCList);
+    WriteRCSource(RCList);
     Clipboard.AsText := TrimRight(RCList.Text) + #13#10;
   finally
     RCList.Free;
@@ -637,17 +628,17 @@ begin
   inherited Destroy;
 end;
 
-function TVInfo.DoEvaluateFields(StrInfoId: TStrInfo;
-  AExclusions: TTokenSet): string;
+function TVInfo.EvaluateStrInfoFields(StrInfoId: TStrInfoId;
+  AExclusions: TFieldTokenSet): string;
 var
   TokenIdx: Integer;
-  Token: TTokens;
+  Token: TFieldToken;
 begin
-  AExclusions := AExclusions + ExcludeFields[StrInfoId];
+  AExclusions := AExclusions + ExcludedStrInfoFields[StrInfoId];
   // Process macros in string info item
-  Result := fMacros.EvalResolvedMacros(StrInfo[StrInfoId]);
+  Result := fMacros.EvalResolvedMacros(StrInfoValue[StrInfoId]);
   // Scan through all tokens, searching for each one in string turn
-  for Token := Low(TTokens) to High(TTokens) do
+  for Token := Low(TFieldToken) to High(TFieldToken) do
   begin
     // Repeatedly check output string for presence of a field's token until
     // all instances have been replaced by value
@@ -662,12 +653,8 @@ begin
   Result := TrimRight(Result);
 end;
 
-function TVInfo.EvaluateFields(StrInfoId: TStrInfo): string;
-begin
-  Result := DoEvaluateFields(StrInfoId, []);
-end;
-
-function TVInfo.FieldValue(I: TTokens; AExclusions: TTokenSet): string;
+function TVInfo.FieldValue(I: TFieldToken; AExclusions: TFieldTokenSet):
+  string;
 
   // Parses a version information field
   function ParseVersionField(const Code: string; FieldNum: Byte): string;
@@ -710,77 +697,95 @@ begin
   Locale := TFormatSettings.Create;
   // Return result dependant on token
   case I of
-    tkF1: Result := ParseVersionField(fFileVersionNumberCode, 1);
-    tkF2: Result := ParseVersionField(fFileVersionNumberCode, 2);
-    tkF3: Result := ParseVersionField(fFileVersionNumberCode, 3);
-    tkF4: Result := ParseVersionField(fFileVersionNumberCode, 4);
-    tkP1: Result := ParseVersionField(fProductVersionNumberCode, 1);
-    tkP2: Result := ParseVersionField(fProductVersionNumberCode, 2);
-    tkP3: Result := ParseVersionField(fProductVersionNumberCode, 3);
-    tkP4: Result := ParseVersionField(fProductVersionNumberCode, 4);
-    tkYEAR: Result := DateFmtNow('yyyy');
-    tkYEAR2: Result := DateFmtNow('yy');
-    tkMONTH: Result := DateFmtNow('m');
-    tkMONTH0: Result := DateFmtNow('mm');
-    tkDAY: Result := DateFmtNow('d');
-    tkDAY0: Result := DateFmtNow('dd');
-    thHOUR: Result := DateFmtNow('h');
-    tkHOUR0: Result := DateFmtNow('hh');
-    tkMINUTE: Result := DateFmtNow('n');
-    tkMINUTE0: Result := DateFmtNow('nn');
-    tkSECOND: Result := DateFmtNow('s');
-    tkSECOND0: Result := DateFmtNow('ss');
-    tkMILLISECOND: Result := DateFmtNow('z');
-    tkMILLISECOND0: Result := DateFmtNow('zzz');
-    tkSHORTFNAME:
+    ftF1: Result := ParseVersionField(fFileVersionNumberCode, 1);
+    ftF2: Result := ParseVersionField(fFileVersionNumberCode, 2);
+    ftF3: Result := ParseVersionField(fFileVersionNumberCode, 3);
+    ftF4: Result := ParseVersionField(fFileVersionNumberCode, 4);
+    ftP1: Result := ParseVersionField(fProductVersionNumberCode, 1);
+    ftP2: Result := ParseVersionField(fProductVersionNumberCode, 2);
+    ftP3: Result := ParseVersionField(fProductVersionNumberCode, 3);
+    ftP4: Result := ParseVersionField(fProductVersionNumberCode, 4);
+    ftYEAR: Result := DateFmtNow('yyyy');
+    ftYEAR2: Result := DateFmtNow('yy');
+    ftMONTH: Result := DateFmtNow('m');
+    ftMONTH0: Result := DateFmtNow('mm');
+    ftDAY: Result := DateFmtNow('d');
+    ftDAY0: Result := DateFmtNow('dd');
+    ftHOUR: Result := DateFmtNow('h');
+    ftHOUR0: Result := DateFmtNow('hh');
+    ftMINUTE: Result := DateFmtNow('n');
+    ftMINUTE0: Result := DateFmtNow('nn');
+    ftSECOND: Result := DateFmtNow('s');
+    ftSECOND0: Result := DateFmtNow('ss');
+    ftMILLISECOND: Result := DateFmtNow('z');
+    ftMILLISECOND0: Result := DateFmtNow('zzz');
+    ftSHORTFNAME:
       Result := RemoveExtension(
-        DoEvaluateFields(siOriginalFileName, AExclusions)
+        EvaluateStrInfoFields(siOriginalFileName, AExclusions)
       );
-    tkPRODUCTNAME:
-      Result := DoEvaluateFields(siProductName, AExclusions);
-    tkSPECIALBUILD: Result :=
-      DoEvaluateFields(siSpecialBuild, AExclusions);
-    tkDELIMITER:
+    ftPRODUCTNAME:
+      Result := EvaluateStrInfoFields(siProductName, AExclusions);
+    ftSPECIALBUILD: Result :=
+      EvaluateStrInfoFields(siSpecialBuild, AExclusions);
+    ftDELIMITER:
       Result := FieldOpener;
-    tkCOMMENTS:
-      Result := DoEvaluateFields(siComments, AExclusions);
-    tkCOMPANYNAME:
-      Result := DoEvaluateFields(siCompanyName, AExclusions);
-    tkFILEDESCRIPTION:
-      Result := DoEvaluateFields(siFileDescription, AExclusions);
-    tkFILEVERSION:
-      Result := DoEvaluateFields(siFileVersion, AExclusions);
-    tkINTERNALNAME:
-      Result := DoEvaluateFields(siInternalName, AExclusions);
-    tkLEGALCOPYRIGHT:
-      Result := DoEvaluateFields(siLegalCopyright, AExclusions);
-    tkLEGALTRADEMARK:
-      Result := DoEvaluateFields(siLegalTrademarks, AExclusions);
-    tkORIGINALFILENAME:
-      Result := DoEvaluateFields(siOriginalFileName, AExclusions);
-    tkPRIVATEBUILD:
-      Result := DoEvaluateFields(siPrivateBuild, AExclusions);
-    tkPRODUCTVERSION:
-      Result := DoEvaluateFields(siProductVersion, AExclusions);
+    ftCOMMENTS:
+      Result := EvaluateStrInfoFields(siComments, AExclusions);
+    ftCOMPANYNAME:
+      Result := EvaluateStrInfoFields(siCompanyName, AExclusions);
+    ftFILEDESCRIPTION:
+      Result := EvaluateStrInfoFields(siFileDescription, AExclusions);
+    ftFILEVERSION:
+      Result := EvaluateStrInfoFields(siFileVersion, AExclusions);
+    ftINTERNALNAME:
+      Result := EvaluateStrInfoFields(siInternalName, AExclusions);
+    ftLEGALCOPYRIGHT:
+      Result := EvaluateStrInfoFields(siLegalCopyright, AExclusions);
+    ftLEGALTRADEMARK:
+      Result := EvaluateStrInfoFields(siLegalTrademarks, AExclusions);
+    ftORIGINALFILENAME:
+      Result := EvaluateStrInfoFields(siOriginalFileName, AExclusions);
+    ftPRIVATEBUILD:
+      Result := EvaluateStrInfoFields(siPrivateBuild, AExclusions);
+    ftPRODUCTVERSION:
+      Result := EvaluateStrInfoFields(siProductVersion, AExclusions);
   end;
 end;
 
-function TVInfo.GetStrDesc(AnId: TStrInfo): string;
+function TVInfo.GetStrInfoDesc(AnId: TStrInfoId): string;
 begin
   Result := StringInfoDescs[AnId];
 end;
 
-function TVInfo.GetStrInfo(AnId: TStrInfo): string;
-begin
-  Result := fStrInfo.Values[StringInfoNames[AnId]];
-end;
-
-function TVInfo.GetStrName(AnId: TStrInfo): string;
+function TVInfo.GetStrInfoName(AnId: TStrInfoId): string;
 begin
   Result := StringInfoNames[AnId];
 end;
 
-function TVInfo.GetStrPermitted(AnId: TStrInfo): Boolean;
+function TVInfo.GetStrInfoValue(AnId: TStrInfoId): string;
+begin
+  Result := fStrInfo.Values[StringInfoNames[AnId]];
+end;
+
+function TVInfo.HasBeenSaved: Boolean;
+begin
+  Result := fVIFile.IsSaved;
+end;
+
+function TVInfo.HasUndefinedMacros: Boolean;
+var
+  SL: TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    WriteRCSource(SL);
+    Result := TMacros.ContainsMacro(SL.Text);
+  finally
+    SL.Free;
+  end;
+end;
+
+function TVInfo.IsStrInfoItemPermitted(AnId: TStrInfoId): Boolean;
 begin
   case AnId of
     siComments, siCompanyName, siFileDescription, siFileVersion, siInternalName,
@@ -799,7 +804,7 @@ begin
   end;
 end;
 
-function TVInfo.GetStrRequired(AnId: TStrInfo): Boolean;
+function TVInfo.IsStrInfoItemRequired(AnId: TStrInfoId): Boolean;
 begin
   case AnId of
     siComments, siLegalCopyright, siLegalTrademarks:
@@ -820,27 +825,9 @@ begin
   end;
 end;
 
-function TVInfo.HasBeenSaved: Boolean;
-begin
-  Result := fVIFile.IsSaved;
-end;
-
-function TVInfo.HasUndefinedMacros: Boolean;
-var
-  SL: TStringList;
-begin
-  SL := TStringList.Create;
-  try
-    WriteAsRC(SL);
-    Result := TMacros.ContainsMacro(SL.Text);
-  finally
-    SL.Free;
-  end;
-end;
-
 procedure TVInfo.LoadFromFile(const FileName: string);
 var
-  I: TStrInfo;
+  I: TStrInfoId;
   J: Integer;
   Line: string;
   FileContent: TFileContent;
@@ -917,8 +904,8 @@ begin
 
     // read in string info
     StrDataSection := VIData.GetSection(dsString);
-    for I := Low(TStrInfo) to High(TStrInfo) do
-      StrInfo[I] := StrDataSection.GetValue(StrDesc[I], DefString);
+    for I := Low(TStrInfoId) to High(TStrInfoId) do
+      StrInfoValue[I] := StrDataSection.GetValue(StrInfoDesc[I], DefStringInfoValue);
 
     // Read config section
     // read identifier
@@ -953,7 +940,7 @@ end;
 
 procedure TVInfo.SaveToFile(const FileName: string);
 var
-  I: TStrInfo;
+  I: TStrInfoId;
   J: Integer;
   M: Integer;
   FileNameChanged: Boolean;
@@ -992,8 +979,8 @@ begin
     VarData.AddOrSetValue(TVIDataIO.LanguageName, LanguageCode);
     VarData.AddOrSetValue(TVIDataIO.CharacterSetName, CharSetCode);
     // write string info
-    for I := Low(TStrInfo) to High(TStrInfo) do
-      VIData.GetSection(dsString).AddOrSetValue(StrDesc[I], StrInfo[I]);
+    for I := Low(TStrInfoId) to High(TStrInfoId) do
+      VIData.GetSection(dsString).AddOrSetValue(StrInfoDesc[I], StrInfoValue[I]);
     // Write config section
     CfgData := VIData.GetSection(dsConfig);
     // write identifier
@@ -1028,7 +1015,7 @@ var
 begin
   RCList := TStringList.Create;
   try
-    WriteAsRC(RCList);
+    WriteRCSource(RCList);
     RCList.SaveToFile(FileName, TEncoding.Default);
   finally
     RCList.Free;
@@ -1051,10 +1038,10 @@ begin
     // ensure that new value is sub-set of FileFlagsMask
     fFileFlags := AValue and fFileFlagsMask;
     // set PrivateBuild and SpecialBuild to '' if their file flag not set
-    if not StrPermitted[siPrivateBuild] then
-      StrInfo[siPrivateBuild] := '';
-    if not StrPermitted[siSpecialBuild] then
-      StrInfo[siSpecialBuild] := '';
+    if not IsStrInfoItemPermitted(siPrivateBuild) then
+      StrInfoValue[siPrivateBuild] := '';
+    if not IsStrInfoItemPermitted(siSpecialBuild) then
+      StrInfoValue[siSpecialBuild] := '';
   end
   else
     // Not validating - simply store new value
@@ -1116,9 +1103,9 @@ begin
   fRCComments.Assign(SL);
 end;
 
-procedure TVInfo.SetStrInfo(AnId: TStrInfo; AStr: string);
+procedure TVInfo.SetStrInfoValue(AnId: TStrInfoId; AStr: string);
 begin
-  if (not Validating) or StrPermitted[AnId] then
+  if (not Validating) or IsStrInfoItemPermitted(AnId) then
     fStrInfo.Values[StringInfoNames[AnId]] := AStr
   else
     fStrInfo.Values[StringInfoNames[AnId]] := '';
@@ -1129,24 +1116,25 @@ begin
   fVIComments.Assign(SL);
 end;
 
-procedure TVInfo.ValidFields(const Id: TStrInfo; const SL: TStringList);
+procedure TVInfo.ValidStrInfoFields(const Id: TStrInfoId;
+  const SL: TStringList);
 var
-  I: TTokens;
+  I: TFieldToken;
 begin
   // Clear the list
   SL.Clear;
   // Add non-excluded field tokens to list
-  for I := Low(TTokens) to High(TTokens) do
-    if not (I in ExcludeFields[Id]) then
+  for I := Low(TFieldToken) to High(TFieldToken) do
+    if not (I in ExcludedStrInfoFields[Id]) then
       SL.Add(Fields[I]);
   SL.Sort;
   // Add macros
   fMacros.ListResolvedNames(SL);
 end;
 
-procedure TVInfo.WriteAsRC(const SL: TStringList);
+procedure TVInfo.WriteRCSource(const SL: TStringList);
 var
-  I: TStrInfo;
+  I: TStrInfoId;
   J: Integer;
 begin
   // Ensure macro External & Import macros re-read data in case changed
@@ -1208,13 +1196,16 @@ begin
   SL.Add(Format('  BLOCK "%4.4x%4.4x"', [fLanguageCode, fCharSetCode]));
   SL.Add('  {');
   // write out each string with fields converted to values
-  for I := Low(TStrInfo) to High(TStrInfo) do
+  for I := Low(TStrInfoId) to High(TStrInfoId) do
   begin
-    if StrInfo[I] <> '' then
+    if StrInfoValue[I] <> '' then
       SL.Add(
         Format(
           '   VALUE "%s", "%s\000"',
-          [StrName[I], BackslashEscape(EvaluateFields(I), '"\', '"\')]
+          [
+            StrInfoName[I],
+            BackslashEscape(EvaluateStrInfoFields(I, []), '"\', '"\')
+          ]
         )
       );
   end;
