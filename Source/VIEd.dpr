@@ -47,7 +47,8 @@ uses
   UVIFile in 'UVIFile.pas',
   UParams in 'UParams.pas',
   UMutableEnvVars in 'UMutableEnvVars.pas',
-  UComparers in 'UComparers.pas';
+  UComparers in 'UComparers.pas',
+  FmViewMacros in 'FmViewMacros.pas' {ViewMacrosDlg};
 
 {$Resource Resources.res}
 {$Resource Version.res}

@@ -322,7 +322,7 @@ uses
   UParams,
   FmDropDownListEd, FmFileEncoding, FmIdEd, FmNumberEd, FmResCompiler,
   FmResCompilerCheck, FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd,
-  FmResOutputDir, FmMacroEd;
+  FmResOutputDir, FmMacroEd, FmViewMacros;
 
 {$R *.DFM}
 
@@ -1742,112 +1742,16 @@ begin
 end;
 
 procedure TMainForm.MFViewMacrosClick(Sender: TObject);
-var
-  DBox: TViewListDlg;             // dialogue box instance
-  Report: TStringList;            // report to be displayed in dialogue box
-  ResMacro: TMacros.TResolvedMacro;
-  ResMacros: TArray<TMacros.TResolvedMacro>;
-  NameColWidth: Integer;
-  ValueColWidth: Integer;
-  Ruling: string;
-  BadFileMacros: TArray<TMacros.TMacro>;
-  BadFileMacro: TMacros.TMacro;
 resourcestring
   sNoMacros = 'No macros defined';
   sNotSaved = '** Macros not available until the file has been saved';
-  sResolvedMacroFmt = '%0:s = "%1:s"';
-  sNameColHeader = 'Name';
-  sValueColHeader = 'Value';
-  sBadFilesPrefix = '!! Warning !!'#13#10#13#10
-    + 'The externally referenced files listed below '#13#10
-    + 'cannot be found:'#13#10;
-  sBadFilesSuffix = 'This means that the macros are either incomplete'#13#10
-    + 'or are wrong.'#13#10#13#10
-    + 'You can edit the macros using the Edit | Macros'#13#10
-    + 'menu option.';
-
-const
-  ColumnFmt = '| %-*s | %-*s |';  // do not localise
-
-  { TODO: This is quick and dirty code - it really needs pulling out into a
-          separate form unit
-  }
-
 begin
-  // Create report
-  Report := TStringList.Create;
-  try
-    if fVerInfo.Macros.Count = 0 then
-      Report.Add(sNoMacros)
-    else if not fVerInfo.HasBeenSaved then
-      Report.Add(sNotSaved)
-    else
-    begin
-      // Re-read any changed macro values from external files and get array of
-      // them
-      fVerInfo.Macros.Resolve;
-      ResMacros := fVerInfo.Macros.GetAllResolved;
-
-      // Calculate width of table columns & rulings required
-      NameColWidth := Length(sNameColHeader);
-      ValueColWidth := Length(sValueColheader);
-      for ResMacro in ResMacros do
-      begin
-        NameColWidth := Max(Length(ResMacro.Macro), NameColWidth);
-        ValueColWidth := Max(Length(ResMacro.Value), ValueColWidth);
-      end;
-      Ruling := '|' + StringOfChar('-', NameColWidth + 2) + '|'
-        + StringOfChar('-', ValueColWidth + 2) + '|';
-
-      // Add table header
-      Report.Add(
-        Format(
-          ColumnFmt,
-          [NameColWidth, sNameColHeader, ValueColWidth, sValueColHeader]
-        )
-      );
-      Report.Add(Ruling);
-
-      // Add details of resolved macros
-      for ResMacro in ResMacros do
-      begin
-        Report.Add(
-          Format(
-            ColumnFmt,
-            [NameColWidth, ResMacro.Macro, ValueColWidth, ResMacro.Value]
-          )
-        );
-      end;
-
-      // Add table footer
-      Report.Add(Ruling);
-    end;
-
-    // Get list of invalid file references in macros
-    BadFileMacros := fVerInfo.Macros.GetInvalidFileMacros;
-    if Length(BadFileMacros) > 0 then
-    begin
-      Report.Add('');
-      Report.Add(sBadFilesPrefix);
-      for BadFileMacro in BadFileMacros do
-        Report.Add('  • ' + BadFileMacro.Value);
-      Report.Add('');
-      Report.Add(sBadFilesSuffix);
-    end;
-
-    // Display report in dialogue box
-    DBox := TViewListDlg.Create(Self);
-    try
-      DBox.List := Report;
-      DBox.Title := sViewResMacrosTitle;
-      DBox.HelpTopic := 'dlg-viewmacros';
-      DBox.ShowModal;
-    finally
-      DBox.Free;
-    end;
-  finally
-    Report.Free;
-  end;
+  if fVerInfo.Macros.Count = 0 then
+    MessageDlg(sNoMacros, mtInformation, [mbOK], 0)
+  else if not fVerInfo.HasBeenSaved then
+    MessageDlg(sNotSaved, mtWarning, [mbOK], 0)
+  else
+    TViewMacrosDlg.Show(Self, fVerInfo.Macros);
 end;
 
 procedure TMainForm.MFViewRCClick(Sender: TObject);
