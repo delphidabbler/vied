@@ -589,8 +589,7 @@ begin
   // default .res file folder
   fResOutputDir := '';
   fVIFile.Clear;
-  fMacros.Clear;      // clears defined macros
-  fMacros.Resolve;    // clears resolved macros
+  fMacros.Clear; // clears all macros => no need to call TMacros.Resolve here
 end;
 
 procedure TVInfo.CopyToClipBoard;

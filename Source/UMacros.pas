@@ -212,7 +212,6 @@ type
     ///  <summary>Returns a list of all macro definitions that reference
     ///  non-existent files.</summary>
     function GetInvalidFileMacroDefinitions: TArray<TMacroDefinition>;
-      // TODO: Rename GetInvalidFileMacros as GetInvalidFileMacroDefinitions
 
     ///  <summary>Checks if any macro definitions reference non-existent files.
     ///  </summary>
@@ -261,6 +260,7 @@ procedure TMacros.Clear;
   // TODO: Change to clear resolved macros too
 begin
   fMacroDefinitions.Clear;
+  fResolvedMacros.Clear;
 end;
 
 class function TMacros.ContainsMacro(const Code: string): Boolean;
