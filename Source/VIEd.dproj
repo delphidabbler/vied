@@ -123,6 +123,9 @@
 			<DCCReference Include="UParams.pas"/>
 			<DCCReference Include="UMutableEnvVars.pas"/>
 			<DCCReference Include="UComparers.pas"/>
+			<DCCReference Include="FmViewMacros.pas">
+				<Form>ViewMacrosDlg</Form>
+			</DCCReference>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
