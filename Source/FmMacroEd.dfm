@@ -1,6 +1,5 @@
 inherited MacroEditor: TMacroEditor
   Caption = 'Macro Editor'
-  OnDestroy = FormDestroy
   ExplicitWidth = 619
   ExplicitHeight = 441
   PixelsPerInch = 96
@@ -164,14 +163,11 @@ inherited MacroEditor: TMacroEditor
       OnClick = btnCheckFileClick
     end
   end
-  inherited btnOK: TButton
-    OnClick = btnOKClick
-  end
   object ilMacroEditor: TImageList
     Left = 48
     Top = 120
     Bitmap = {
-      494C010103000800340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030008003C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000046819A0046819A004681
       9A0046819A0046819A0046819A0046819A002445560033637D0033637D00345C
