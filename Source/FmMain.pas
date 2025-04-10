@@ -906,18 +906,18 @@ function TMainForm.GetVersionNumber(const VKind: string;
 var
   Ed: TVerNumEditor;  // instance of version number editor dlg box
   Macros: TStringList;
+  ResolvedMacro: TMacros.TResolvedMacro;
 begin
   Macros := nil;
   Ed := TVerNumEditor.Create(Self);
   try
     Macros := TStringList.Create;
-    { TODO: change Ed.ValidMacros to take TArray<TResolvedMacro>, which is the
-            return value of fVerInfo.Macros.GetResolvedMacros }
-    fVerInfo.Macros.ListResolvedMacroNames(Macros);
     // Set required properties
-    Ed.Kind := VKind;               // info for title
+    Ed.Kind := VKind;                     // info for title
     Ed.VersionNumberCode := Current;      // default version number for editing
-    Ed.ValidMacros := Macros;
+    // Add available macro names
+    for ResolvedMacro in fVerInfo.Macros.GetResolvedMacros do
+      Ed.AddMacroName(ResolvedMacro.Macro);
     // Display dlg and respond to user input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return new version number (will be unchanged if user pressed cancel)
