@@ -866,7 +866,7 @@ begin
     // Read macros
     fMacros.Clear;
     for Entry in VIData.GetSection(dsMacros) do
-      fMacros.Add(Entry.Key + TMacros.MacroValueSep + Entry.Value);
+      fMacros.AddDefinition(Entry.Key + TMacros.MacroValueSep + Entry.Value);
     fMacros.Resolve;
 
     // Read FFI
@@ -956,10 +956,12 @@ begin
     VIData.SetComments(fVIComments);
 
     // Write macros
-    for M := 0 to Pred(fMacros.Macros.Count) do
+    for M := 0 to Pred(fMacros.MacroDefinitions.Count) do
+    begin
       VIData.GetSection(dsMacros).AddOrSetValue(
-        fMacros.GetNameAndValue(M)
+        fMacros.GetMacroDefinitionKVPair(M)
       );
+    end;
 
     // write fixed file info
     FFIData := VIData.GetSection(dsFFI);
@@ -1129,7 +1131,9 @@ begin
       SL.Add(Fields[I]);
   SL.Sort;
   // Add macros
-  fMacros.ListResolvedNames(SL);
+  {TODO: Loop through macros returned by fMacros.GetResolvedMacros instead of
+          calling ListResolvedMacroNames }
+  fMacros.ListResolvedMacroNames(SL);
 end;
 
 procedure TVInfo.WriteRCSource(const SL: TStringList);
@@ -1221,4 +1225,5 @@ begin
 end;
 
 end.
+
 

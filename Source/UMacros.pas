@@ -26,15 +26,17 @@ type
   TMacros = class(TObject)
   strict private
     var
-      ///  <summary>Value of <c>Macros</c> property.</summary>
-      fMacros: TStrings;
-      ///  <summary>Value of <c>Resolved</c> property.</summary>
-      fResolved: TStrings;
+      ///  <summary>Value of <c>MacroDefinitions</c> property.</summary>
+      fMacroDefinitions: TStrings;
+      ///  <summary>String list of resolved macros in Name=Value format.
+      ///  </summary>
+      fResolvedMacros: TStrings;
+        // TODO: Change to fResolvedMacros to TList<TResolvedMacro> or similar
       ///  <summary>Reference to object encapsulating a .vi file.</summary>
       fVIFile: TVIFile;
 
-    ///  <summary>Write accessor for <c>Macros</c> property.</summary>
-    procedure SetMacros(const Value: TStrings);
+    ///  <summary>Write accessor for <c>MacroDefinitions</c> property.</summary>
+    procedure SetMacroDefinitions(const Value: TStrings);
     ///  <summary>Adjusts the given file path to make rooted.</summary>
     ///  <remarks>File paths that are already rooted are unchanged. Relative
     ///  file paths adjusted relative to the directory of the .vi file, if
@@ -44,9 +46,9 @@ type
     type
       ///  <summary>Enumeration of the identifiers of valid commands.</summary>
       TMacroCmd = (mcDefine, mcExternal, mcImport, mcEnv);
-      ///  <summary>Record containing constituent parts of an un-resolved macro.
+      ///  <summary>Record containing constituent parts of macro definition.
       ///  </summary>
-      TMacro = record
+      TMacroDefinition = record
         ///  <summary>Macro command type.</summary>
         Cmd: TMacroCmd;
         ///  <summary>Unresolved macro name.</summary>
@@ -109,11 +111,12 @@ type
     class function IsFileReferenceCommand(const ACmd: TMacroCmd): Boolean;
       inline;
 
-    ///  <summary>Enumerates all un-resolved macros and calls a callback
-    ///  function for each one.</summary>
+    ///  <summary>Enumerates all macro definitions and calls a callback function
+    ///  for each one.</summary>
     ///  <remarks>Iff the callback function returns <c>False</c> then the
     ///  enumeration is aborted.</remarks>
-    function EnumBadMacroFileRefs(ACallback: TFunc<TMacro,Boolean>): Boolean;
+    function EnumBadMacroFileRefs(ACallback: TFunc<TMacroDefinition,Boolean>):
+      Boolean;
 
   public
 
@@ -128,20 +131,22 @@ type
     ///  <summary>Checks if the name <c>N</c> is a valid macro name.</summary>
     class function IsValidMacroName(const N: string): Boolean;
 
-    ///  <summary>Iterates through each unresolved macro in the given list,
-    ///  parses each one into its component parts and returns an array of the
-    ///  parsed macro parts.</summary>
-    ///  <param name="Macros">[in] String list containing an array of
-    ///  un-resolved macros as strings.</param>
-    ///  <returns><c>TArray&lt;TMacro&gt;</c>. Array of macros decomposed into
-    ///  their constituent parts.</returns>
-    ///  <exception><c>Exception</c> is raised if any of the macros are
-    ///  malformed.</exception>
-    class function CrackMacros(const Macros: TStrings): TArray<TMacro>;
+    ///  <summary>Iterates through each macro definition string in the given
+    ///  list, parses each one into its component parts and returns an array of
+    ///  the parsed macro definitions.</summary>
+    ///  <param name="Macros"><c>TStrings</c> [in] List of macro definition
+    ///  strings.</param>
+    ///  <returns><c>TArray&lt;TMacroDefinition&gt;</c>. Array of macro
+    ///  definitions decomposed into their constituent parts.</returns>
+    ///  <exception><c>Exception</c> is raised if any of the macro definition
+    ///  string are malformed.</exception>
+    class function ParseMacroDefinitions(const AMacroDefStrs: TStrings):
+      TArray<TMacroDefinition>;
 
-    ///  <summary>Creates and returns a string composed of the given macro's
-    ///  command type, name and value, using the correct separators.</summary>
-    class function EncodeMacro(const Macro: TMacro): string;
+    ///  <summary>Creates and returns a string composed of the given macro
+    ///  definitions's command type, name and value, using the correct
+    ///  separators.</summary>
+    class function EncodeMacroDefinition(const Macro: TMacroDefinition): string;
 
     ///  <summary>Looks up a macro command in the list of valid commands.
     ///  </summary>
@@ -154,7 +159,8 @@ type
     class function TryLookupMacroCmd(const CmdStr: string;
       out Cmd: TMacroCmd): Boolean;
 
-    ///  <summary>Checks if <c>Code</c> contains one or more macros.</summary>
+    ///  <summary>Checks if <c>Code</c> contains one or more macro references.
+    ///  </summary>
     class function ContainsMacro(const Code: string): Boolean;
 
     // TODO: Make RelativeMacroFilePath inline or refactor out
@@ -165,58 +171,53 @@ type
     ///  </remarks>
     function RelativeMacroFilePath: string;
 
-    ///  <summary>String list containing all un-resolved macros.</summary>
-    property Macros: TStrings read fMacros write SetMacros;
+    ///  <summary>List of all macro definition strings.</summary>
+    property MacroDefinitions: TStrings
+      read fMacroDefinitions write SetMacroDefinitions;
 
-    ///  <summary>String list containing all resolved macros.</summary>
-    ///  <remarks>Will be empty until the <c>Resolve</c> method is called.
-    ///  </remarks>
-    property Resolved: TStrings read fResolved;
-
-    ///  <summary>Clears the list of unresolved macros.</summary>
+    ///  <summary>Clears the list of macro definitions.</summary>
     procedure Clear;
 
-    ///  <summary>Adds the given un-resolved macro to the <c>Macros</c> list.
-    ///  </summary>
-    procedure Add(const Macro: string);
+    ///  <summary>Adds the given macro definition to the <c>MacroDefinitions</c>
+    ///  list.</summary>
+    procedure AddDefinition(const AMacroDefinition: string);
 
-    ///  <summary>Returns the number of macros in the unresolved macro list.
-    ///  </summary>
-    function Count: Integer;
+    ///  <summary>Returns the number of macro definitions.</summary>
+    function DefinitionCount: Integer;
 
-    { TODO: Rename following method it gets macro details at position Idx in
-            fMacros[], split into Cmd:Name (Key) and Value parts.
-    }
-    ///  <summary>Gets the un-resolved macro at the given index in the
-    ///  <c>Macros</c> list, splits the command/name part from the value, then
-    ///  returns them as a tuple.</summary>
-    function GetNameAndValue(Idx: Integer): TPair<string,string>;
+    ///  <summary>Gets the macro definition at the given index in the
+    ///  <c>MacroDefinitions</c> list, splits the command/name part from the
+    //   value, then returns them as a tuple.</summary>
+    function GetMacroDefinitionKVPair(Idx: Integer): TPair<string,string>;
 
     ///  <summary>Processes the macro definitions, reads in external and
-    ///  imported files and creates a list of all macros and their actual
-    ///  values. Macro command type is removed from the macro name.</summary>
+    ///  imported files and creates a list of all resolved macros and their
+    ///  actual values.</summary>
     ///  <remarks>Any invalid macro names are ignored and there values are lost.
     ///  No error is reported in this case.</remarks>
     procedure Resolve;
 
     ///  <summary>Appends the names of all resolved macros to a given string
     ///  list.</summary>
-    procedure ListResolvedNames(const AList: TStrings);
+    procedure ListResolvedMacroNames(const AList: TStrings);
 
     ///  <summary>Get list of all resolved macros and returns as an array of
     ///  <c>TMacro</c> records.</summary>
-    function GetAllResolved: TArray<TResolvedMacro>;
+    function GetResolvedMacros: TArray<TResolvedMacro>;
 
     ///  <summary>Evaluates any and all the resolved macros in the given string
     ///  and replaces them with their values.</summary>
     function EvalResolvedMacros(const ACodeStr: string): string;
 
-    ///  <summary>Returns a list of all macros that reference non-existent
-    ///  files.</summary>
-    function GetInvalidFileMacros: TArray<TMacro>;
+    ///  <summary>Returns a list of all macro definitions that reference
+    ///  non-existent files.</summary>
+    function GetInvalidFileMacroDefinitions: TArray<TMacroDefinition>;
+      // TODO: Rename GetInvalidFileMacros as GetInvalidFileMacroDefinitions
 
-    ///  <summary>Checks if any macros reference non-existent files.</summary>
+    ///  <summary>Checks if any macro definitions reference non-existent files.
+    ///  </summary>
     function HasBadMacroFileReferences: Boolean;
+      // TODO: Rename HasBadMacroFileReferences as HasBadMacroDefinitionFileRefs
 
     ///  <summary>Validates macros.</summary>
     ///  <param name="AErrorList">[in] String list that receives any error
@@ -242,10 +243,10 @@ uses
 
 { TMacros }
 
-procedure TMacros.Add(const Macro: string);
-  // TODO: change to name, value pair in Add and insert separator
+procedure TMacros.AddDefinition(const AMacroDefinition: string);
+  // TODO: change to name, value pair in AddDefinition and insert separator
 begin
-  fMacros.Add(Macro);
+  fMacroDefinitions.Add(AMacroDefinition);
 end;
 
 function TMacros.AdjustFilePath(const FilePath: string): string;
@@ -257,8 +258,9 @@ begin
 end;
 
 procedure TMacros.Clear;
+  // TODO: Change to clear resolved macros too
 begin
-  fMacros.Clear;
+  fMacroDefinitions.Clear;
 end;
 
 class function TMacros.ContainsMacro(const Code: string): Boolean;
@@ -266,76 +268,44 @@ begin
   Result := ContainsStr(Code, MacroOpener);
 end;
 
-function TMacros.Count: Integer;
-begin
-  Result := fMacros.Count;
-end;
-
-class function TMacros.CrackMacros(const Macros: TStrings): TArray<TMacro>;
-var
-  Idx: Integer;
-  FullName: string;
-  CmdName: string;
-  Cmd: TMacroCmd;
-resourcestring
-  sBadMacroFmtErr = 'Malformed macro command: "%s"';
-  sNoMacroCmdErr = 'Missing macro command in "%s"';
-  sNoMacroNameErr = 'Missing macro name in "%s"';
-  sBadMacroCmdErr = 'Invalid macro command: "%s"';
-  sNoMacroValueErr = 'Macro has no value: "%s"';
-begin
-  SetLength(Result, Macros.Count);
-  for Idx := 0 to Pred(Macros.Count) do
-  begin
-    FullName := Macros.Names[Idx];
-    // Parse macro and check for errors
-    if not SplitStr(FullName, MacroCmdSep, CmdName, Result[Idx].Name) then
-      raise Exception.CreateFmt(sBadMacroFmtErr, [FullName]);
-    if CmdName = '' then
-      raise Exception.CreateFmt(sNoMacroCmdErr, [FullName]);
-    if Result[Idx].Name = '' then
-      raise Exception.CreateFmt(sNoMacroNameErr, [FullName]);
-    if not TryLookupMacroCmd(CmdName, Cmd) then
-      raise Exception.CreateFmt(sBadMacroCmdErr, [CmdName]);
-    Result[Idx].Cmd := Cmd;
-    Result[Idx].Value := Macros.ValueFromIndex[Idx];
-    if IsFileReferenceCommand(Cmd) and (Result[Idx].Value = '') then
-      raise Exception.CreateFmt(sNoMacroCmdErr, [FullName]);
-  end;
-end;
-
 constructor TMacros.Create(VIFile: TVIFile);
 begin
   inherited Create;
   fVIFile := VIFile;
-  fMacros := TStringList.Create;
-  fResolved := TStringList.Create;
+  fMacroDefinitions := TStringList.Create;
+  fResolvedMacros := TStringList.Create;
+end;
+
+function TMacros.DefinitionCount: Integer;
+begin
+  Result := fMacroDefinitions.Count;
 end;
 
 destructor TMacros.Destroy;
 begin
-  fResolved.Free;
-  fMacros.Free;
+  fResolvedMacros.Free;
+  fMacroDefinitions.Free;
 end;
 
-class function TMacros.EncodeMacro(const Macro: TMacros.TMacro): string;
+class function TMacros.EncodeMacroDefinition(
+  const Macro: TMacroDefinition): string;
 begin
   Result := MacroCmds[Macro.Cmd] + MacroCmdSep
     + Macro.Name + MacroValueSep + Macro.Value;
 end;
 
-function TMacros.EnumBadMacroFileRefs(ACallback: TFunc<TMacro,Boolean>):
-  Boolean;
+function TMacros.EnumBadMacroFileRefs(ACallback:
+  TFunc<TMacroDefinition,Boolean>): Boolean;
 var
-  CrackedMacros: TArray<TMacro>;
-  Macro: TMacro;
+  MacroDefinitions: TArray<TMacroDefinition>;
+  MacroDefinition: TMacroDefinition;
 begin
-  CrackedMacros := TMacros.CrackMacros(fMacros);
-  for Macro in CrackedMacros do
+  MacroDefinitions := TMacros.ParseMacroDefinitions(fMacroDefinitions);
+  for MacroDefinition in MacroDefinitions do
   begin
-    if IsFileReferenceCommand(Macro.Cmd) and
-      not TFile.Exists(AdjustFilePath(Macro.Value)) then
-      if not ACallback(Macro) then
+    if IsFileReferenceCommand(MacroDefinition.Cmd) and
+      not TFile.Exists(AdjustFilePath(MacroDefinition.Value)) then
+      if not ACallback(MacroDefinition) then
         Exit(False);
   end;
   Result := True;
@@ -348,7 +318,7 @@ var
   ResMacro: TResolvedMacro;
 begin
   Result := ACodeStr;
-  ResMacros := GetAllResolved;
+  ResMacros := GetResolvedMacros;
   for ResMacro in ResMacros do
   begin
     repeat
@@ -361,34 +331,14 @@ begin
   end;
 end;
 
-function TMacros.GetAllResolved: TArray<TResolvedMacro>;
-{ TODO: Add a boolean parameter to force the macros to be (re-)resolved before
-        getting them. If paramter is ForceResolve then add following at top of
-        method:
-          if ForceResolve then
-            Resolve;
-}
+function TMacros.GetInvalidFileMacroDefinitions: TArray<TMacroDefinition>;
 var
-  Idx: Integer;
-  ResolvedMacro: TResolvedMacro;
+  BadFileList: TList<TMacroDefinition>;
 begin
-  SetLength(Result, fResolved.Count);
-  for Idx := 0 to Pred(fResolved.Count) do
-  begin
-    ResolvedMacro.Macro := fResolved.Names[Idx];
-    ResolvedMacro.Value := fResolved.ValueFromIndex[Idx];
-    Result[Idx] := ResolvedMacro;
-  end;
-end;
-
-function TMacros.GetInvalidFileMacros: TArray<TMacro>;
-var
-  BadFileList: TList<TMacro>;
-begin
-  BadFileList := TList<TMacro>.Create;
+  BadFileList := TList<TMacroDefinition>.Create;
   try
     EnumBadMacroFileRefs(
-      function (AMacro: TMacro): Boolean
+      function (AMacro: TMacroDefinition): Boolean
       begin
         Result := True;
         BadFileList.Add(AMacro);
@@ -400,10 +350,30 @@ begin
   end;
 end;
 
-function TMacros.GetNameAndValue(Idx: Integer): TPair<string, string>;
+function TMacros.GetMacroDefinitionKVPair(Idx: Integer): TPair<string, string>;
 begin
-  Result.Key := fMacros.Names[Idx];
-  Result.Value := fMacros.ValueFromIndex[Idx];
+  Result.Key := fMacroDefinitions.Names[Idx];
+  Result.Value := fMacroDefinitions.ValueFromIndex[Idx];
+end;
+
+function TMacros.GetResolvedMacros: TArray<TResolvedMacro>;
+{ TODO: Add a boolean parameter to force the macros to be (re-)resolved before
+        getting them. If paramter is ForceResolve then add following at top of
+        method:
+          if ForceResolve then
+            Resolve;
+}
+var
+  Idx: Integer;
+  ResolvedMacro: TResolvedMacro;
+begin
+  SetLength(Result, fResolvedMacros.Count);
+  for Idx := 0 to Pred(fResolvedMacros.Count) do
+  begin
+    ResolvedMacro.Macro := fResolvedMacros.Names[Idx];
+    ResolvedMacro.Value := fResolvedMacros.ValueFromIndex[Idx];
+    Result[Idx] := ResolvedMacro;
+  end;
 end;
 
 function TMacros.HasBadMacroFileReferences: Boolean;
@@ -413,7 +383,7 @@ begin
   Assert(fVIFile.IsSaved, 'TVInfo.HasBadMacroFileReferences: file never saved');
   BadRefFound := False;
   EnumBadMacroFileRefs(
-    function (AMacro: TMacro): Boolean
+    function (AMacro: TMacroDefinition): Boolean
     begin
       BadRefFound := True;
       Result := False;
@@ -443,15 +413,49 @@ begin
       Exit(False);
 end;
 
-procedure TMacros.ListResolvedNames(const AList: TStrings);
+procedure TMacros.ListResolvedMacroNames(const AList: TStrings);
 var
   ResMacro: TResolvedMacro;
   ResMacros: TArray<TResolvedMacro>;
 begin
   Assert(Assigned(AList));
-  ResMacros := GetAllResolved;
+  ResMacros := GetResolvedMacros;
   for ResMacro in ResMacros do
     AList.Add(ResMacro.Macro);
+end;
+
+class function TMacros.ParseMacroDefinitions(
+  const AMacroDefStrs: TStrings): TArray<TMacroDefinition>;
+var
+  Idx: Integer;
+  FullName: string;
+  CmdName: string;
+  Cmd: TMacroCmd;
+resourcestring
+  sBadMacroFmtErr = 'Malformed macro command: "%s"';
+  sNoMacroCmdErr = 'Missing macro command in "%s"';
+  sNoMacroNameErr = 'Missing macro name in "%s"';
+  sBadMacroCmdErr = 'Invalid macro command: "%s"';
+  sNoMacroValueErr = 'Macro has no value: "%s"';
+begin
+  SetLength(Result, AMacroDefStrs.Count);
+  for Idx := 0 to Pred(AMacroDefStrs.Count) do
+  begin
+    FullName := AMacroDefStrs.Names[Idx];
+    // Parse macro and check for errors
+    if not SplitStr(FullName, MacroCmdSep, CmdName, Result[Idx].Name) then
+      raise Exception.CreateFmt(sBadMacroFmtErr, [FullName]);
+    if CmdName = '' then
+      raise Exception.CreateFmt(sNoMacroCmdErr, [FullName]);
+    if Result[Idx].Name = '' then
+      raise Exception.CreateFmt(sNoMacroNameErr, [FullName]);
+    if not TryLookupMacroCmd(CmdName, Cmd) then
+      raise Exception.CreateFmt(sBadMacroCmdErr, [CmdName]);
+    Result[Idx].Cmd := Cmd;
+    Result[Idx].Value := AMacroDefStrs.ValueFromIndex[Idx];
+    if IsFileReferenceCommand(Cmd) and (Result[Idx].Value = '') then
+      raise Exception.CreateFmt(sNoMacroCmdErr, [FullName]);
+  end;
 end;
 
 function TMacros.RelativeMacroFilePath: string;
@@ -463,7 +467,7 @@ procedure TMacros.Resolve;
 
   procedure StoreResolvedMacro(const Name, Value: string);
   begin
-    fResolved.Add(
+    fResolvedMacros.Add(
       TMacros.MacroOpener + Name + MacroCloser + MacroValueSep + Value
     );
   end;
@@ -500,13 +504,13 @@ procedure TMacros.Resolve;
 var
   FileLines: TStringList;
   FileIdx: Integer;
-  Macro: TMacros.TMacro;
+  MacroDefinition: TMacros.TMacroDefinition;
   EnvVarName: string;
   EnvVars: TMutableEnvVars;
 
 begin
   {
-    Macros have four forms in the ini file:
+    Macro definitions have four forms in the ini file:
 
       1) Define - Define:Name=Value
          Resolved by stripping "Def:" from the name and storing Name & Value.
@@ -518,7 +522,7 @@ begin
       3) Import - Import:Name=FileName
          Resolved by reading contents of the file FileName. Name is sored as a
          macro name in the .ini file, but doesn't itself resolve to a resolved
-         macro name). The file FileName must have lines in the format Name=Value
+         macro name. The file FileName must have lines in the format Name=Value
          and a new resolved macro is created for each Name/Value pair.
 
       4) Env - (1) Env:Name (2) Env:Name=Value
@@ -529,15 +533,14 @@ begin
          environment variable does not exist then the macro is given an empty
          value.
 
-
     All macro names:
 
       * MUST be unique after stripping the prefix
       * MUST begin with a letter or a digit
       * MAY contain other letter, digits, hyphens or underscores
 
-    For Define & External macros the macro name in the ini file is that used in
-    the program.
+    For Define, Env & External macros the macro name in the ini file is used as
+    the resolved macro name.
 
     For Import macros the macro names available to the program have the form
     xxx.yyy where xxx is the macro name from the ini file and yyy is one of
@@ -550,7 +553,7 @@ begin
   }
 
   // Clear any existing resolved macros and associated data structures
-  fResolved.Clear;
+  fResolvedMacros.Clear;
   EnvVars := TParams.EnvVars;
 
   // Do nothing
@@ -558,21 +561,22 @@ begin
     Exit;
 
   // Process each macro, split into its Cmd, Name & Value fields
-  for Macro in TMacros.CrackMacros(fMacros) do
+  for MacroDefinition in TMacros.ParseMacroDefinitions(fMacroDefinitions) do
   begin
     // Ignore any macros with invalid names
-    if TMacros.IsValidMacroName(Macro.Name) then
+    if TMacros.IsValidMacroName(MacroDefinition.Name) then
     begin
-      case Macro.Cmd of
+      case MacroDefinition.Cmd of
 
         mcDefine:
           // Create a macro from value stored in [Macros] section of .vi file
-          StoreResolvedMacro(Macro.Name, Macro.Value);
+          StoreResolvedMacro(MacroDefinition.Name, MacroDefinition.Value);
 
         mcExternal:
           // Create a macro with value from 1st non-empty line of file
           StoreResolvedMacro(
-            Macro.Name, FirstNonEmptyLine(ReadUTF8TextFile(Macro.Value))
+            MacroDefinition.Name,
+            FirstNonEmptyLine(ReadUTF8TextFile(MacroDefinition.Value))
           );
 
         mcImport:
@@ -580,7 +584,7 @@ begin
           FileLines := TStringList.Create;
           try
             // Split file into lines
-            FileLines.Text := ReadUTF8TextFile(Macro.Value);
+            FileLines.Text := ReadUTF8TextFile(MacroDefinition.Value);
             // Delete any lines that are not in Name=Value format
             // or are comments lines (start with #)
             for FileIdx := Pred(FileLines.Count) downto 0 do
@@ -593,7 +597,8 @@ begin
               // Ignore any invalid macro name from file
               if TMacros.IsValidMacroName(FileLines.Names[FileIdx]) then
                 StoreResolvedMacro(
-                  Macro.Name + ImportMacroSeparator + FileLines.Names[FileIdx],
+                  MacroDefinition.Name + ImportMacroSeparator
+                    + FileLines.Names[FileIdx],
                   FileLines.ValueFromIndex[FileIdx]
                 );
             end;
@@ -604,14 +609,18 @@ begin
 
         mcEnv:
         begin
-          if Macro.Value = '' then
-            EnvVarName := Macro.Name    // macro name = env var name
+          if MacroDefinition.Value = '' then
+            // macro name = env var name
+            EnvVarName := MacroDefinition.Name
           else
-            EnvVarName := Macro.Value;  // macro name is alias for env var name
+            // macro name is alias for env var name
+            EnvVarName := MacroDefinition.Value;
           if EnvVars.Contains(EnvVarName) then
-            StoreResolvedMacro(Macro.Name, EnvVars.GetValue(EnvVarName))
+            StoreResolvedMacro(
+              MacroDefinition.Name, EnvVars.GetValue(EnvVarName)
+            )
           else
-            StoreResolvedMacro(Macro.Name, '');
+            StoreResolvedMacro(MacroDefinition.Name, '');
         end;
 
         else ; // ignore any unrecognised commands
@@ -622,12 +631,12 @@ begin
 
 end;
 
-procedure TMacros.SetMacros(const Value: TStrings);
+procedure TMacros.SetMacroDefinitions(const Value: TStrings);
 begin
   if Assigned(Value) then
-    fMacros.Assign(Value)
+    fMacroDefinitions.Assign(Value)
   else
-    fMacros.Clear;
+    fMacroDefinitions.Clear;
   Resolve;
 end;
 
@@ -650,11 +659,11 @@ end;
 
 function TMacros.Validate(const AErrorList: TStrings): Boolean;
 var
-  CrackedMacros: TArray<TMacro>;
-  Macro: TMacro;
+  MacroDefinitions: TArray<TMacroDefinition>;
+  Macro: TMacroDefinition;
   BadRelPath: Boolean;
-  BadFileMacro: TMacro;
-  BadFileMacros: TArray<TMacro>;
+  BadFileMacro: TMacroDefinition;
+  BadFileMacros: TArray<TMacroDefinition>;
 resourcestring
   sMacroFileNoFound = 'Macro "%0:s": file "%1:s" not found';
   sFileNotSaved = 'Any relative file names referenced by macros are ambiguous:'
@@ -663,7 +672,7 @@ resourcestring
 begin
   Result := True;
 
-  BadFileMacros := Self.GetInvalidFileMacros;
+  BadFileMacros := Self.GetInvalidFileMacroDefinitions;
   for BadFileMacro in BadFileMacros do
   begin
     AErrorList.Add(
@@ -674,9 +683,9 @@ begin
 
   if not fVIFile.IsSaved then
   begin
-    CrackedMacros := TMacros.CrackMacros(fMacros);
+    MacroDefinitions := TMacros.ParseMacroDefinitions(fMacroDefinitions);
     BadRelPath := False;
-    for Macro in CrackedMacros do
+    for Macro in MacroDefinitions do
     begin
       if IsFileReferenceCommand(Macro.Cmd)
         and not TPath.IsPathRooted(Macro.Value) then

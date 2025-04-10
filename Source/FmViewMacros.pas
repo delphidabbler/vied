@@ -90,7 +90,7 @@ var
   ResMacros: TArray<TMacros.TResolvedMacro>;
   LI: TListItem;
 begin;
-  ResMacros := fMacros.GetAllResolved;
+  ResMacros := fMacros.GetResolvedMacros;
   for ResMacro in ResMacros do
   begin
     LI := lvMacros.Items.Add;
@@ -101,8 +101,8 @@ end;
 
 procedure TViewMacrosDlg.DisplayWarnings;
 var
-  BadFileMacros: TArray<TMacros.TMacro>;
-  BadFileMacro: TMacros.TMacro;
+  BadFileMacros: TArray<TMacros.TMacroDefinition>;
+  BadFileMacro: TMacros.TMacroDefinition;
 resourcestring
   sBadFilesPrefix = 'The externally referenced files listed below cannot be '
     + 'found:' + sLineBreak;
@@ -117,7 +117,7 @@ resourcestring
 begin
   edWarnings.Clear;
   // Get list of invalid file references in macros
-  BadFileMacros := fMacros.GetInvalidFileMacros;
+  BadFileMacros := fMacros.GetInvalidFileMacroDefinitions;
   if Length(BadFileMacros) > 0 then
   begin
     AddLine(sBadFilesPrefix);
@@ -149,7 +149,7 @@ var
   LI: TListItem;
 begin;
   // Must be called after DisplayMacros
-  ResMacros := fMacros.GetAllResolved;
+  ResMacros := fMacros.GetResolvedMacros;
   // Set column widths
   // make sure there is room for the heading text
   NameColWidth := StringExtent(lvMacros.Columns[0].Caption, lvMacros.Font).cx;

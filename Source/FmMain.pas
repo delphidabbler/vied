@@ -911,7 +911,9 @@ begin
   Ed := TVerNumEditor.Create(Self);
   try
     Macros := TStringList.Create;
-    fVerInfo.Macros.ListResolvedNames(Macros);
+    { TODO: change Ed.ValidMacros to take TArray<TResolvedMacro>, which is the
+            return value of fVerInfo.Macros.GetResolvedMacros }
+    fVerInfo.Macros.ListResolvedMacroNames(Macros);
     // Set required properties
     Ed.Kind := VKind;               // info for title
     Ed.VersionNumberCode := Current;      // default version number for editing
@@ -1460,13 +1462,14 @@ resourcestring
 begin
   Ed := TMacroEditor.Create(Self);
   try
-    Ed.Macros := fVerInfo.Macros.Macros;
+    Ed.Macros := fVerInfo.Macros.MacroDefinitions;
     Ed.RelativeFilePath := fVerInfo.Macros.RelativeMacroFilePath;
     if Ed.ShowModal = mrOK then
     begin
-      fVerInfo.Macros.Macros := Ed.Macros;
+      fVerInfo.Macros.MacroDefinitions := Ed.Macros;
       fChanged := True;
-      if not fVerInfo.HasBeenSaved and (fVerInfo.Macros.Count > 0) then
+      if not fVerInfo.HasBeenSaved
+        and (fVerInfo.Macros.DefinitionCount > 0) then
         Display(sMacrosNotAvailable, mtWarning, [mbOK]);
     end;
   finally
@@ -1746,7 +1749,7 @@ resourcestring
   sNoMacros = 'No macros defined';
   sNotSaved = '** Macros not available until the file has been saved';
 begin
-  if fVerInfo.Macros.Count = 0 then
+  if fVerInfo.Macros.DefinitionCount = 0 then
     MessageDlg(sNoMacros, mtInformation, [mbOK], 0)
   else if not fVerInfo.HasBeenSaved then
     MessageDlg(sNotSaved, mtWarning, [mbOK], 0)

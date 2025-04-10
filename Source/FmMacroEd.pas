@@ -22,7 +22,7 @@ uses
   UVInfo;
 
 type
-  TMacro = TMacros.TMacro;
+  TMacro = TMacros.TMacroDefinition;
   TMacroEditor = class(TGenericOKDlg)
     lvMacros: TListView;
     cbCmd: TComboBox;
@@ -177,12 +177,12 @@ end;
 
 procedure TMacroEditor.btnOKClick(Sender: TObject);
 var
-  Macro: TMacros.TMacro;
+  MacroDefinition: TMacros.TMacroDefinition;
 begin
   // Update macros from list view
   fMacros.Clear;
-  for Macro in fMacroDetails do
-    fMacros.Add(TMacros.EncodeMacro(Macro));
+  for MacroDefinition in fMacroDetails do
+    fMacros.Add(TMacros.EncodeMacroDefinition(MacroDefinition));
 end;
 
 procedure TMacroEditor.btnValueClick(Sender: TObject);
@@ -256,7 +256,7 @@ end;
 
 procedure TMacroEditor.DisplayMacros;
 var
-  Macro: TMacros.TMacro;
+  Macro: TMacros.TMacroDefinition;
   LI: TListItem;
 begin
   lvMacros.Items.BeginUpdate;
@@ -383,7 +383,7 @@ begin
     fMacros.Assign(Value)
   else
     fMacros.Clear;
-  fMacroDetails := TMacros.CrackMacros(fMacros);
+  fMacroDetails := TMacros.ParseMacroDefinitions(fMacros);
   DisplayMacros;
   UpdateButtons;
 end;
