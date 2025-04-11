@@ -713,25 +713,28 @@ begin
   // Emulate File | New menu click to get new file using preferences
   MFNewClick(Self);
   // Process command line
-  // Set initial dir of Open, Export and Save As dialog boxes to first parameter
-  // unless param is -makerc
-  {TODO: Change parameter processing to allow for -D options}
   TParams.ParseCommandLine;
   case TParams.Mode of
     TParams.TMode.Normal:
     begin
+      // 1st parameter is a directory: set initial dir of Open, Export and Save
+      // As dialog boxes to that directory
       fOpenDlg.InitialDir := TParams.FileDlgInitialDir;
       fSaveDlg.InitialDir := TParams.FileDlgInitialDir;
       fExportDlg.InitialDir := TParams.FileDlgInitialDir;
     end;
     TParams.TMode.MakeRC:
     begin
+      // -makerc command: silently render a given .vi file as .rc file
       // prevent window from showing
       Application.ShowMainForm := False;
       // post message that processes file and closes window (can't close in
       // FormCreate)
       PostMessage(Handle, MSG_SILENT, 0, 0);
     end;
+    TParams.TMode.OpenVI:
+      // -open command: open a given .vi file
+      OpenFile(TParams.VIFileName);
   end;
 end;
 

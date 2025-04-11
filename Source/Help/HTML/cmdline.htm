@@ -54,10 +54,20 @@
       Normal operation
     </h2>
     <p>
-      VIEd is started in normal mode from the command line mode using the
-      command line:
+      VIEd is started in normal mode from the command line using one of the
+      following command lines:
     </p>
-    <pre class="indent source-code">vied [file-dlg-directory] {-E:name=value}</pre>
+    <ol>
+      <li>
+        <pre class="source-code">vied file-dlg-directory {-E:name=value}</pre>
+      </li>
+      <li>
+        <pre class="source-code">vied -open vi-file-path {-E:name=value}</pre>
+      </li>
+      <li>
+        <pre class="source-code">vied {-E:name=value}</pre>
+      </li>
+    </ol>
     <p>
       where:
     </p>
@@ -66,6 +76,11 @@
         The optional <code>file-dlg-directory</code> specifies the default
         directory used for all file open dialogue boxes displayed by the
         program.
+      </li>
+      <li>
+        The optional <code>-open</code> command causes the file specified by the
+        following <code>vi-file-path</code> parameter to be opened in the GUI on
+        startup.
       </li>
       <li>
         Each of the optional <code>-E:name=value</code> commands define or
@@ -132,7 +147,7 @@
         <code>4</code> &ndash; error: one or more external files referenced by
         macros do not exist.
       </li>
-    </ul>
+    </ol>
     <h2>
       <code>-E</code> parameters
     </h2>
@@ -212,6 +227,12 @@
           be visible to macros with its value changed to <code>C:\My Program
           Files</code>. Note the use of quotes to surround parameters containing
           spaces.
+        </p>
+      </li>
+      <li>
+        <pre class="source-code">vied -open C:\foo\bar.vi</pre>
+        <p>
+          Starts the program normally with <code>C:\foo\bar.vi</code> loaded.
         </p>
       </li>
     </ol>
