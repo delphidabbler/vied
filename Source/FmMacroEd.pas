@@ -22,7 +22,6 @@ uses
   UVInfo;
 
 type
-  TMacro = TMacros.TMacroDefinition;
   TMacroEditor = class(TGenericOKDlg)
     lvMacros: TListView;
     cbCmd: TComboBox;
@@ -40,8 +39,6 @@ type
     btnCheckFile: TButton;
     procedure cbCmdChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure btnOKClick(Sender: TObject);
     procedure edNameChange(Sender: TObject);
     procedure lvMacrosSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
@@ -52,12 +49,11 @@ type
     procedure edValueChange(Sender: TObject);
   strict private
     var
-      fMacros: TStringList;
-      fMacroDetails: TArray<TMacro>;
+      fMacroDefinitions: TArray<TMacros.TMacroDefinition>;
       fRelativeFilePath: string;
       fCurrentName: string;
-    function GetMacros: TStrings;
-    procedure SetMacros(Value: TStrings);
+    function GetMacros: TArray<TMacros.TMacroDefinition>;
+    procedure SetMacros(const AValue: TArray<TMacros.TMacroDefinition>);
     procedure ClearEditCtrls;
     procedure UpdateButtons;
     procedure DisplayMacros;
@@ -73,7 +69,8 @@ type
     function NormaliseFileName(const FileName: string): string;
     procedure DeSelectItem;
   public
-    property Macros: TStrings read GetMacros write SetMacros;
+    property Macros: TArray<TMacros.TMacroDefinition>
+      read GetMacros write SetMacros;
     property RelativeFilePath: string
       read fRelativeFilePath write fRelativeFilePath;
   end;
@@ -113,12 +110,12 @@ var
   Idx: Integer;
 begin
   GetMacroDetailsFromCtrls(Cmd, Name, Value);
-  SetLength(fMacroDetails, Length(fMacroDetails) + 1);
-  Idx := High(fMacroDetails);
-  if not TMacros.TryLookupMacroCmd(Cmd, fMacroDetails[Idx].Cmd) then
+  SetLength(fMacroDefinitions, Length(fMacroDefinitions) + 1);
+  Idx := High(fMacroDefinitions);
+  if not TMacros.TryLookupMacroCmd(Cmd, fMacroDefinitions[Idx].Cmd) then
     raise Exception.CreateFmt(BugInvalidCmd, [Cmd]);
-  fMacroDetails[Idx].Name := Name;
-  fMacroDetails[Idx].Value := Value;
+  fMacroDefinitions[Idx].Name := Name;
+  fMacroDefinitions[Idx].Value := Value;
   UpdateMacros(Idx);
 end;
 
@@ -175,16 +172,6 @@ begin
   DeSelectItem;
 end;
 
-procedure TMacroEditor.btnOKClick(Sender: TObject);
-var
-  MacroDefinition: TMacros.TMacroDefinition;
-begin
-  // Update macros from list view
-  fMacros.Clear;
-  for MacroDefinition in fMacroDetails do
-    fMacros.Add(TMacros.EncodeMacroDefinition(MacroDefinition));
-end;
-
 procedure TMacroEditor.btnValueClick(Sender: TObject);
 var
   OpenDlg: TOpenDialogEx;
@@ -226,8 +213,8 @@ begin
     Exit;
   // Copy macro details into edit controls
   SelectMacroCmd(LI.Caption);
-  edName.Text := fMacroDetails[LI.Index].Name;
-  edValue.Text := fMacroDetails[LI.Index].Value;
+  edName.Text := fMacroDefinitions[LI.Index].Name;
+  edValue.Text := fMacroDefinitions[LI.Index].Value;
 end;
 
 procedure TMacroEditor.DeleteMacroFromCtrls;
@@ -240,10 +227,10 @@ begin
   DelIdx := IndexOfMacroName(Name);
   if DelIdx = -1 then
     raise Exception.CreateFmt(BugDelete, [Name]);
-  for Idx := DelIdx to Pred(High(fMacroDetails)) do
-    fMacroDetails[Idx] := fMacroDetails[Idx + 1];
-  SetLength(fMacroDetails, Length(fMacroDetails) - 1);
-  if DelIdx > High(fMacroDetails) then
+  for Idx := DelIdx to Pred(High(fMacroDefinitions)) do
+    fMacroDefinitions[Idx] := fMacroDefinitions[Idx + 1];
+  SetLength(fMacroDefinitions, Length(fMacroDefinitions) - 1);
+  if DelIdx > High(fMacroDefinitions) then
     Dec(DelIdx);
   UpdateMacros(DelIdx);
 end;
@@ -262,7 +249,7 @@ begin
   lvMacros.Items.BeginUpdate;
   try
     lvMacros.Clear;
-    for Macro in fMacroDetails do
+    for Macro in fMacroDefinitions do
     begin
       LI := lvMacros.Items.Add;
       LI.Caption := TMacros.MacroCmds[Macro.Cmd];
@@ -297,15 +284,8 @@ var
 begin
   inherited;
   HelpTopic := 'dlg-macros';
-  fMacros := TStringList.Create;
   for CmdName in TMacros.MacroCmds do
     cbCmd.Items.Add(CmdName);
-end;
-
-procedure TMacroEditor.FormDestroy(Sender: TObject);
-begin
-  fMacros.Free;
-  inherited;
 end;
 
 procedure TMacroEditor.lvMacrosSelectItem(Sender: TObject; Item: TListItem;
@@ -347,9 +327,9 @@ begin
   Result := Trim(edName.Text);
 end;
 
-function TMacroEditor.GetMacros: TStrings;
+function TMacroEditor.GetMacros: TArray<TMacros.TMacroDefinition>;
 begin
-  Result := fMacros;
+  Result := fMacroDefinitions;
 end;
 
 function TMacroEditor.IndexOfMacroName(const Name: string): Integer;
@@ -357,8 +337,8 @@ var
   Idx: Integer;
 begin
   Result := -1;
-  for Idx := Low(fMacroDetails) to High(fMacroDetails) do
-    if SameText(Name, fMacroDetails[Idx].Name) then
+  for Idx := Low(fMacroDefinitions) to High(fMacroDefinitions) do
+    if SameText(Name, fMacroDefinitions[Idx].Name) then
       Exit(Idx);
 end;
 
@@ -377,13 +357,14 @@ begin
   end;
 end;
 
-procedure TMacroEditor.SetMacros(Value: TStrings);
+procedure TMacroEditor.SetMacros(
+  const AValue: TArray<TMacros.TMacroDefinition>);
+var
+  Idx: Integer;
 begin
-  if Assigned(Value) then
-    fMacros.Assign(Value)
-  else
-    fMacros.Clear;
-  fMacroDetails := TMacros.ParseMacroDefinitions(fMacros);
+  SetLength(fMacroDefinitions, Length(AValue));
+  for Idx := Low(AValue) to High(AValue) do
+    fMacroDefinitions[Idx] := AValue[Idx];
   DisplayMacros;
   UpdateButtons;
 end;
@@ -482,9 +463,9 @@ begin
   EditIdx := IndexOfMacroName(Name);
   if EditIdx = -1 then
     raise Exception.CreateFmt(BugUpdate, [Name]);
-  if not TMacros.TryLookupMacroCmd(Cmd, fMacroDetails[EditIdx].Cmd) then
+  if not TMacros.TryLookupMacroCmd(Cmd, fMacroDefinitions[EditIdx].Cmd) then
     raise Exception.CreateFmt(BugInvalidCmd, [Cmd]);
-  fMacroDetails[EditIdx].Value := Value;
+  fMacroDefinitions[EditIdx].Value := Value;
   UpdateMacros(EditIdx);
   lvMacros.ItemIndex := -1;
 end;

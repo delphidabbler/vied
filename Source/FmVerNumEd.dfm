@@ -32,7 +32,6 @@ inherited VerNumEditor: TVerNumEditor
       BevelEdges = [beTop]
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitTop = 19
       object lblV: TLabel
         Left = 0
         Top = 21
@@ -178,14 +177,13 @@ inherited VerNumEditor: TVerNumEditor
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitTop = 115
       object lblField: TLabel
         Left = 1
         Top = 85
         Width = 65
         Height = 13
         Caption = 'Insert Ma&cro:'
-        FocusControl = cmbField
+        FocusControl = cmbMacros
       end
       object lblMacros: TLabel
         Left = 1
@@ -206,23 +204,25 @@ inherited VerNumEditor: TVerNumEditor
           'as 1.2.3.4 or 1,2'
         WordWrap = True
       end
-      object cmbField: TComboBox
+      object cmbMacros: TComboBox
         Left = 1
         Top = 104
         Width = 160
         Height = 21
         Style = csDropDownList
         DropDownCount = 6
+        Enabled = False
         TabOrder = 1
       end
-      object btnInsert: TButton
+      object btnInsertMacro: TButton
         Left = 167
         Top = 100
         Width = 75
         Height = 25
         Caption = '&Insert'
+        Enabled = False
         TabOrder = 2
-        OnClick = btnInsertClick
+        OnClick = btnInsertMacroClick
       end
       object edMacros: TEdit
         Left = 1

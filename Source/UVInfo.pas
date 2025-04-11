@@ -200,6 +200,9 @@ type
       ///  statement.</summary>
       DefIdentifier = 'VERINFO';
 
+      ///  <summary>Character that separates a macro command from a macro name
+      ///  in a .vi file.</summary>
+      MacroCmdSep = ':';
   public
 
     ///  <summary>Object constructor.</summary>
@@ -589,8 +592,7 @@ begin
   // default .res file folder
   fResOutputDir := '';
   fVIFile.Clear;
-  fMacros.Clear;      // clears defined macros
-  fMacros.Resolve;    // clears resolved macros
+  fMacros.Clear; // clears all macros => no need to call TMacros.Resolve here
 end;
 
 procedure TVInfo.CopyToClipBoard;
@@ -636,7 +638,7 @@ var
 begin
   AExclusions := AExclusions + ExcludedStrInfoFields[StrInfoId];
   // Process macros in string info item
-  Result := fMacros.EvalResolvedMacros(StrInfoValue[StrInfoId]);
+  Result := fMacros.EvalResolvedMacroReferences(StrInfoValue[StrInfoId]);
   // Scan through all tokens, searching for each one in string turn
   for Token := Low(TFieldToken) to High(TFieldToken) do
   begin
@@ -665,7 +667,7 @@ function TVInfo.FieldValue(I: TFieldToken; AExclusions: TFieldTokenSet):
     Assert(FieldNum in [1..4]);
     // convert to version number
     // TODO: replace by call to RenderVersionNumberFromCode ?
-    VerNum := StrToVersionNumber(fMacros.EvalResolvedMacros(Code));
+    VerNum := StrToVersionNumber(fMacros.EvalResolvedMacroReferences(Code));
     // pick required field
     case FieldNum of
       1: FieldValue := VerNum.V1;
@@ -837,10 +839,19 @@ var
   VarDataSection: TVIDataSection;
   StrDataSection: TVIDataSection;
   Entry: TPair<string,string>;
+  MacroDef: TMacros.TMacroDefinition;
+  MacroKey, MacroCmdStr: string;
+  BaseFileName: string;
 resourcestring
+  sFileErrPrefix = 'Error in file %0:s:' + sLineBreak + sLineBreak;
   sUnknownFileVer = 'This .vi file''s format can''t be read by this version of '
     + 'VIEd - a later version is required.';
+  sBadMacroFmtErr = 'Malformed macro command "%1:s"';
+  sNoMacroCmdErr = 'Missing macro command in "%1:s"';
+  sNoMacroNameErr = 'Missing macro name in "%1:s"';
+  sBadMacroCmdErr = 'Invalid macro command in "%1:s"';
 begin
+  BaseFileName := TPath.GetFileName(FileName);
   // Read file & record format
   FileContent := fVIFile.Load(FileName);
   fIsUTF8EncodedFile := FileContent.IsUTF8;
@@ -860,13 +871,37 @@ begin
     ) > VIFileVersion then
     begin
       Clear;
-      raise Exception.Create(sUnknownFileVer);
+      raise Exception.CreateFmt(
+        sFileErrPrefix + sUnknownFileVer, [BaseFileName]
+      );
     end;
 
-    // Read macros
+    // Read and valid macros
     fMacros.Clear;
     for Entry in VIData.GetSection(dsMacros) do
-      fMacros.AddDefinition(Entry.Key + TMacros.MacroValueSep + Entry.Value);
+    begin
+      MacroKey := Entry.Key;
+      // Parse macro and check for errors
+      if not SplitStr(MacroKey, MacroCmdSep, MacroCmdStr, MacroDef.Name) then
+        raise Exception.CreateFmt(
+          sFileErrPrefix + sBadMacroFmtErr, [BaseFileName, MacroKey]
+        );
+      if MacroCmdStr = '' then
+        raise Exception.CreateFmt(
+          sFileErrPrefix + sNoMacroCmdErr, [BaseFileName, MacroKey]
+        );
+      if MacroDef.Name = '' then
+        raise Exception.CreateFmt(
+          sFileErrPrefix + sNoMacroNameErr, [BaseFileName, MacroKey]
+        );
+      if not TMacros.TryLookupMacroCmd(MacroCmdStr, MacroDef.Cmd) then
+        raise Exception.CreateFmt(
+          sFileErrPrefix + sBadMacroCmdErr, [BaseFileName, MacroKey]
+        );
+
+      MacroDef.Value := Entry.Value;
+      fMacros.AddDefinition(MacroDef);
+    end;
     fMacros.Resolve;
 
     // Read FFI
@@ -935,19 +970,20 @@ end;
 function TVInfo.RenderVersionNumberFromCode(const Code: string):
   TPJVersionNumber;
 begin
-  Result := StrToVersionNumber(fMacros.EvalResolvedMacros(Code));
+  Result := StrToVersionNumber(fMacros.EvalResolvedMacroReferences(Code));
 end;
 
 procedure TVInfo.SaveToFile(const FileName: string);
 var
   I: TStrInfoId;
   J: Integer;
-  M: Integer;
+  MacroDefinition: TMacros.TMacroDefinition;
   FileNameChanged: Boolean;
   VIData: TVIData;
   FFIData: TVIDataSection;
   VarData: TVIDataSection;
   CfgData: TVIDataSection;
+  MacroFullName: string;
 begin
   FileNameChanged := not SameText(fVIFile.Name, FileName);
 
@@ -956,10 +992,12 @@ begin
     VIData.SetComments(fVIComments);
 
     // Write macros
-    for M := 0 to Pred(fMacros.MacroDefinitions.Count) do
+    for MacroDefinition in fMacros.MacroDefinitions do
     begin
+      MacroFullName := TMacros.MacroCmds[MacroDefinition.Cmd]
+        + MacroCmdSep + MacroDefinition.Name;
       VIData.GetSection(dsMacros).AddOrSetValue(
-        fMacros.GetMacroDefinitionKVPair(M)
+        MacroFullName, MacroDefinition.Value
       );
     end;
 
@@ -1122,6 +1160,7 @@ procedure TVInfo.ValidStrInfoFields(const Id: TStrInfoId;
   const SL: TStringList);
 var
   I: TFieldToken;
+  MacroReference: string;
 begin
   // Clear the list
   SL.Clear;
@@ -1131,9 +1170,8 @@ begin
       SL.Add(Fields[I]);
   SL.Sort;
   // Add macros
-  {TODO: Loop through macros returned by fMacros.GetResolvedMacros instead of
-          calling ListResolvedMacroNames }
-  fMacros.ListResolvedMacroNames(SL);
+  for MacroReference in fMacros.GetResolvedMacroReferences do
+    SL.Add(MacroReference);
 end;
 
 procedure TVInfo.WriteRCSource(const SL: TStringList);

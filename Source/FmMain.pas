@@ -896,8 +896,8 @@ begin
   end;
 end;
 
-function TMainForm.GetVersionNumber(const VKind: string;
-  const Current: string): string;
+function TMainForm.GetVersionNumber(const VKind: string; const Current: string):
+  string;
   {Gets a version number from user via a dialog box
     @param VKind [in] Type of version information required.
     @param Value [in] Default version number. Used if user cancels.
@@ -906,18 +906,18 @@ function TMainForm.GetVersionNumber(const VKind: string;
 var
   Ed: TVerNumEditor;  // instance of version number editor dlg box
   Macros: TStringList;
+  MacroReference: string;
 begin
   Macros := nil;
   Ed := TVerNumEditor.Create(Self);
   try
     Macros := TStringList.Create;
-    { TODO: change Ed.ValidMacros to take TArray<TResolvedMacro>, which is the
-            return value of fVerInfo.Macros.GetResolvedMacros }
-    fVerInfo.Macros.ListResolvedMacroNames(Macros);
     // Set required properties
-    Ed.Kind := VKind;               // info for title
+    Ed.Kind := VKind;                     // info for title
     Ed.VersionNumberCode := Current;      // default version number for editing
-    Ed.ValidMacros := Macros;
+    // Add available macro names
+    for MacroReference in fVerInfo.Macros.GetResolvedMacroReferences do
+      Ed.AddMacroName(MacroReference);
     // Display dlg and respond to user input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return new version number (will be unchanged if user pressed cancel)
@@ -1463,7 +1463,7 @@ begin
   Ed := TMacroEditor.Create(Self);
   try
     Ed.Macros := fVerInfo.Macros.MacroDefinitions;
-    Ed.RelativeFilePath := fVerInfo.Macros.RelativeMacroFilePath;
+    Ed.RelativeFilePath := fVerInfo.Macros.RelativeMacroFileDirectory;
     if Ed.ShowModal = mrOK then
     begin
       fVerInfo.Macros.MacroDefinitions := Ed.Macros;
@@ -1925,7 +1925,7 @@ begin
     // Load input file
     try
       fVerInfo.LoadFromFile(InFile);
-      if fVerInfo.Macros.HasBadMacroFileReferences then
+      if fVerInfo.Macros.HasBadMacroDefinitionFileRefs then
       begin
         ExitCode := 4;
         Exit;
