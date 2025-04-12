@@ -6,7 +6,7 @@ Version Information Editor enables version information to be edited. It also cre
 
 The program can also create binary resource (`.res`) files containing version information. To do this it needs to be configured to use a 3rd party resource compiler such as Embarcadero's BRCC32.
 
-A command line switch, `-makerc`, is supported that silently creates a `.rc` file from a native `.vi` file passed on the command line. The program them exits without displaying a window. This option has been made available so that Version Information Editor can be used in automated build processes.
+The program supports some command line options. For details see the help file's [_Command Line Options_](https://htmlpreview.github.io/?https://github.com/delphidabbler/vied/blob/master/Source/Help/HTML/cmdline.htm) topic.  
 
 ## System Requirements
 
@@ -40,7 +40,7 @@ Information on how to install the program is in `Docs/ReadMe.txt`.
 
 The change log is in `CHANGELOG.md` in the repository root.
 
-The program's .vi file format is documented in `Docs/vi-file-format.md`.
+The program's `.vi` file format is documented in `Docs/vi-file-format.md`.
 
 Finally, the program has a Web page at <https://delphidabbler.com/software/vied>.
 

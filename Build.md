@@ -34,7 +34,7 @@ Tools marked with an asterisk are required when compiling from the IDE: compiles
 | Delphi XE | Later Delphi compilers may be suitable, but none have been tested. |
 | MSBuild | This tool is installed with Delphi. Used directly by `Deploy.bat` to build _VIEd_. |
 | BRCC32 * | This tool is installed with Delphi. Used in pre-build events to create `.res` files from custom `.rc` files. |
-| Version Information Editor * † | v2.15.1 or later is required. Used in pre-build events to create an resource source file containing version information from `.vi` files. [Download here](https://github.com/delphidabbler/vied/releases). |
+| Version Information Editor * † | v2.15.1 or later is required. Used in pre-build events to create a resource source file containing version information from `.vi` files. [Download here](https://github.com/delphidabbler/vied/releases). |
 | HHC | This tool is the command line compiler supplied with Microsoft HTML Help Workshop. Used in `Deploy.bat` to compile the help file. |
 | Inno Setup | v5.6.1 or later Unicode version (not v6). Used by `Deploy.bat` to create the installer. [Download here](https://www.innosetup.com/). |
 | InfoZip's Zip tool | Used by `Deploy.bat` to create the release zip file. [Download here](https://delphidabbler.com/extras/info-zip). |
@@ -44,9 +44,9 @@ Tools marked with an asterisk are required when compiling from the IDE: compiles
 
 ### Environment Variables
 
-The following environment variables must be set to build _VIEd_
+The following environment variables must be set to build _VIEd_.
 
-Environment variables marked with an asterisk are required when compiling from the IDE: compiles will fail if they are not set correctly. Such variables can be set using Delphi's _Tools | Options_ menu, going to the _Environment Variables_ page then creating the variable in _User System Overrides_ section.
+Environment variables marked with an asterisk are required when compiling from the IDE: compiles will fail if they are not set correctly. Such variables can be set using Delphi's _Tools | Options_ menu, going to the _Environment Variables_ page then creating the variables in the _User System Overrides_ section.
 
 All environment variables are required when creating releases using `Deploy.bat` or when compiling the help file by hand.
 
@@ -82,21 +82,21 @@ After obtaining the source code you should have the following directory structur
 </p>
 
 ```text
-/-+
+/-+                         - sundry files
   |
   +-- .git                  - present only if using git
   |
   +-- Docs                  - documentation
   |
   +-- Source                - source code
-  |   |
-  |   +-- Assets            - various files to include in resources
-  |
-  +-- Help                  - help file source code
       |
-      +-- CSS               - style sheet for help HTML files
+      +-- Assets            - various files to include in resources
       |
-      +-- HTML              - HTML help topic files
+      +-- Help              - help file source code
+          |
+          +-- CSS           - style sheet for help HTML files
+          |
+          +-- HTML          - HTML help topic files
 ```
 
 Before compiling remember to install the required [libraries & components](#libraries--components).
@@ -110,7 +110,7 @@ Simply open the `.dproj` file in Delphi and compile. Providing the [prerequisite
 All compiler output is placed in a `_build` directory. This directory is ignored by Git. You can build either the Debug or Release build configurations, or both. Compiling both configurations results in the following directory tree being created:
 
 ```text
-/-+
+/-+                         - sundry files
   |
   +-- .git                  - present only if using git
   |
@@ -185,7 +185,7 @@ The release version information extracted in step 2 is used as the setup program
 The release zip file is placed in the `release` sub-directory of `_build`:
 
 ```text
-/-+
+/-+                         - sundry files
   ⁞
   +-- _build                - top level build directory
   |   |

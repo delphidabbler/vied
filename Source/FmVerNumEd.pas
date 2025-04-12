@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2024, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Version number editor dialogue box.
 }
@@ -47,8 +47,8 @@ type
     lblPrompt: TLabel;
     pnlMacros: TPanel;
     lblField: TLabel;
-    cmbField: TComboBox;
-    btnInsert: TButton;
+    cmbMacros: TComboBox;
+    btnInsertMacro: TButton;
     lblMacros: TLabel;
     edMacros: TEdit;
     pnlRadios: TPanel;
@@ -65,7 +65,7 @@ type
     procedure btnPlus1V4Click(Sender: TObject);
     procedure EntryTypeRadioBtnClick(Sender: TObject);
     procedure edMacrosChange(Sender: TObject);
-    procedure btnInsertClick(Sender: TObject);
+    procedure btnInsertMacroClick(Sender: TObject);
   private
     fKind: string;
     fVersionNumberCode: string;
@@ -74,9 +74,8 @@ type
     procedure UpdateVerNumControls;
     function AreMacrosValid: Boolean;
     function VerNumControlsToVerNum: string;
+    procedure EnableMacroControls;
     function IsMacroInUse(const Text: string): Boolean;
-    function GetValidMacros: TStrings;
-    procedure SetValidMacros(Macros: TStrings);
   strict protected
     procedure ArrangeControls; override;
   public
@@ -86,7 +85,7 @@ type
         write fVersionNumberCode;
       {The version number to be edited, along with result}
     ///  <summary>List of valid macros for use in Macros combo box.</summary>
-    property ValidMacros: TStrings read GetValidMacros write SetValidMacros;
+    procedure AddMacroName(const AName: string);
   end;
 
 implementation
@@ -98,6 +97,12 @@ uses
   UMsgDlgs, UMAcros, UVerUtils, UVInfo;
 
 {$R *.DFM}
+
+procedure TVerNumEditor.AddMacroName(const AName: string);
+begin
+  EnableMacroControls;
+  cmbMacros.Items.Add(AName);
+end;
 
 function TVerNumEditor.AreMacrosValid: Boolean;
 var
@@ -127,7 +132,7 @@ begin
     // Record field in Tok
     Tok := Copy(Str, Posn, Stop - Posn + 1);
     // Find if macro is in macro combo box - it's valid if it is
-    if cmbField.Items.IndexOf(Tok) = -1 then
+    if cmbMacros.Items.IndexOf(Tok) = -1 then
     begin
       // Error - token not in combo box: highlight error and return false
       Result := False;
@@ -152,7 +157,7 @@ begin
   inherited;
 end;
 
-procedure TVerNumEditor.btnInsertClick(Sender: TObject);
+procedure TVerNumEditor.btnInsertMacroClick(Sender: TObject);
 var
   TheText: string;  // text of the memo
   Start: Integer;   // current position of the text cursor in memo
@@ -165,13 +170,13 @@ begin
   if edMacros.SelLength > 0 then
     Delete(TheText, Start+1, edMacros.SelLength);
   // Add field at current position in text
-  Insert(cmbField.Text, TheText, Start+1);
+  Insert(cmbMacros.Text, TheText, Start+1);
   // Copy revised text to memo, preserving caret position
   edMacros.Text := TheText;
   // Give the memo the focus for further editing
   edMacros.SetFocus;
   edMacros.SelLength := 0;
-  edMacros.SelStart := Start + Length(cmbField.Text);
+  edMacros.SelStart := Start + Length(cmbMacros.Text);
 end;
 
 procedure TVerNumEditor.btnOKClick(Sender: TObject);
@@ -259,21 +264,15 @@ begin
   UpdateEntryPanes;
 end;
 
-function TVerNumEditor.GetValidMacros: TStrings;
-begin
-  Result := cmbField.Items;
-end;
-
 function TVerNumEditor.IsMacroInUse(const Text: string): Boolean;
 begin
   Result := TMacros.ContainsMacro(Text);
 end;
 
-procedure TVerNumEditor.SetValidMacros(Macros: TStrings);
+procedure TVerNumEditor.EnableMacroControls;
 begin
-  cmbField.Enabled := Assigned(Macros);
-  if cmbField.Enabled then
-    cmbField.Items := Macros;
+  btnInsertMacro.Enabled := True;
+  cmbMacros.Enabled := True;
 end;
 
 procedure TVerNumEditor.EntryTypeRadioBtnClick(Sender: TObject);

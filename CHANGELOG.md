@@ -1,6 +1,22 @@
 # Change Log for Version Information Editor
 
-## v2.16.0 of 12 September 2024
+## v2.17.0 of 12 April 2025
+
+* Added a new `-open` command line option that starts the GUI with a specified `.vi` file pre-loaded [issue #79].
+* Replaced the basic _View Macros_ dialogue box with a new, improved, version [issue #83].
+* Improved the handling of macros in the _Version Number Editor_ dialogue box.
+* Major refactoring of the `UVInfo` version information management unit [issue #88]
+* Major overhaul and refactoring of the `UMacros` macro management unit [issues #80 & #90].
+* Updated the delphidabbler.com web address in the install script [issue #89].
+* Updated documentation:
+  * Rewrote the overview section of `README.md` re command line changes and fixed some minor errors.
+  * Corrected errors in `CHANGELOG.md` [issues #86 & #87].
+  * Minor edits to `Docs/vi-file-format.md`.
+  * Fixed errors in `Build.md`.
+  * Help file updated re the revised _View Macros_ dialogue box and the `-open` command line option.
+* Bumped copyright dates.
+
+## v2.16.0 of 13 September 2024
 
 * Added new _Env_ macro type that makes environment variable values available for use in .vi files [issue #67].
 * Added new `-E` command line parameter that can define a new variable available to _Env_ macros, or can overwrite an existing environment variable value [issue #67]. 
@@ -25,7 +41,7 @@
 
 ## v2.15.1 of 02 June 2023
 
-* Fixed bug in macros that get their values from external files where macro values were being updated when the content of the external files was changed [issue #63].
+* Fixed bug in macros that get their values from external files where macro values were not being updated when the content of the external files was changed [issue #63].
 * Fixed bug in `<SHORTFNAME>` field where file names containing more than one dot were not being shortened correctly [issue #62].
 * Documentation:
   * Updated copyright date in license help topic [issue #61].

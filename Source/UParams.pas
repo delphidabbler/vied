@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2024, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2024-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Implements a static class that processes the program's command line.
 }
@@ -21,32 +21,22 @@ uses
 (*
   Possible command lines:
 
-    1) deffilepath {-env:EnvName=EnvValue}
-    2) -makerc vifilename [rcfilename] {-env:EnvName=EnvValue}
-    3) {-env:EnvName=EnvValue}
+    1) deffilepath {-E:EnvName=EnvValue}
+    2) -makerc vifilename [rcfilename] {-E:EnvName=EnvValue}
+    3) -open vifilename {-E:EnvName=EnvValue}
+    4) {-E:EnvName=EnvValue}
 
-  where {-env:EnvName=EnvValue} is zero or more iterations of
-  -env:EnvName=EnvValue
+  where {-E:EnvName=EnvValue} is zero or more iterations of -E:EnvName=EnvValue
 
   Command line can also be empty
 
-  Logic:
-
-  if param count = 0 then exit
-
-  if 1st param is -makerc then
-    store that we're
-    if 2nd second param is a file name then
-      store
-    2nd parameter must be a file name: store as vifilename
-    if 3rd parameter is a file name then store as rcfilename
 *)
 
 type
   TParams = class(TObject)
   public
     type
-      TMode = (Normal, MakeRC);
+      TMode = (Normal, MakeRC, OpenVI);
   strict private
     class var
       fMode: TMode;
@@ -54,7 +44,10 @@ type
       fRCFileName: string;
       fFileDlgInitialDir: string;
       fEnvVars: TMutableEnvVars;
+    class function IsCmdParam(const AParamIdx: Integer): Boolean;
     class procedure ParseEnvironmentCommand(const Cmd: string);
+    class procedure ParseMakeRCCommandParams(var CmdIdx: Integer);
+    class procedure ParseOpenCommandParams(var CmdIdx: Integer);
   public
     class constructor Create;
     class destructor Destroy;
@@ -90,14 +83,13 @@ begin
   inherited;
 end;
 
+class function TParams.IsCmdParam(const AParamIdx: Integer): Boolean;
+begin
+  Assert(Length(ParamStr(AParamIdx)) >= 1);
+  Result := ParamStr(AParamIdx)[1] = '-';
+end;
+
 class procedure TParams.ParseCommandLine;
-
-  function IsCmdParam(const AParamIdx: Integer): Boolean;
-  begin
-    Assert(Length(ParamStr(AParamIdx)) >= 1);
-    Result := ParamStr(AParamIdx)[1] = '-';
-  end;
-
 var
   I: Integer;
   CurrentCmdIdx: Integer;
@@ -107,7 +99,7 @@ begin
   CurrentCmdIdx := 1;
   if not IsCmdParam(CurrentCmdIdx) then
   begin
-    // 1st param not a command: intial file dlg directory is 1st parameter
+    // 1st param not a command: it MUST be intial file dlg directory
     fFileDlgInitialDir := ParamStr(CurrentCmdIdx);
     Inc(CurrentCmdIdx);;
   end
@@ -115,18 +107,13 @@ begin
   begin
     // 1st param is the -makerc command
     fMode := TMode.MakeRC;
-    Inc(CurrentCmdIdx);
-    // 2nd command MUST be VI file name
-    if IsCmdParam(CurrentCmdIdx) then
-      raise Exception.Create('.vi file name expected after -makerc command');
-    fVIFileName := ParamStr(CurrentCmdIdx);
-    Inc(CurrentCmdIdx);
-    // 3rd command MAY be RC file name
-    if (ParamStr(CurrentCmdIdx) <> '') and not IsCmdParam(CurrentCmdIdx) then
-    begin
-      fRCFileName := ParamStr(CurrentCmdIdx);
-      Inc(CurrentCmdIdx);
-    end;
+    ParseMakeRCCommandParams(CurrentCmdIdx);
+  end
+  else if ParamStr(CurrentCmdIdx) = '-open' then
+  begin
+    // 1st param is the -opem command
+    fMode := TMode.OpenVI;
+    ParseOpenCommandParams(CurrentCmdIdx);
   end;
   // Remainder of command line MUST be commands
   for I := CurrentCmdIdx to ParamCount do
@@ -158,6 +145,32 @@ begin
   // Add defined variable to dictionary, overwriting any existing environment
   // variable with the same name
   fEnvVars.AddOrSet(TEnvironmentVar.Create(EnvVarName, EnvVarValue));
+end;
+
+class procedure TParams.ParseMakeRCCommandParams(var CmdIdx: Integer);
+begin
+  // jump to next parameter after the command, which MUST be VI file name
+  Inc(CmdIdx);
+  if IsCmdParam(CmdIdx) then
+    raise Exception.Create('.vi file name expected after -makerc command');
+  fVIFileName := ParamStr(CmdIdx);
+  // next parameter MAY be RC file name
+  Inc(CmdIdx);
+  if (ParamStr(CmdIdx) <> '') and not IsCmdParam(CmdIdx) then
+  begin
+    fRCFileName := ParamStr(CmdIdx);
+    Inc(CmdIdx);
+  end;
+end;
+
+class procedure TParams.ParseOpenCommandParams(var CmdIdx: Integer);
+begin
+  // jump to next parameter after the command, which MUST be VI file name
+  Inc(CmdIdx);
+  if IsCmdParam(CmdIdx) then
+    raise Exception.Create('.vi file name expected after -open command');
+  fVIFileName := ParamStr(CmdIdx);
+  Inc(CmdIdx);
 end;
 
 end.

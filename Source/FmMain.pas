@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 1998-2024, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 1998-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Main user interface and program logic for Version Information Editor.
 }
@@ -322,7 +322,7 @@ uses
   UParams,
   FmDropDownListEd, FmFileEncoding, FmIdEd, FmNumberEd, FmResCompiler,
   FmResCompilerCheck, FmSetEd, FmStringEd, FmUserSetup, FmViewList, FmVerNumEd,
-  FmResOutputDir, FmMacroEd;
+  FmResOutputDir, FmMacroEd, FmViewMacros;
 
 {$R *.DFM}
 
@@ -713,25 +713,28 @@ begin
   // Emulate File | New menu click to get new file using preferences
   MFNewClick(Self);
   // Process command line
-  // Set initial dir of Open, Export and Save As dialog boxes to first parameter
-  // unless param is -makerc
-  {TODO: Change parameter processing to allow for -D options}
   TParams.ParseCommandLine;
   case TParams.Mode of
     TParams.TMode.Normal:
     begin
+      // 1st parameter is a directory: set initial dir of Open, Export and Save
+      // As dialog boxes to that directory
       fOpenDlg.InitialDir := TParams.FileDlgInitialDir;
       fSaveDlg.InitialDir := TParams.FileDlgInitialDir;
       fExportDlg.InitialDir := TParams.FileDlgInitialDir;
     end;
     TParams.TMode.MakeRC:
     begin
+      // -makerc command: silently render a given .vi file as .rc file
       // prevent window from showing
       Application.ShowMainForm := False;
       // post message that processes file and closes window (can't close in
       // FormCreate)
       PostMessage(Handle, MSG_SILENT, 0, 0);
     end;
+    TParams.TMode.OpenVI:
+      // -open command: open a given .vi file
+      OpenFile(TParams.VIFileName);
   end;
 end;
 
@@ -896,8 +899,8 @@ begin
   end;
 end;
 
-function TMainForm.GetVersionNumber(const VKind: string;
-  const Current: string): string;
+function TMainForm.GetVersionNumber(const VKind: string; const Current: string):
+  string;
   {Gets a version number from user via a dialog box
     @param VKind [in] Type of version information required.
     @param Value [in] Default version number. Used if user cancels.
@@ -906,16 +909,18 @@ function TMainForm.GetVersionNumber(const VKind: string;
 var
   Ed: TVerNumEditor;  // instance of version number editor dlg box
   Macros: TStringList;
+  MacroReference: string;
 begin
   Macros := nil;
   Ed := TVerNumEditor.Create(Self);
   try
     Macros := TStringList.Create;
-    fVerInfo.Macros.ListResolvedNames(Macros);
     // Set required properties
-    Ed.Kind := VKind;               // info for title
+    Ed.Kind := VKind;                     // info for title
     Ed.VersionNumberCode := Current;      // default version number for editing
-    Ed.ValidMacros := Macros;
+    // Add available macro names
+    for MacroReference in fVerInfo.Macros.GetResolvedMacroReferences do
+      Ed.AddMacroName(MacroReference);
     // Display dlg and respond to user input: order of tests is significant
     fChanged := (Ed.ShowModal = mrOK) or fChanged;
     // Return new version number (will be unchanged if user pressed cancel)
@@ -958,9 +963,9 @@ procedure TMainForm.Init;
   end;
 
 
-  procedure AddStringItem(StrInfoId: TStrInfo);
+  procedure AddStringItem(StrInfoId: TStrInfoId);
 
-    function CreateEditProc(StrInfoId: TStrInfo): TVIItemUpdateCallback;
+    function CreateEditProc(StrInfoId: TStrInfoId): TVIItemUpdateCallback;
     begin
       Result := procedure(const VI: TVInfo)
       var
@@ -969,49 +974,49 @@ procedure TMainForm.Init;
         StrList := TStringList.Create;
         try
           // build list of valid fields for the item
-          VI.ValidFields(StrInfoId, StrList);
+          VI.ValidStrInfoFields(StrInfoId, StrList);
           // decide if we can enter a string
           //   only if we're not validating *or*
           //   we are validating and string is permitted
-          if (not VI.Validating) or VI.StrPermitted[StrInfoId] then
-            VI.StrInfo[StrInfoId] := GetString(
-              VI.StrDesc[StrInfoId],
-              VI.StrInfo[StrInfoId],
-              VI.StrRequired[StrInfoId] and VI.Validating,
+          if (not VI.Validating) or VI.IsStrInfoItemPermitted(StrInfoId) then
+            VI.StrInfoValue[StrInfoId] := GetString(
+              VI.StrInfoDesc[StrInfoId],
+              VI.StrInfoValue[StrInfoId],
+              VI.IsStrInfoItemRequired(StrInfoId) and VI.Validating,
               StrList
             )
-          else if VI.StrInfo[StrInfoId] = '' then
+          else if VI.StrInfoValue[StrInfoId] = '' then
             // string not permitted and there is no string - prevent edit
-            MsgNeedFileFlag(VI.StrDesc[StrInfoId])
-          else if MsgDeleteInvalidText(VI.StrDesc[StrInfoId]) then
+            MsgNeedFileFlag(VI.StrInfoDesc[StrInfoId])
+          else if MsgDeleteInvalidText(VI.StrInfoDesc[StrInfoId]) then
             // string not permitted, there is a value, user accepts deletion
-            VI.StrInfo[StrInfoId] := '';
+            VI.StrInfoValue[StrInfoId] := '';
         finally
           StrList.Free;
         end;
       end
     end;
 
-    function CreateDeleteProc(StrInfoId: TStrInfo): TVIItemUpdateCallback;
+    function CreateDeleteProc(StrInfoId: TStrInfoId): TVIItemUpdateCallback;
     begin
       Result := procedure(const VI: TVInfo)
       begin
-        VI.StrInfo[StrInfoId] := TVInfo.DefString;
+        VI.StrInfoValue[StrInfoId] := TVInfo.DefStringInfoValue;
       end
     end;
 
-    function CreateDisplayProc(StrInfoId: TStrInfo): TVIItemRenderCallback;
+    function CreateDisplayProc(StrInfoId: TStrInfoId): TVIItemRenderCallback;
     begin
       Result := function(const VI: TVInfo): string
       begin
-        Result := VI.StrInfo[StrInfoId];
+        Result := VI.StrInfoValue[StrInfoId];
       end
     end;
 
   begin
     AddItem(
       lvgiStringInfo,
-      fVerInfo.StrDesc[StrInfoId],
+      fVerInfo.StrInfoDesc[StrInfoId],
       CreateEditProc(StrInfoId),
       CreateDeleteProc(StrInfoId),
       CreateDisplayProc(StrInfoId)
@@ -1019,7 +1024,7 @@ procedure TMainForm.Init;
   end;
 
 var
-  I: TStrInfo;  // loop control for string info
+  I: TStrInfoId;  // loop control for string info
 resourcestring
   sFileVersion = 'File Version #';
   sProductVersion = 'Product Version #';
@@ -1353,7 +1358,7 @@ begin
       end
     );
     // Add String info to list
-    for I := Low(TStrInfo) to High(TStrInfo) do
+    for I := Low(TStrInfoId) to High(TStrInfoId) do
       AddStringItem(I);
   finally
     DisplayListView.Items.EndUpdate;
@@ -1460,13 +1465,14 @@ resourcestring
 begin
   Ed := TMacroEditor.Create(Self);
   try
-    Ed.Macros := fVerInfo.Macros.Macros;
-    Ed.RelativeFilePath := fVerInfo.Macros.RelativeMacroFilePath;
+    Ed.Macros := fVerInfo.Macros.MacroDefinitions;
+    Ed.RelativeFilePath := fVerInfo.Macros.RelativeMacroFileDirectory;
     if Ed.ShowModal = mrOK then
     begin
-      fVerInfo.Macros.Macros := Ed.Macros;
+      fVerInfo.Macros.MacroDefinitions := Ed.Macros;
       fChanged := True;
-      if not fVerInfo.HasBeenSaved and (fVerInfo.Macros.Count > 0) then
+      if not fVerInfo.HasBeenSaved
+        and (fVerInfo.Macros.DefinitionCount > 0) then
         Display(sMacrosNotAvailable, mtWarning, [mbOK]);
     end;
   finally
@@ -1742,112 +1748,16 @@ begin
 end;
 
 procedure TMainForm.MFViewMacrosClick(Sender: TObject);
-var
-  DBox: TViewListDlg;             // dialogue box instance
-  Report: TStringList;            // report to be displayed in dialogue box
-  ResMacro: TMacros.TResolvedMacro;
-  ResMacros: TArray<TMacros.TResolvedMacro>;
-  NameColWidth: Integer;
-  ValueColWidth: Integer;
-  Ruling: string;
-  BadFileMacros: TArray<TMacros.TMacro>;
-  BadFileMacro: TMacros.TMacro;
 resourcestring
   sNoMacros = 'No macros defined';
   sNotSaved = '** Macros not available until the file has been saved';
-  sResolvedMacroFmt = '%0:s = "%1:s"';
-  sNameColHeader = 'Name';
-  sValueColHeader = 'Value';
-  sBadFilesPrefix = '!! Warning !!'#13#10#13#10
-    + 'The externally referenced files listed below '#13#10
-    + 'cannot be found:'#13#10;
-  sBadFilesSuffix = 'This means that the macros are either incomplete'#13#10
-    + 'or are wrong.'#13#10#13#10
-    + 'You can edit the macros using the Edit | Macros'#13#10
-    + 'menu option.';
-
-const
-  ColumnFmt = '| %-*s | %-*s |';  // do not localise
-
-  { TODO: This is quick and dirty code - it really needs pulling out into a
-          separate form unit
-  }
-
 begin
-  // Create report
-  Report := TStringList.Create;
-  try
-    if fVerInfo.Macros.Count = 0 then
-      Report.Add(sNoMacros)
-    else if not fVerInfo.HasBeenSaved then
-      Report.Add(sNotSaved)
-    else
-    begin
-      // Re-read any changed macro values from external files and get array of
-      // them
-      fVerInfo.Macros.Resolve;
-      ResMacros := fVerInfo.Macros.GetAllResolved;
-
-      // Calculate width of table columns & rulings required
-      NameColWidth := Length(sNameColHeader);
-      ValueColWidth := Length(sValueColheader);
-      for ResMacro in ResMacros do
-      begin
-        NameColWidth := Max(Length(ResMacro.Macro), NameColWidth);
-        ValueColWidth := Max(Length(ResMacro.Value), ValueColWidth);
-      end;
-      Ruling := '|' + StringOfChar('-', NameColWidth + 2) + '|'
-        + StringOfChar('-', ValueColWidth + 2) + '|';
-
-      // Add table header
-      Report.Add(
-        Format(
-          ColumnFmt,
-          [NameColWidth, sNameColHeader, ValueColWidth, sValueColHeader]
-        )
-      );
-      Report.Add(Ruling);
-
-      // Add details of resolved macros
-      for ResMacro in ResMacros do
-      begin
-        Report.Add(
-          Format(
-            ColumnFmt,
-            [NameColWidth, ResMacro.Macro, ValueColWidth, ResMacro.Value]
-          )
-        );
-      end;
-
-      // Add table footer
-      Report.Add(Ruling);
-    end;
-
-    // Get list of invalid file references in macros
-    BadFileMacros := fVerInfo.Macros.GetInvalidFileMacros;
-    if Length(BadFileMacros) > 0 then
-    begin
-      Report.Add('');
-      Report.Add(sBadFilesPrefix);
-      for BadFileMacro in BadFileMacros do
-        Report.Add('  • ' + BadFileMacro.Value);
-      Report.Add('');
-      Report.Add(sBadFilesSuffix);
-    end;
-
-    // Display report in dialogue box
-    DBox := TViewListDlg.Create(Self);
-    try
-      DBox.List := Report;
-      DBox.Title := sViewResMacrosTitle;
-      DBox.HelpTopic := 'dlg-viewmacros';
-      DBox.ShowModal;
-    finally
-      DBox.Free;
-    end;
-  finally
-    Report.Free;
-  end;
+  if fVerInfo.Macros.DefinitionCount = 0 then
+    MessageDlg(sNoMacros, mtInformation, [mbOK], 0)
+  else if not fVerInfo.HasBeenSaved then
+    MessageDlg(sNotSaved, mtWarning, [mbOK], 0)
+  else
+    TViewMacrosDlg.Show(Self, fVerInfo.Macros);
 end;
 
 procedure TMainForm.MFViewRCClick(Sender: TObject);
@@ -1864,7 +1774,7 @@ begin
     DBox := TViewListDlg.Create(Self);
     try
       // Get the list of recource file statements and copy to dialogue box
-      fVerInfo.WriteASRC(List);
+      fVerInfo.WriteRCSource(List);
       DBox.List := List;
       // Set the dlg box's caption and description
       DBox.Title := sViewRCTitle;
@@ -2018,7 +1928,7 @@ begin
     // Load input file
     try
       fVerInfo.LoadFromFile(InFile);
-      if fVerInfo.Macros.HasBadMacroFileReferences then
+      if fVerInfo.Macros.HasBadMacroDefinitionFileRefs then
       begin
         ExitCode := 4;
         Exit;

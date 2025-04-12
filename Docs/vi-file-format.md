@@ -1,4 +1,4 @@
-# Version Information Editor .vi File Format
+# Version Information Editor (VIEd) .vi File Format
 
 ## Contents
 
@@ -38,11 +38,11 @@ Comments are permitted in .vi files. They must occupy a line on their own and mu
 
 Blank lines can appear anywhere in a .vi file.
 
-> Note that VIEd remembers any comments it finds at the start of the file and will write those comments again when it save the file. However all other comments will be lost. VIEd outputs a blank line before each section.
+> Note that VIEd remembers any comments it finds at the start of the file and will write those comments again when it saves the file. However all other comments will be lost. VIEd outputs a blank line before each section.
 
 ## File Data Structure
 
-The .vi format is similar to the Windows .ini file format in that the file is in plain text and comprises various key/value pairs divided into named sections.
+The .vi format is similar to the .ini file format in that the file is in plain text and comprises various key/value pairs divided into named sections.
 
 The following rules apply:
 
@@ -154,7 +154,7 @@ Valid keys and their values are described in the following table:
 | `Product Version` | _string_ | Version of the product with which the executable file is distributed. | _empty_ | Yes, except for `<PRODUCTVERSION>`† | Yes | Required ‡. Does not _have_ to be related to the version number specified in the `Product Version #` value from the `[Fixed File Info]` section, but this is advised.  |
 | `Special Build` | _string_ | Information about how a special build of the executable file differs from the standard version. | empty | Yes, except for `<SPECIALBUILD>`† | Yes | This value should be present only if the value of the `VS_FF_SPECIALBUILD` constant (`32`) is included in the `File Flags` bitmask in the `[Fixed File Info]` section. |
 
-For further details of the purpose and example use of the keys in this section see the _string-name_ parameter description in Microsoft's [StringFileInfo BLOCK](https://learn.microsoft.com/en-us/windows/win32/menurc/stringfileinfo-block) documentation.
+For further details of the purpose of the keys in this section see the _string-name_ parameter description in Microsoft's [StringFileInfo BLOCK](https://learn.microsoft.com/en-us/windows/win32/menurc/stringfileinfo-block) documentation.
 
 This section _may_ be omitted if all the keys have _empty_ values. 
 
