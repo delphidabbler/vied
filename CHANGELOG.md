@@ -1,5 +1,21 @@
 # Change Log for Version Information Editor
 
+## v2.17.0 of 12 April 2025
+
+* Added a new `-open` command line option that starts the GUI with a specified `.vi` file pre-loaded [issue #79].
+* Replaced the basic _View Macros_ dialogue box with a new, improved, version [issue #83].
+* Improved the handling of macros in the _Version Number Editor_ dialogue box.
+* Major refactoring of the `UVInfo` version information management unit [issue #88]
+* Major overhaul and refactoring of the `UMacros` macro management unit [issues #80 & #90].
+* Updated the delphidabbler.com web address in the install script [issue #89].
+* Updated documentation:
+  * Rewrote the overview section of `README.md` re command line changes and fixed some minor errors.
+  * Corrected errors in `CHANGELOG.md` [issues #86 & #87].
+  * Minor edits to `Docs/vi-file-format.md`.
+  * Fixed errors in `Build.md`.
+  * Help file updated re the revised _View Macros_ dialogue box and the `-open` command line option.
+* Bumped copyright dates.
+
 ## v2.16.0 of 13 September 2024
 
 * Added new _Env_ macro type that makes environment variable values available for use in .vi files [issue #67].
