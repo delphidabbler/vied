@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2024, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2024-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Implements a static class that processes the program's command line.
 }
